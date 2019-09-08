@@ -16,6 +16,8 @@ namespace mgnr{
             void drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & info,bool selected,bool onlydisplay=false);
             void drawNote_end();
             
+            void drawTableRaw(int from,int to,int t);
+            
             void pollEvent();
             
         private:

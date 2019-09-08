@@ -27,6 +27,9 @@ namespace mgnr{
             void drawNoteAbs(note*);//画音符绝对坐标
             void drawNoteAbs(float begin,float tone,float delay,float volume,const std::string & info,bool selected,bool onlydisplay=false);
             void findNote();//根据参数找到搜索矩形，利用HBB找到音符
+            void drawTableRaws();
+            bool drawToneRaw(int t);
+            virtual void drawTableRaw(int from,int to,int t)=0;
             
             float lookAtX;//瞄准位置（左边缘中心点）
             float lookAtY;

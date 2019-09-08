@@ -124,6 +124,8 @@ void editTable::findNote(){
     realLookAtY = lookAtY-noteAreaHeight/2;//左上角Y位置=中心Y位置-音符区域高度/2
     //realLookAtX=lookAtX
     
+    drawTableRaws();
+    
     HBB::vec from;
     from.set(lookAtX,realLookAtY);
     
@@ -141,6 +143,76 @@ void editTable::drawNoteAbs(note * n){
     drawNoteAbs(n->begin,n->tone,n->delay,n->volume , n->info , n->selected);
 }
 
+void editTable::drawTableRaws(){
+    int p;
+    if(lookAtY>=0 && lookAtY<128){
+        p=lookAtY;
+        while(1){
+            if(p>=128 || p<0)
+                break;
+            if(!drawToneRaw(p))
+                break;
+            --p;
+        }
+        p=lookAtY+1;
+        while(1){
+            if(p>=128 || p<0)
+                break;
+            if(!drawToneRaw(p))
+                break;
+            ++p;
+        }
+    }else
+    if(lookAtY<0){
+        p=0;
+        while(1){
+            if(p>=128 || p<0)
+                break;
+            if(!drawToneRaw(p))
+                break;
+            ++p;
+        }
+    }else{
+        p=127;
+        while(1){
+            if(p>=128 || p<0)
+                break;
+            if(!drawToneRaw(p))
+                break;
+            --p;
+        }
+    }
+}
+
+#define vPosi(n,max) \
+    if(n<0) \
+        n=0; \
+    else \
+    if(n>max) \
+        n=max;
+    
+
+bool editTable::drawToneRaw(int t){
+    float relY = t  - realLookAtY;
+    int scrY = relY * noteHeight;
+    int scrYto = windowHeight - scrY;
+    scrY = scrYto - noteHeight;
+    
+    //vPosi(scrY   ,windowHeight);
+    //vPosi(scrYto ,windowHeight);
+    
+    //if(scrYto - scrY != noteHeight)
+    //    printf("%d %d\n",scrY,scrYto);
+    
+    if((scrYto>windowHeight && scrY>windowHeight) || (scrYto<0 && scrY<0))
+        return false;
+    
+    drawTableRaw(scrY,scrYto,t);
+    
+    
+    return true;
+}
+
 void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,const std::string & info,bool selected,bool onlydisplay){
     float relX = begin - lookAtX;//相对坐标
     float relY = tone  - realLookAtY;
@@ -148,12 +220,6 @@ void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,cons
     int scrX = relX * noteLength;
     int scrY = relY * noteHeight;
     
-    #define vPosi(n,max) \
-        if(n<0) \
-            n=0; \
-        else \
-        if(n>max) \
-            n=max;
     
     int scrYto = windowHeight - scrY;//y坐标上下翻转，因为屏幕坐标系和midi坐标系上下相反
     

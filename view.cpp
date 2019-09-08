@@ -56,6 +56,29 @@ void view::drawNote_end(){
         }, displayBuffer.begin , displayBuffer.tone);
     }
 }
+void view::drawTableRaw(int from,int to,int t){
+    SDL_Rect rect;
+    rect.x=0;
+    rect.y=from;
+    rect.w=windowWidth;
+    rect.h=to-from;
+    if(t%2)
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 20, 20, 30));
+    else
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 10, 10, 20));
+    
+    static const int pianoKey[]={1,0,1,0,1,0,1,1,0,1,0,1};
+    
+    if(t>=0 && t<128){
+        int k = t%12;
+        rect.w=20;
+        if(pianoKey[k]==1)
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 190, 190, 170));
+        else
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+    }
+    
+}
 void view::pollEvent(){
     SDL_Event event;
     if (SDL_PollEvent(&event)){
