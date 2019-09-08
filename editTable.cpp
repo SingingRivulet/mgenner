@@ -3,6 +3,15 @@ namespace mgnr{
 
 editTable::editTable(){
     displayBuffer.showing = false;
+    automaticX=true;
+    automaticY=true;
+    lookAtX=0;
+    lookAtY=64;
+    noteHeight=20;
+    noteLength=1;
+    defaultDelay=20;
+    defaultVolume=50;
+    selected.clear();
 }
 
 editTable::~editTable(){
@@ -68,6 +77,7 @@ void editTable::removeSelected(){
     for(auto it:selected){
         removeNote(it);
     }
+    printf("delete notes\n");
     selected.clear();
 }
 void editTable::clickToSelect(int x,int y){
@@ -77,9 +87,11 @@ void editTable::clickToSelect(int x,int y){
         auto self = (editTable*)arg;
         if(!n->selected){//未选择就加上选择
             self->selected.insert(n);
+            printf("select:%f %f\n",n->begin,n->tone);
             n->selected=true;
         }else{
             self->selected.erase(n);//第二次点击取消选择
+            printf("unselect:%f %f\n",n->begin,n->tone);
             n->selected=false;
         }
     },this);

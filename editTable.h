@@ -42,7 +42,7 @@ namespace mgnr{
             float maticBlock;//起始时间吸附到这个的整数倍
             float defaultDelay;//持续时间
             int   defaultVolume;//音量
-            std::string defaultInfo;//音量
+            std::string defaultInfo;//信息
             
             std::set<note*> selected;
             
@@ -51,6 +51,7 @@ namespace mgnr{
             float noteAreaWidth;
             float realLookAtY;
             
+        public:
             struct{
                 float begin;
                 float tone;
