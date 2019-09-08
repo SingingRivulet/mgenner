@@ -7,10 +7,11 @@ view::view(){
     SDL_Init( SDL_INIT_VIDEO );
     screen = SDL_SetVideoMode( windowWidth, windowHeight, 0,SDL_HWSURFACE | SDL_DOUBLEBUF );
     
-    font = TTF_OpenFont("sans-serif", 40);
+    TTF_Init();
+    font = TTF_OpenFont("sans-serif", 20);
 }
 view::~view(){
-    
+    TTF_CloseFont(font);
     SDL_Quit();
 }
 
@@ -67,15 +68,30 @@ void view::drawTableRaw(int from,int to,int t){
     else
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 10, 10, 20));
     
-    static const int pianoKey[]={1,0,1,0,1,0,1,1,0,1,0,1};
+    static const int    pianoKey    []={ 1 , 0  , 1 , 0  , 1 , 1 , 0  , 1 , 0  , 1 , 0  , 1};
+    static const char * pianoKeyName[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     
     if(t>=0 && t<128){
         int k = t%12;
-        rect.w=20;
+        rect.w=30;
         if(pianoKey[k]==1)
             SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 190, 190, 170));
         else
             SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+        
+        SDL_Color textColor = {255, 255, 255};
+        
+        char buf[32];
+        if(k==0)
+            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(t/12)+1);
+        else
+            snprintf(buf,32,"%s",pianoKeyName[k]);
+        
+        auto msg = TTF_RenderText_Solid(font,buf,textColor);
+        
+        SDL_BlitSurface(msg, NULL, screen, &rect);
+        
+        SDL_FreeSurface(msg);
     }
     
 }
@@ -92,6 +108,14 @@ void view::pollEvent(){
         }else
         if (event.type == SDL_MOUSEMOTION){//移动鼠标
             clickToDisplay(event.motion.x , event.motion.y);
+        }else
+        if (event.type == SDL_MOUSEWHEEL){
+            if(event.wheel.y<0){
+                lookAtY-=0.7;
+            }else
+            if(event.wheel.y>0){
+                lookAtY+=0.7;
+            }
         }else
         if (event.type == SDL_KEYDOWN){
             switch(event.key.keysym.sym){

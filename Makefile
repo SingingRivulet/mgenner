@@ -1,7 +1,7 @@
 CC = em++ -std=c++11
 
 index.js:main.cpp view.o
-	$(CC) main.cpp view.o editTable.o hbb.o midiMap.o -o index.js
+	$(CC) main.cpp view.o editTable.o hbb.o midiMap.o --bind -o index.js
 
 view.o:view.h view.cpp editTable.o
 	$(CC) view.cpp -c
