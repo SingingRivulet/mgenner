@@ -2,7 +2,7 @@
 namespace mgnr{
 
 view::view(){
-    windowWidth  = 640;
+    windowWidth  = 1024;
     windowHeight = 480;
     SDL_Init( SDL_INIT_VIDEO );
     screen = SDL_SetVideoMode( windowWidth, windowHeight, 0,SDL_HWSURFACE | SDL_DOUBLEBUF );
