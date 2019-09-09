@@ -22,10 +22,16 @@ namespace mgnr{
             
             void pollEvent();
             
+            void hideMode();
+            
         private:
+            
             SDL_Surface * screen;
             SDL_Surface * clearAllMsg;
             SDL_Surface * removeMsg;
+            SDL_Surface * showAllMsg;
+            SDL_Surface * hideModeMsg;
+            
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
             std::unordered_map<std::string,SDL_Surface * > words;

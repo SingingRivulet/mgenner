@@ -18,6 +18,8 @@ namespace mgnr{
             void find(const HBB::vec & p,void(*callback)(note*,void*),void * arg);
             //获取范围内的音符
             
+            std::string infoFilter;
+            
         private:
             HBB indexer;
             void * pool;

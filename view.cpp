@@ -11,8 +11,10 @@ view::view(){
     font = TTF_OpenFont("sans-serif", 20);
     
     SDL_Color textColor = {255, 128, 128};
-    clearAllMsg = TTF_RenderText_Solid(font,"clear",textColor);
-    removeMsg = TTF_RenderText_Solid(font,"remove",textColor);
+    clearAllMsg = TTF_RenderText_Solid(font,"清选",textColor);
+    removeMsg = TTF_RenderText_Solid(font,"删除",textColor);
+    showAllMsg = TTF_RenderText_Solid(font,"显示所有",textColor);
+    hideModeMsg = TTF_RenderText_Solid(font,"隐藏其他",textColor);
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -133,6 +135,13 @@ void view::drawNote_end(){
     
     rect.x=192;
     SDL_BlitSurface(removeMsg, NULL, screen, &rect);
+    
+    rect.x=256;
+    if(infoFilter.empty()){
+        SDL_BlitSurface(hideModeMsg, NULL, screen, &rect);
+    }else{
+        SDL_BlitSurface(showAllMsg, NULL, screen, &rect);
+    }
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -172,6 +181,13 @@ void view::drawTableRaw(int from,int to,int t){
     }
     
 }
+void view::hideMode(){
+    if(infoFilter.empty()){
+        infoFilter=defaultInfo;
+    }else{
+        infoFilter.clear();
+    }
+}
 void view::pollEvent(){
     SDL_Event event;
     if (SDL_PollEvent(&event)){
@@ -199,13 +215,20 @@ void view::pollEvent(){
                             }
                             ++p;
                         }
-                        if(strlen(str)>0)
+                        if(strlen(str)>0){
                             defaultInfo = str;
+                            if(!infoFilter.empty()){
+                                infoFilter=str;
+                            }
+                        }
                         free(str);
                     }
                 }else
                 if(event.motion.x<256){
                     removeSelected();
+                }else
+                if(event.motion.x<320){
+                    hideMode();
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){

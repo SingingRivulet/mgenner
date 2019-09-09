@@ -5,7 +5,7 @@
 #include <sstream>
 #include <stdio.h>
 namespace mgnr{
-    class editTable:midiMap{
+    class editTable:public midiMap{
         public:
             editTable();
             ~editTable();

@@ -68,14 +68,16 @@ void midiMap::find(const HBB::vec & from,const HBB::vec & to,void(*callback)(not
     struct self{
         void(*callback)(note*,void*);
         void * arg;
+        midiMap * s;
     }s;
     s.arg=arg;
     s.callback=callback;
+    s.s=this;
     
     indexer.collisionTest(&tmpbox,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np)
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
             s->callback(np,s->arg);
     },&s);
 }
@@ -85,14 +87,16 @@ void midiMap::find(const HBB::vec & pt,void(*callback)(note*,void*),void * arg){
     struct self{
         void(*callback)(note*,void*);
         void * arg;
+        midiMap * s;
     }s;
     s.arg=arg;
     s.callback=callback;
+    s.s=this;
     
     indexer.fetchByPoint(pt,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np)
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
             s->callback(np,s->arg);
     },&s);
 }
@@ -101,14 +105,16 @@ void midiMap::find(float step,void(*callback)(note*,void*),void * arg){
     struct self{
         void(*callback)(note*,void*);
         void * arg;
+        midiMap * s;
     }s;
     s.arg=arg;
     s.callback=callback;
+    s.s=this;
     
     indexer.fetchByStep(step,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np)
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
             s->callback(np,s->arg);
     },&s);
 }
