@@ -8,12 +8,12 @@ int main(){
     }, 0, 1);
 }
 
-void setDefaultDelay(float){
-    
+void setDefaultDelay(float d){
+    V.defaultDelay=d;
 }
 
-void setDefaultVolume(int){
-    
+void setDefaultVolume(int v){
+    V.defaultVolume=v;
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {
