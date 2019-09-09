@@ -151,7 +151,17 @@ void view::pollEvent(){
     if (SDL_PollEvent(&event)){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
             if(event.motion.y<40){//小于40是菜单
-                
+                if(event.motion.x<128){
+                    char *str = (char*)EM_ASM_INT({
+                        var jsString = prompt("命名");
+                        var lengthBytes = lengthBytesUTF8(jsString)+1;
+                        var stringOnWasmHeap = _malloc(lengthBytes);
+                        stringToUTF8(jsString, stringOnWasmHeap, lengthBytes);
+                        return stringOnWasmHeap;
+                    });
+                    defaultInfo = str;
+                    free(str);
+                }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
                 addDisplaied();
