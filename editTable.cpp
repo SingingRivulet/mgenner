@@ -249,4 +249,14 @@ void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,cons
     drawNote(scrX , scrY , scrXto , scrYto , volume , info , selected , onlydisplay);
 }
 
+void editTable::toString(std::string & str){
+    
+}
+void editTable::loadString(const std::string & str){
+    std::istringstream iss(str);
+    char buf[1024];
+    bzero(buf,1024);
+    iss.getline(buf,1024);
+}
+
 }

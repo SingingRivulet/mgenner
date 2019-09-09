@@ -2,6 +2,8 @@
 #define MGNR_EDIT_TABLE
 #include "midiMap.h"
 #include <emscripten.h>
+#include <sstream>
+#include <stdio.h>
 namespace mgnr{
     class editTable:midiMap{
         public:
@@ -31,6 +33,9 @@ namespace mgnr{
             void drawTableRaws();
             bool drawToneRaw(int t);
             virtual void drawTableRaw(int from,int to,int t)=0;
+            
+            void toString(std::string & str);
+            void loadString(const std::string & str);
             
             float lookAtX;//瞄准位置（左边缘中心点）
             float lookAtY;

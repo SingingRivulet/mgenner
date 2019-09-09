@@ -12,6 +12,7 @@ view::view(){
     
     SDL_Color textColor = {255, 128, 128};
     clearAllMsg = TTF_RenderText_Solid(font,"clear",textColor);
+    removeMsg = TTF_RenderText_Solid(font,"remove",textColor);
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -46,33 +47,42 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
     }
     
     if(!info.empty()){
-        unsigned char r,g,b;
-        auto it=colors.find(info);
-        if(it==colors.end()){
-            r=rand()%64;
-            g=rand()%64;
-            b=rand()%64;
-            std::array<unsigned char,3> arr;
-            arr[0]=r;
-            arr[1]=g;
-            arr[2]=b;
-            colors[info]=arr;
+        if(info[0]!='@'){
+            unsigned char r,g,b;
+            auto it=colors.find(info);
+            if(it==colors.end()){
+                r=rand()%64;
+                g=rand()%64;
+                b=rand()%64;
+                std::array<unsigned char,3> arr;
+                arr[0]=r;
+                arr[1]=g;
+                arr[2]=b;
+                colors[info]=arr;
+            }else{
+                r=it->second[0];
+                g=it->second[1];
+                b=it->second[2];
+            }
+            SDL_FillRect(screen, &rect, SDL_MapRGB(
+                screen->format, 
+                r+volume, 
+                g+volume, 
+                b+volume)
+            );
         }else{
-            r=it->second[0];
-            g=it->second[1];
-            b=it->second[2];
+            SDL_FillRect(screen, &rect, SDL_MapRGB(
+                screen->format, 
+                128, 
+                128, 
+                192)
+            );
         }
-        SDL_FillRect(screen, &rect, SDL_MapRGB(
-            screen->format, 
-            r+volume, 
-            g+volume, 
-            b+volume)
-        );
     }else{
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 64+volume, 64+volume, 30));
     }
     
-    if(!info.empty() && selected){
+    if(!info.empty() && (selected || info[0]=='@')){
         
         SDL_Color textColor = {255, 255, 255};
         
@@ -112,6 +122,9 @@ void view::drawNote_end(){
     auto msg = TTF_RenderText_Solid(font,defaultInfo.c_str(),textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
+    
+    rect.x=192;
+    SDL_BlitSurface(removeMsg, NULL, screen, &rect);
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -159,7 +172,7 @@ void view::pollEvent(){
                 if(event.motion.x<64){
                     clearSelected();
                 }else
-                if(event.motion.x<64+128){
+                if(event.motion.x<192){
                     char *str = (char*)EM_ASM_INT({
                         var jsString = prompt("命名");
                         if(!jsString)
@@ -170,9 +183,21 @@ void view::pollEvent(){
                         return stringOnWasmHeap;
                     });
                     if(str!=NULL){
-                        defaultInfo = str;
+                        char *p=str;
+                        while(*p){
+                            if(*p==' ' || *p=='\r' || *p=='\n'){
+                                *p='\0';
+                                break;
+                            }
+                            ++p;
+                        }
+                        if(strlen(str)>0)
+                            defaultInfo = str;
                         free(str);
                     }
+                }else
+                if(event.motion.x<256){
+                    removeSelected();
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
