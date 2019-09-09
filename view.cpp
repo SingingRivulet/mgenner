@@ -13,8 +13,8 @@ view::view(){
     SDL_Color textColor = {255, 128, 128};
     clearAllMsg = TTF_RenderText_Solid(font,"清选",textColor);
     removeMsg = TTF_RenderText_Solid(font,"删除",textColor);
-    showAllMsg = TTF_RenderText_Solid(font,"显示所有",textColor);
-    hideModeMsg = TTF_RenderText_Solid(font,"隐藏其他",textColor);
+    showAllMsg = TTF_RenderText_Solid(font,"显示",textColor);
+    hideModeMsg = TTF_RenderText_Solid(font,"隐藏",textColor);
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -36,16 +36,18 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
     rect.y=fy;
     rect.w=tx-fx;
     rect.h=ty-fy;
+    SDL_Rect bd;
+    bd.x=fx-2;
+    bd.y=fy-2;
+    bd.w=rect.w+4;
+    bd.h=rect.h+4;
     if(onlydisplay)
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, volume, volume, 30));
     else
     if(selected){
-        SDL_Rect bd;
-        bd.x=fx-2;
-        bd.y=fy-2;
-        bd.w=rect.w+4;
-        bd.h=rect.h+4;
-        SDL_FillRect(screen, &bd, SDL_MapRGB(screen->format, 128, 64, 72));
+        SDL_FillRect(screen, &bd, SDL_MapRGB(screen->format, 255, 128, 192));
+    }else{
+        SDL_FillRect(screen, &bd, SDL_MapRGB(screen->format, 0, 0, 0));
     }
     
     if(!info.empty()){
@@ -149,16 +151,21 @@ void view::drawTableRaw(int from,int to,int t){
     rect.y=from;
     rect.w=windowWidth;
     rect.h=to-from;
-    if(t%2)
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 20, 20, 30));
-    else
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 10, 10, 20));
+    
+    int k = t%12;
     
     static const int    pianoKey    []={ 1 , 0  , 1 , 0  , 1 , 1 , 0  , 1 , 0  , 1 , 0  , 1};
+    
+    static const int    pianoColorR []={ 20,10  , 20, 10 , 20, 10, 10 , 20, 10 , 20, 10 , 10};
+    static const int    pianoColorG []={ 20,10  , 20, 10 , 20, 20, 10 , 20, 10 , 20, 10 , 20};
+    static const int    pianoColorB []={ 30,20  , 30, 20 , 30, 30, 20 , 30, 20 , 30, 20 , 30};
+    
     static const char * pianoKeyName[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
     
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, pianoColorR[k], pianoColorG[k], pianoColorB[k]));
+    
     if(t>=0 && t<128){
-        int k = t%12;
+        
         rect.w=30;
         if(pianoKey[k]==1)
             SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 190, 190, 170));

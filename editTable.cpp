@@ -8,8 +8,9 @@ editTable::editTable(){
     lookAtX=0;
     lookAtY=64;
     noteHeight=20;
-    noteLength=1;
-    defaultDelay=20;
+    noteLength=0.6;
+    defaultDelay=120;
+    maticBlock=120;
     defaultVolume=50;
     defaultInfo="default";
     selected.clear();
