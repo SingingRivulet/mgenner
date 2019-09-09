@@ -8,6 +8,7 @@ namespace mgnr{
             float tone;
             float delay;
             int volume;
+            
             std::string info;
             
             bool selected;

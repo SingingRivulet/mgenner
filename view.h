@@ -5,7 +5,9 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_render.h>
 #include <SDL/SDL_ttf.h>
-#include <emscripten.h>
+#include <unordered_map>
+#include <stdlib.h>
+#include <array>
 namespace mgnr{
     class view:public editTable{
         public:
@@ -23,6 +25,7 @@ namespace mgnr{
         private:
             SDL_Surface * screen;
             TTF_Font * font;
+            std::unordered_map<std::string,std::array<unsigned char,3> > colors;
     };
 }
 #endif

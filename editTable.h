@@ -1,6 +1,7 @@
 #ifndef MGNR_EDIT_TABLE
 #define MGNR_EDIT_TABLE
 #include "midiMap.h"
+#include <emscripten.h>
 namespace mgnr{
     class editTable:midiMap{
         public:

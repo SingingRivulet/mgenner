@@ -23,6 +23,7 @@ void view::drawNote_begin(){
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0 , 0 , 30));
 }
+
 void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & info,bool selected,bool onlydisplay){
     SDL_Rect rect;
     rect.x=fx;
@@ -39,10 +40,46 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
         bd.w=rect.w+4;
         bd.h=rect.h+4;
         SDL_FillRect(screen, &bd, SDL_MapRGB(screen->format, 128, 64, 72));
+    }
+    
+    if(!info.empty()){
+        unsigned char r,g,b;
+        auto it=colors.find(info);
+        if(it==colors.end()){
+            r=rand()%64;
+            g=rand()%64;
+            b=rand()%64;
+            std::array<unsigned char,3> arr;
+            arr[0]=r;
+            arr[1]=g;
+            arr[2]=b;
+            colors[info]=arr;
+        }else{
+            r=it->second[0];
+            g=it->second[1];
+            b=it->second[2];
+        }
+        SDL_FillRect(screen, &rect, SDL_MapRGB(
+            screen->format, 
+            r+volume, 
+            g+volume, 
+            b+volume)
+        );
+    }else{
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 64+volume, 64+volume, 30));
     }
-    else
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 64+volume, 64+volume, 30));
+    
+    if(!info.empty() && selected){
+        
+        SDL_Color textColor = {255, 255, 255};
+        
+        auto msg = TTF_RenderText_Solid(font,info.c_str(),textColor);
+        
+        SDL_BlitSurface(msg, NULL, screen, &rect);
+        
+        SDL_FreeSurface(msg);
+    }
+    
 }
 void view::drawNote_end(){
     if(displayBuffer.showing){
