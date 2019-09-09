@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 18864,
+    STACK_BASE = 19120,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5261744,
-    DYNAMIC_BASE = 5261744,
-    DYNAMICTOP_PTR = 18832;
+    STACK_MAX = 5262000,
+    DYNAMIC_BASE = 5262000,
+    DYNAMICTOP_PTR = 19088;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1730,16 +1730,21 @@ var tempI64;
 
 // === Body ===
 
-var ASM_CONSTS = [function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; }];
+var ASM_CONSTS = [function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
+ function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; }];
 
 function _emscripten_asm_const_idd(code, a0, a1) {
   return ASM_CONSTS[code](a0, a1);
 }
 
+function _emscripten_asm_const_i(code) {
+  return ASM_CONSTS[code]();
+}
 
 
 
-// STATICTOP = STATIC_BASE + 17840;
+
+// STATICTOP = STATIC_BASE + 18096;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1750,7 +1755,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 18848
+var tempDoublePtr = 19104
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8142,6 +8147,7 @@ var asmLibraryArg = {
   "__emval_register": __emval_register,
   "_abort": _abort,
   "_embind_repr": _embind_repr,
+  "_emscripten_asm_const_i": _emscripten_asm_const_i,
   "_emscripten_asm_const_idd": _emscripten_asm_const_idd,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,
   "_emscripten_get_now": _emscripten_get_now,

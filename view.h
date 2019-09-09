@@ -24,6 +24,7 @@ namespace mgnr{
             
         private:
             SDL_Surface * screen;
+            SDL_Surface * clearAllMsg;
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
     };

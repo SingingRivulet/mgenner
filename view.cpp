@@ -9,6 +9,9 @@ view::view(){
     
     TTF_Init();
     font = TTF_OpenFont("sans-serif", 20);
+    
+    SDL_Color textColor = {255, 128, 128};
+    clearAllMsg = TTF_RenderText_Solid(font,"clear",textColor);
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -100,8 +103,10 @@ void view::drawNote_end(){
     rect.h=40;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 20 , 20 , 64));
     
-    rect.x=8;
     rect.y=8;
+    SDL_BlitSurface(clearAllMsg, NULL, screen, &rect);
+    
+    rect.x=64;
     rect.w=128;
     SDL_Color textColor = {255, 255, 255};
     auto msg = TTF_RenderText_Solid(font,defaultInfo.c_str(),textColor);
@@ -151,16 +156,23 @@ void view::pollEvent(){
     if (SDL_PollEvent(&event)){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
             if(event.motion.y<40){//小于40是菜单
-                if(event.motion.x<128){
+                if(event.motion.x<64){
+                    clearSelected();
+                }else
+                if(event.motion.x<64+128){
                     char *str = (char*)EM_ASM_INT({
                         var jsString = prompt("命名");
+                        if(!jsString)
+                            return 0;
                         var lengthBytes = lengthBytesUTF8(jsString)+1;
                         var stringOnWasmHeap = _malloc(lengthBytes);
                         stringToUTF8(jsString, stringOnWasmHeap, lengthBytes);
                         return stringOnWasmHeap;
                     });
-                    defaultInfo = str;
-                    free(str);
+                    if(str!=NULL){
+                        defaultInfo = str;
+                        free(str);
+                    }
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
