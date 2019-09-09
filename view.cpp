@@ -84,13 +84,21 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
     
     if(!info.empty() && (selected || info[0]=='@')){
         
-        SDL_Color textColor = {255, 255, 255};
+        SDL_Surface * msg;
+        auto it=words.find(info);
+        if(it==words.end()){
         
-        auto msg = TTF_RenderText_Solid(font,info.c_str(),textColor);
-        
+            SDL_Color textColor = {255, 255, 255};
+            msg = TTF_RenderText_Solid(font,info.c_str(),textColor);
+            words[info]=msg;
+            
+        }else{
+            
+            msg = it->second;
+            
+        }
         SDL_BlitSurface(msg, NULL, screen, &rect);
         
-        SDL_FreeSurface(msg);
     }
     
 }

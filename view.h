@@ -28,6 +28,7 @@ namespace mgnr{
             SDL_Surface * removeMsg;
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
+            std::unordered_map<std::string,SDL_Surface * > words;
     };
 }
 #endif
