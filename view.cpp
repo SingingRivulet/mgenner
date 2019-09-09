@@ -93,6 +93,20 @@ void view::drawNote_end(){
             window.noteptr.tone.innerText=$1;
         }, displayBuffer.begin , displayBuffer.tone);
     }
+    SDL_Rect rect;
+    rect.x=0;
+    rect.y=0;
+    rect.w=windowWidth;
+    rect.h=40;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 20 , 20 , 64));
+    
+    rect.x=8;
+    rect.y=8;
+    rect.w=128;
+    SDL_Color textColor = {255, 255, 255};
+    auto msg = TTF_RenderText_Solid(font,defaultInfo.c_str(),textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -136,6 +150,9 @@ void view::pollEvent(){
     SDL_Event event;
     if (SDL_PollEvent(&event)){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
+            if(event.motion.y<40){//小于40是菜单
+                
+            }else
             if(SDL_BUTTON_LEFT == event.button.button){
                 addDisplaied();
             }else
