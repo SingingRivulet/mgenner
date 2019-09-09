@@ -145,8 +145,9 @@ void editTable::drawNoteAbs(note * n){
 
 void editTable::drawTableRaws(){
     int p;
-    if(lookAtY>=0 && lookAtY<128){
-        p=lookAtY;
+    int ilookAtY=lookAtY;
+    if(ilookAtY>=0 && ilookAtY<128){
+        p=ilookAtY;
         while(1){
             if(p>=128 || p<0)
                 break;
@@ -154,7 +155,7 @@ void editTable::drawTableRaws(){
                 break;
             --p;
         }
-        p=lookAtY+1;
+        p=ilookAtY+1;
         while(1){
             if(p>=128 || p<0)
                 break;
@@ -163,7 +164,7 @@ void editTable::drawTableRaws(){
             ++p;
         }
     }else
-    if(lookAtY<0){
+    if(ilookAtY<0){
         p=0;
         while(1){
             if(p>=128 || p<0)
