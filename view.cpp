@@ -243,7 +243,12 @@ void view::pollEvent(){
                     addDisplaied();
             }else
             if(SDL_BUTTON_RIGHT == event.button.button){
-                
+                printf("down\n");
+            }
+        }else
+        if (event.type == SDL_MOUSEBUTTONUP){
+            if(SDL_BUTTON_RIGHT == event.button.button){
+                printf("up\n");
             }
         }else
         if (event.type == SDL_MOUSEMOTION){//移动鼠标
