@@ -23,6 +23,8 @@ namespace mgnr{
             int clickToSelect(int x,int y);
             void clearSelected();
             void removeSelected();
+            void resizeSelected(int delta);
+            void resizeSelected_apply();
             void automatic(float & x,float & y);
             void clickToDisplay(int x,int y);
             void clickToDisplay_close();

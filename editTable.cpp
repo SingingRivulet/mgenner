@@ -82,6 +82,19 @@ void editTable::removeSelected(){
     printf("delete notes\n");
     selected.clear();
 }
+void editTable::resizeSelected(int delta){
+    auto rd = (float)delta/((float)noteLength*256);
+    for(auto it:selected){
+        it->delay+=rd;
+        if(it->delay<10)
+            it->delay=10;
+    }
+}
+void editTable::resizeSelected_apply(){
+    for(auto it:selected){
+        resizeNote(it);
+    }
+}
 int editTable::clickToSelect(int x,int y){
     auto p=screenToAbs(x,y);
     

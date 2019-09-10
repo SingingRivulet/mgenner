@@ -15,6 +15,9 @@ view::view(){
     removeMsg = TTF_RenderText_Solid(font,"删除",textColor);
     showAllMsg = TTF_RenderText_Solid(font,"显示",textColor);
     hideModeMsg = TTF_RenderText_Solid(font,"隐藏",textColor);
+    
+    resizeMode=false;
+    ScrX=3;
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -199,6 +202,8 @@ void view::pollEvent(){
     SDL_Event event;
     if (SDL_PollEvent(&event)){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
+            if(resizeMode)
+                return;
             if(event.motion.y<40){//小于40是菜单
                 if(event.motion.x<64){
                     clearSelected();
@@ -243,16 +248,21 @@ void view::pollEvent(){
                     addDisplaied();
             }else
             if(SDL_BUTTON_RIGHT == event.button.button){
-                printf("down\n");
+                resizeMode=true;
+                resizeMode_last=event.motion.x;
             }
         }else
         if (event.type == SDL_MOUSEBUTTONUP){
             if(SDL_BUTTON_RIGHT == event.button.button){
-                printf("up\n");
+                resizeSelected_apply();
+                resizeMode=false;
             }
         }else
         if (event.type == SDL_MOUSEMOTION){//移动鼠标
             clickToDisplay(event.motion.x , event.motion.y);
+            if(resizeMode){
+                resizeSelected(event.motion.x-resizeMode_last);
+            }
         }else
         if (event.type == SDL_MOUSEWHEEL){
             if(event.wheel.y<0){
@@ -262,7 +272,12 @@ void view::pollEvent(){
                 lookAtY+=0.7;
             }
         }else
+        if (event.type == SDL_KEYUP){
+            
+        }
         if (event.type == SDL_KEYDOWN){
+            if(resizeMode)
+                return;
             switch(event.key.keysym.sym){
                 case SDLK_UP:
                     lookAtY+=0.3;
@@ -273,11 +288,11 @@ void view::pollEvent(){
                     
                 break;
                 case SDLK_LEFT:
-                    lookAtX-=noteLength*3;
+                    lookAtX-=noteLength*ScrX;
                     
                 break;
                 case SDLK_RIGHT:
-                    lookAtX+=noteLength*3;
+                    lookAtX+=noteLength*ScrX;
                     
                 break;
                 case SDLK_DELETE:
