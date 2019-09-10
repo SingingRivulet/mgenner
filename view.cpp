@@ -288,15 +288,21 @@ void view::pollEvent(){
                     
                 break;
                 case SDLK_LEFT:
-                    lookAtX-=noteLength*ScrX;
+                    lookAtX-=ScrX/noteLength;
                     
                 break;
                 case SDLK_RIGHT:
-                    lookAtX+=noteLength*ScrX;
+                    lookAtX+=ScrX/noteLength;
                     
                 break;
                 case SDLK_DELETE:
                     removeSelected();
+                break;
+                case SDLK_q:
+                    noteLength/=2;
+                break;
+                case SDLK_w:
+                    noteLength*=2;
                 break;
             }
         }
