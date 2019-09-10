@@ -20,9 +20,10 @@ namespace mgnr{
             
             note * clickToAdd(int x,int y);
             void addDisplaied();
-            int clickToSelect(int x,int y);
+            int  clickToSelect(int x,int y);
             void clearSelected();
             void removeSelected();
+            void renameSelected(const std::string & n);
             void resizeSelected(int delta);
             void resizeSelected_apply();
             void automatic(float & x,float & y);

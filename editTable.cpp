@@ -95,6 +95,11 @@ void editTable::resizeSelected_apply(){
         resizeNote(it);
     }
 }
+void editTable::renameSelected(const std::string & n){
+    for(auto it:selected){
+        it->info = n;
+    }
+}
 int editTable::clickToSelect(int x,int y){
     auto p=screenToAbs(x,y);
     
@@ -264,13 +269,20 @@ void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,cons
 }
 
 void editTable::toString(std::string & str){
-    
+    str="MGNR V1.0\n";
+    char tbuf[1024];
+    for(auto it:selected){
+        snprintf(tbuf,sizeof(tbuf),"+%s %f %f %f %d\n",it->info.c_str(),it->begin,it->tone,it->delay,it->volume);
+        str+=tbuf;
+    }
 }
 void editTable::loadString(const std::string & str){
     std::istringstream iss(str);
     char buf[1024];
-    bzero(buf,1024);
-    iss.getline(buf,1024);
+    while(!iss.eof()){
+        bzero(buf,1024);
+        iss.getline(buf,1024);
+    }
 }
 
 }

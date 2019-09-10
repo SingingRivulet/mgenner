@@ -31,6 +31,7 @@ namespace mgnr{
             SDL_Surface * removeMsg;
             SDL_Surface * showAllMsg;
             SDL_Surface * hideModeMsg;
+            SDL_Surface * maticMsg;
             
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
@@ -39,6 +40,13 @@ namespace mgnr{
             bool resizeMode;
             int resizeMode_last;
             float ScrX;
+            
+            //note length
+            //1/32 1/16 1/8 1/4 1/2 1
+            //15   30   60  120 240 480
+            SDL_Surface * noteSurfaces[6];
+            int noteStatus;
+            void noteLengthChange();
     };
 }
 #endif

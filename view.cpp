@@ -15,9 +15,18 @@ view::view(){
     removeMsg = TTF_RenderText_Solid(font,"删除",textColor);
     showAllMsg = TTF_RenderText_Solid(font,"显示",textColor);
     hideModeMsg = TTF_RenderText_Solid(font,"隐藏",textColor);
+    maticMsg = TTF_RenderText_Solid(font,"吸附",textColor);
+    
+    noteSurfaces[0] = TTF_RenderText_Solid(font,"[1/32]",textColor);
+    noteSurfaces[1] = TTF_RenderText_Solid(font,"[1/16]",textColor);
+    noteSurfaces[2] = TTF_RenderText_Solid(font,"[ 1/8]",textColor);
+    noteSurfaces[3] = TTF_RenderText_Solid(font,"[ 1/4]",textColor);
+    noteSurfaces[4] = TTF_RenderText_Solid(font,"[ 1/2]",textColor);
+    noteSurfaces[5] = TTF_RenderText_Solid(font,"[   1]",textColor);
     
     resizeMode=false;
     ScrX=3;
+    noteStatus=3;
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -89,7 +98,7 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
         SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 64+volume, 64+volume, 30));
     }
     
-    if(!info.empty() && (selected || info[0]=='@')){
+    if(!info.empty() && infoFilter.empty() && (selected || info[0]=='@')){
         
         SDL_Surface * msg;
         auto it=words.find(info);
@@ -147,6 +156,13 @@ void view::drawNote_end(){
     }else{
         SDL_BlitSurface(showAllMsg, NULL, screen, &rect);
     }
+    
+    rect.x=320;
+    SDL_BlitSurface(maticMsg, NULL, screen, &rect);
+    
+    rect.x=384;
+    SDL_BlitSurface(noteSurfaces[noteStatus], NULL, screen, &rect);
+    
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -233,6 +249,7 @@ void view::pollEvent(){
                                 infoFilter=str;
                             }
                         }
+                        renameSelected(str);
                         free(str);
                     }
                 }else
@@ -241,6 +258,15 @@ void view::pollEvent(){
                 }else
                 if(event.motion.x<320){
                     hideMode();
+                }else
+                if(event.motion.x<384){
+                    if(automaticX)
+                        automaticX=false;
+                    else
+                        automaticX=true;
+                }else
+                if(event.motion.x<448){
+                    noteLengthChange();
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
@@ -308,6 +334,15 @@ void view::pollEvent(){
         }
 
     }
+}
+
+void view::noteLengthChange(){
+    ++noteStatus;
+    if(noteStatus>5)
+        noteStatus=0;
+    const static int lens[]={15,30,60,120,240,480};
+    defaultDelay=lens[noteStatus];
+    maticBlock=lens[noteStatus];
 }
 
 }
