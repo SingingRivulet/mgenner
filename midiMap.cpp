@@ -37,6 +37,24 @@ note * midiMap::addNote(float position,float tone,float delay,int v,const std::s
     return p;
 }
 
+void midiMap::resizeNote(note * p){
+    if(p){
+        if(p->indexer){
+            auto i = (HBB::AABB*)(p->indexer);
+            i->autodrop();
+        }
+        
+        HBB::vec from;
+        HBB::vec to;
+        from.set(p->begin , p->tone);
+        to = from;
+        to.X += p->delay;
+        to.Y += 0.9;
+        
+        auto bx = indexer.add(from,to,p);
+        p->indexer = bx;
+    }
+}
 void midiMap::removeNote(note * p){
     if(p){
         if(p->indexer){
@@ -60,7 +78,7 @@ void midiMap::clear(){
     notes.clear();
 }
 
-void midiMap::find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg){
+int midiMap::find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg){
     HBB::AABB tmpbox;
     tmpbox.from=from;
     tmpbox.to=to;
@@ -69,54 +87,69 @@ void midiMap::find(const HBB::vec & from,const HBB::vec & to,void(*callback)(not
         void(*callback)(note*,void*);
         void * arg;
         midiMap * s;
+        int num;
     }s;
     s.arg=arg;
     s.callback=callback;
     s.s=this;
+    s.num=0;
     
     indexer.collisionTest(&tmpbox,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter)){
             s->callback(np,s->arg);
+            s->num++;
+        }
     },&s);
+    return s.num;
 }
 
-void midiMap::find(const HBB::vec & pt,void(*callback)(note*,void*),void * arg){
+int midiMap::find(const HBB::vec & pt,void(*callback)(note*,void*),void * arg){
     
     struct self{
         void(*callback)(note*,void*);
         void * arg;
         midiMap * s;
+        int num;
     }s;
     s.arg=arg;
     s.callback=callback;
     s.s=this;
+    s.num=0;
     
     indexer.fetchByPoint(pt,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter)){
             s->callback(np,s->arg);
+            s->num++;
+        }
     },&s);
+    return s.num;
 }
 
-void midiMap::find(float step,void(*callback)(note*,void*),void * arg){
+int midiMap::find(float step,void(*callback)(note*,void*),void * arg){
     struct self{
         void(*callback)(note*,void*);
         void * arg;
         midiMap * s;
+        int num;
     }s;
     s.arg=arg;
     s.callback=callback;
     s.s=this;
+    s.num=0;
     
     indexer.fetchByStep(step,[](HBB::AABB * p,void * arg){
         auto s  = (self*)arg;
         auto np = (note*)(p->data);
-        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter))
+        if(np && (s->s->infoFilter.empty() || np->info==s->s->infoFilter)){
             s->callback(np,s->arg);
+            s->num++;
+        }
     },&s);
+    return s.num;
 }
 
 }//namespace mgnr

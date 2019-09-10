@@ -239,10 +239,11 @@ void view::pollEvent(){
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
-                addDisplaied();
+                if(clickToSelect(event.motion.x , event.motion.y)<=0)
+                    addDisplaied();
             }else
             if(SDL_BUTTON_RIGHT == event.button.button){
-                clickToSelect(event.motion.x , event.motion.y);
+                
             }
         }else
         if (event.type == SDL_MOUSEMOTION){//移动鼠标

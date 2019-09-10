@@ -82,10 +82,10 @@ void editTable::removeSelected(){
     printf("delete notes\n");
     selected.clear();
 }
-void editTable::clickToSelect(int x,int y){
+int editTable::clickToSelect(int x,int y){
     auto p=screenToAbs(x,y);
     
-    find(p,[](note * n , void * arg){//调用HBB搜索
+    return find(p,[](note * n , void * arg){//调用HBB搜索
         auto self = (editTable*)arg;
         if(!n->selected){//未选择就加上选择
             self->selected.insert(n);

@@ -20,7 +20,7 @@ namespace mgnr{
             
             note * clickToAdd(int x,int y);
             void addDisplaied();
-            void clickToSelect(int x,int y);
+            int clickToSelect(int x,int y);
             void clearSelected();
             void removeSelected();
             void automatic(float & x,float & y);

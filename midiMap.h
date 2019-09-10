@@ -11,11 +11,12 @@ namespace mgnr{
             ~midiMap();
             note * addNote(float position,float tone,float delay,int v,const std::string & info);
             void removeNote(note * p);
+            void resizeNote(note * p);
             void clear();
             
-            void find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg);
-            void find(float step,void(*callback)(note*,void*),void * arg);
-            void find(const HBB::vec & p,void(*callback)(note*,void*),void * arg);
+            int find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg);
+            int find(float step,void(*callback)(note*,void*),void * arg);
+            int find(const HBB::vec & p,void(*callback)(note*,void*),void * arg);
             //获取范围内的音符
             
             std::string infoFilter;
