@@ -35,7 +35,10 @@ namespace mgnr{
             void findNote();//根据参数找到搜索矩形，利用HBB找到音符
             void drawTableRaws();
             bool drawToneRaw(int t);
+            void drawTableColumns();
+            
             virtual void drawTableRaw(int from,int to,int t)=0;
+            virtual void drawTimeCol(float p)=0;
             
             void toString(std::string & str);
             void loadString(const std::string & str);

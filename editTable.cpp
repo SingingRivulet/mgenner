@@ -152,6 +152,8 @@ void editTable::findNote(){
     
     drawTableRaws();
     
+    drawTableColumns();
+    
     HBB::vec from;
     from.set(lookAtX,realLookAtY);
     
@@ -169,6 +171,30 @@ void editTable::drawNoteAbs(note * n){
     drawNoteAbs(n->begin,n->tone,n->delay,n->volume , n->info , n->selected);
 }
 
+void editTable::drawTableColumns(){
+    float p;
+    float r;
+    float delta  =maticBlock*noteLength;
+    int   befn   =lookAtX/maticBlock;
+    float start  =(befn+1)*maticBlock;
+    r=start;
+    
+    //printf("%f %f\n",p,r);
+    
+    while(1){
+        
+        p=(r-lookAtX)*noteLength;
+        
+        if(p>=windowWidth)
+            break;
+        
+        if(p>30)
+            drawTimeCol(p);
+        
+        r+=maticBlock;
+        
+    }
+}
 void editTable::drawTableRaws(){
     int p;
     int ilookAtY=lookAtY;

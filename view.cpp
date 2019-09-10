@@ -165,10 +165,18 @@ void view::drawNote_end(){
     
     rect.x=448;
     char buf[64];
-    snprintf(buf,64,"%d",defaultVolume);
+    snprintf(buf,64,"响度%d",defaultVolume);
     msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
+}
+void view::drawTimeCol(float p){
+    SDL_Rect rect;
+    rect.x=p;
+    rect.y=0;
+    rect.w=2;
+    rect.h=windowHeight;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 20));
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -273,6 +281,25 @@ void view::pollEvent(){
                 }else
                 if(event.motion.x<448){
                     noteLengthChange();
+                }else
+                if(event.motion.x<512){
+                    int res = EM_ASM_INT({
+                        
+                        var jsString = prompt("响度",$0);
+                        
+                        if(!jsString)
+                            return $0;
+                        
+                        var r = parseInt(jsString);
+                        
+                        if(r<=0 || r>=128)
+                            return $0;
+                        
+                        return r;
+                    },defaultVolume);
+                    
+                    if(res>0 && res<128)
+                        defaultVolume = res;
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){

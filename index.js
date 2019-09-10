@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 19440,
+    STACK_BASE = 19584,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5262320,
-    DYNAMIC_BASE = 5262320,
-    DYNAMICTOP_PTR = 19408;
+    STACK_MAX = 5262464,
+    DYNAMIC_BASE = 5262464,
+    DYNAMICTOP_PTR = 19552;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1731,7 +1731,8 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = [function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
- function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; }];
+ function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
+ function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; }];
 
 function _emscripten_asm_const_idd(code, a0, a1) {
   return ASM_CONSTS[code](a0, a1);
@@ -1741,10 +1742,14 @@ function _emscripten_asm_const_i(code) {
   return ASM_CONSTS[code]();
 }
 
+function _emscripten_asm_const_ii(code, a0) {
+  return ASM_CONSTS[code](a0);
+}
 
 
 
-// STATICTOP = STATIC_BASE + 18416;
+
+// STATICTOP = STATIC_BASE + 18560;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1755,7 +1760,7 @@ function _emscripten_asm_const_i(code) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 19424
+var tempDoublePtr = 19568
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8149,6 +8154,7 @@ var asmLibraryArg = {
   "_embind_repr": _embind_repr,
   "_emscripten_asm_const_i": _emscripten_asm_const_i,
   "_emscripten_asm_const_idd": _emscripten_asm_const_idd,
+  "_emscripten_asm_const_ii": _emscripten_asm_const_ii,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,
   "_emscripten_get_now": _emscripten_get_now,
   "_emscripten_memcpy_big": _emscripten_memcpy_big,
