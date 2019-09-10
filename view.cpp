@@ -163,6 +163,12 @@ void view::drawNote_end(){
     rect.x=384;
     SDL_BlitSurface(noteSurfaces[noteStatus], NULL, screen, &rect);
     
+    rect.x=448;
+    char buf[64];
+    snprintf(buf,64,"%d",defaultVolume);
+    msg = TTF_RenderText_Solid(font,buf,textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
