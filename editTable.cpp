@@ -188,7 +188,7 @@ void editTable::drawTableColumns(){
         if(p>=windowWidth)
             break;
         
-        if(p>30)
+        if(p>30 && r>0)
             drawTimeCol(p);
         
         r+=maticBlock;
@@ -297,7 +297,7 @@ void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,cons
 void editTable::toString(std::string & str){
     str="MGNR V1.0\n";
     char tbuf[1024];
-    for(auto it:selected){
+    for(auto it:notes){
         snprintf(tbuf,sizeof(tbuf),"+%s %f %f %f %d\n",it->info.c_str(),it->begin,it->tone,it->delay,it->volume);
         str+=tbuf;
     }
@@ -308,6 +308,23 @@ void editTable::loadString(const std::string & str){
     while(!iss.eof()){
         bzero(buf,1024);
         iss.getline(buf,1024);
+        if(buf[0]=='+' && strlen(buf)>2){
+            std::istringstream ts(buf+1);
+            
+            std::string info;
+            float position;
+            float tone;
+            float delay;
+            int v;
+            
+            ts>>info;
+            ts>>position;
+            ts>>tone;
+            ts>>delay;
+            ts>>v;
+            
+            addNote(position,tone,delay,v,info);
+        }
     }
 }
 

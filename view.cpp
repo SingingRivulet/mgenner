@@ -16,6 +16,7 @@ view::view(){
     showAllMsg = TTF_RenderText_Solid(font,"显示",textColor);
     hideModeMsg = TTF_RenderText_Solid(font,"隐藏",textColor);
     maticMsg = TTF_RenderText_Solid(font,"吸附",textColor);
+    exportMsg = TTF_RenderText_Solid(font,"导出",textColor);
     
     noteSurfaces[0] = TTF_RenderText_Solid(font,"[1/32]",textColor);
     noteSurfaces[1] = TTF_RenderText_Solid(font,"[1/16]",textColor);
@@ -169,6 +170,9 @@ void view::drawNote_end(){
     msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
+    
+    rect.x=512;
+    SDL_BlitSurface(exportMsg, NULL, screen, &rect);
 }
 void view::drawTimeCol(float p){
     SDL_Rect rect;
@@ -300,6 +304,9 @@ void view::pollEvent(){
                     
                     if(res>0 && res<128)
                         defaultVolume = res;
+                }else
+                if(event.motion.x<576){
+                    exportNotes();
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
@@ -376,6 +383,11 @@ void view::noteLengthChange(){
     const static int lens[]={15,30,60,120,240,480};
     defaultDelay=lens[noteStatus];
     maticBlock=lens[noteStatus];
+}
+void view::exportNotes(){
+    std::string s;
+    toString(s);
+    printf("%s\n",s.c_str());
 }
 
 }

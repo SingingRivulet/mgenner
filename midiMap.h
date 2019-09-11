@@ -20,11 +20,11 @@ namespace mgnr{
             //获取范围内的音符
             
             std::string infoFilter;
+            std::set<note*> notes;
             
         private:
             HBB indexer;
             void * pool;
-            std::set<note*> notes;
     };
 }
 #endif
