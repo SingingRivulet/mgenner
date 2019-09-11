@@ -42,6 +42,7 @@ namespace mgnr{
             
             void toString(std::string & str);
             void loadString(const std::string & str);
+            void loadMidi(const std::string & str);
             
             float lookAtX;//瞄准位置（左边缘中心点）
             float lookAtY;

@@ -11,10 +11,14 @@ index.js:main.cpp view.o MidiEventList.o MidiEvent.o MidiMessage.o Options.o Mid
 	MidiMessage.o \
 	Options.o \
 	MidiFile.o \
+	midiLoader.o \
 	Binasc.o --bind -o index.js
 
-view.o:view.h view.cpp editTable.o
+view.o:view.h view.cpp editTable.o midiLoader.o
 	$(CC) view.cpp -c
+
+midiLoader.o:editTable.h midiLoader.cpp midiMap.o
+	$(CC) midiLoader.cpp -c
 
 editTable.o:editTable.h editTable.cpp midiMap.o
 	$(CC) editTable.cpp -c

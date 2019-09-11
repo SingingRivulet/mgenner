@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 36928,
+    STACK_BASE = 41216,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5279808,
-    DYNAMIC_BASE = 5279808,
-    DYNAMICTOP_PTR = 36896;
+    STACK_MAX = 5284096,
+    DYNAMIC_BASE = 5284096,
+    DYNAMICTOP_PTR = 41184;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1709,8 +1709,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 15205,
-    'maximum': 15205,
+    'initial': 16069,
+    'maximum': 16069,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -1730,7 +1730,7 @@ var tempI64;
 
 // === Body ===
 
-var ASM_CONSTS = [function() { if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; },
+var ASM_CONSTS = [function() { if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; },
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
@@ -1751,7 +1751,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 
-// STATICTOP = STATIC_BASE + 35904;
+// STATICTOP = STATIC_BASE + 40192;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1762,7 +1762,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 36912
+var tempDoublePtr = 41200
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -7223,6 +7223,75 @@ function copyTempDouble(ptr) {
   }
   }
 
+  function ___syscall221(which, varargs) {SYSCALLS.varargs = varargs;
+  try {
+   // fcntl64
+      var stream = SYSCALLS.getStreamFromFD(), cmd = SYSCALLS.get();
+      switch (cmd) {
+        case 0: {
+          var arg = SYSCALLS.get();
+          if (arg < 0) {
+            return -22;
+          }
+          var newStream;
+          newStream = FS.open(stream.path, stream.flags, 0, arg);
+          return newStream.fd;
+        }
+        case 1:
+        case 2:
+          return 0;  // FD_CLOEXEC makes no sense for a single process.
+        case 3:
+          return stream.flags;
+        case 4: {
+          var arg = SYSCALLS.get();
+          stream.flags |= arg;
+          return 0;
+        }
+        case 12:
+        /* case 12: Currently in musl F_GETLK64 has same value as F_GETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */ {
+          
+          var arg = SYSCALLS.get();
+          var offset = 0;
+          // We're always unlocked.
+          HEAP16[(((arg)+(offset))>>1)]=2;
+          return 0;
+        }
+        case 13:
+        case 14:
+        /* case 13: Currently in musl F_SETLK64 has same value as F_SETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
+        /* case 14: Currently in musl F_SETLKW64 has same value as F_SETLKW, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
+          
+          
+          return 0; // Pretend that the locking is successful.
+        case 16:
+        case 8:
+          return -22; // These are for sockets. We don't have them fully implemented yet.
+        case 9:
+          // musl trusts getown return values, due to a bug where they must be, as they overlap with errors. just return -1 here, so fnctl() returns that, and we set errno ourselves.
+          ___setErrNo(22);
+          return -1;
+        default: {
+          return -22;
+        }
+      }
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
+  function ___syscall5(which, varargs) {SYSCALLS.varargs = varargs;
+  try {
+   // open
+      var pathname = SYSCALLS.getStr(), flags = SYSCALLS.get(), mode = SYSCALLS.get(); // optional TODO
+      var stream = FS.open(pathname, flags, mode);
+      return stream.fd;
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
   function ___syscall54(which, varargs) {SYSCALLS.varargs = varargs;
   try {
    // ioctl
@@ -8190,6 +8259,43 @@ function copyTempDouble(ptr) {
 
   var _emscripten_asm_const_int=true;
 
+  function _emscripten_async_wget(url, file, onload, onerror) {
+      noExitRuntime = true;
+  
+      var _url = UTF8ToString(url);
+      var _file = UTF8ToString(file);
+      _file = PATH_FS.resolve(_file);
+      function doCallback(callback) {
+        if (callback) {
+          var stack = stackSave();
+          dynCall_vi(callback, allocate(intArrayFromString(_file), 'i8', ALLOC_STACK));
+          stackRestore(stack);
+        }
+      }
+      var destinationDirectory = PATH.dirname(_file);
+      FS.createPreloadedFile(
+        destinationDirectory,
+        PATH.basename(_file),
+        _url, true, true,
+        function() {
+          doCallback(onload);
+        },
+        function() {
+          doCallback(onerror);
+        },
+        false, // dontCreateFile
+        false, // canOwn
+        function() { // preFinish
+          // if a file exists there, we overwrite it
+          try {
+            FS.unlink(_file);
+          } catch (e) {}
+          // if the destination directory does not yet exist, create it
+          FS.mkdirTree(destinationDirectory);
+        }
+      );
+    }
+
   function _emscripten_get_heap_size() {
       return HEAP8.length;
     }
@@ -8754,6 +8860,8 @@ var asmLibraryArg = {
   "___syscall140": ___syscall140,
   "___syscall145": ___syscall145,
   "___syscall146": ___syscall146,
+  "___syscall221": ___syscall221,
+  "___syscall5": ___syscall5,
   "___syscall54": ___syscall54,
   "___syscall6": ___syscall6,
   "___syscall91": ___syscall91,
@@ -8778,6 +8886,7 @@ var asmLibraryArg = {
   "_emscripten_asm_const_i": _emscripten_asm_const_i,
   "_emscripten_asm_const_idd": _emscripten_asm_const_idd,
   "_emscripten_asm_const_ii": _emscripten_asm_const_ii,
+  "_emscripten_async_wget": _emscripten_async_wget,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,
   "_emscripten_get_now": _emscripten_get_now,
   "_emscripten_memcpy_big": _emscripten_memcpy_big,
@@ -8876,6 +8985,12 @@ var _free = Module["_free"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_free"].apply(null, arguments)
+};
+
+var _loadMidiFile = Module["_loadMidiFile"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_loadMidiFile"].apply(null, arguments)
 };
 
 var _loadStringData = Module["_loadStringData"] = function() {

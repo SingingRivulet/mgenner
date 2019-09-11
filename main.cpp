@@ -14,6 +14,11 @@ int main(){
             var retPtr = Module._loadStringData(ptr);
             _free(ptr);
         };
+        window.loadMidiFile=function(s){
+            var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL);
+            var retPtr = Module._loadMidiFile(ptr);
+            _free(ptr);
+        };
         window.toStringData=function(c){
             window._toStringData_callback=c;
             Module._toStringData();
@@ -42,6 +47,37 @@ EMSCRIPTEN_BINDINGS(my_module) {
 extern "C"{
     EMSCRIPTEN_KEEPALIVE void loadStringData(char *n){
         V.loadString(n);
+    }
+    EMSCRIPTEN_KEEPALIVE void loadMidiFile(char *n){
+        emscripten_async_wget(n,"tmp.mid",
+            [](const char *){
+                printf("load file success\n");
+                
+                char tbuf[4096];
+                FILE * fp = fopen("tmp.mid","r");
+                if(fp==NULL)
+                    return;
+                bzero(tbuf,sizeof(tbuf));
+                fgets(tbuf,sizeof(tbuf),fp);
+                if(tbuf[0]=='M' && tbuf[1]=='G' && tbuf[2]=='N' && tbuf[3]=='R'){//是自己的专用格式
+                    
+                    while(!feof(fp)){
+                        bzero(tbuf,sizeof(tbuf));
+                        fgets(tbuf,sizeof(tbuf),fp);
+                        if(strlen(tbuf)>0)
+                            V.loadString(tbuf);
+                    }
+                    
+                }else{//是midi格式
+                
+                    V.loadMidi("tmp.mid");
+                
+                }
+            }
+            ,[](const char *){
+                printf("load file fail\n");
+            }
+        );
     }
     EMSCRIPTEN_KEEPALIVE void toStringData(){
         std::string tmpbuf;
