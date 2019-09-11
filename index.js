@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 33696,
+    STACK_BASE = 36928,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5276576,
-    DYNAMIC_BASE = 5276576,
-    DYNAMICTOP_PTR = 33664;
+    STACK_MAX = 5279808,
+    DYNAMIC_BASE = 5279808,
+    DYNAMICTOP_PTR = 36896;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1709,8 +1709,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 8805,
-    'maximum': 8805,
+    'initial': 15205,
+    'maximum': 15205,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -1751,7 +1751,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 
-// STATICTOP = STATIC_BASE + 32672;
+// STATICTOP = STATIC_BASE + 35904;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1762,7 +1762,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 33680
+var tempDoublePtr = 36912
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -7201,6 +7201,17 @@ function copyTempDouble(ptr) {
   }
   }
 
+  function ___syscall145(which, varargs) {SYSCALLS.varargs = varargs;
+  try {
+   // readv
+      var stream = SYSCALLS.getStreamFromFD(), iov = SYSCALLS.get(), iovcnt = SYSCALLS.get();
+      return SYSCALLS.doReadv(stream, iov, iovcnt);
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
   function ___syscall146(which, varargs) {SYSCALLS.varargs = varargs;
   try {
    // writev
@@ -8741,6 +8752,7 @@ var asmLibraryArg = {
   "___map_file": ___map_file,
   "___setErrNo": ___setErrNo,
   "___syscall140": ___syscall140,
+  "___syscall145": ___syscall145,
   "___syscall146": ___syscall146,
   "___syscall54": ___syscall54,
   "___syscall6": ___syscall6,
