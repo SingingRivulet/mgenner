@@ -101,6 +101,29 @@ void editTable::renameSelected(const std::string & n){
         it->info = n;
     }
 }
+int editTable::selAll(){
+    int num;
+    if(infoFilter.empty()){//无过滤
+    
+        for(auto it:notes){
+            it->selected=true;
+            selected.insert(it);
+            ++num;
+        }
+    
+    }else{
+        
+        for(auto it:notes){
+            if(it->info==infoFilter){
+                it->selected=true;
+                selected.insert(it);
+                ++num;
+            }
+        }
+        
+    }
+    return num;
+}
 int editTable::clickToSelect(int x,int y){
     auto p=screenToAbs(x,y);
     

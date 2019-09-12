@@ -21,6 +21,7 @@ namespace mgnr{
             note * clickToAdd(int x,int y);
             void addDisplaied();
             int  clickToSelect(int x,int y);
+            int  selAll();
             void clearSelected();
             void removeSelected();
             void renameSelected(const std::string & n);

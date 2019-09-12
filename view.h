@@ -33,7 +33,7 @@ namespace mgnr{
             SDL_Surface * showAllMsg;
             SDL_Surface * hideModeMsg;
             SDL_Surface * maticMsg;
-            SDL_Surface * exportMsg;
+            SDL_Surface * selAllMsg;
             
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
