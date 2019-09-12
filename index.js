@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 41488,
+    STACK_BASE = 41712,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5284368,
-    DYNAMIC_BASE = 5284368,
-    DYNAMICTOP_PTR = 41456;
+    STACK_MAX = 5284592,
+    DYNAMIC_BASE = 5284592,
+    DYNAMICTOP_PTR = 41680;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1709,8 +1709,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 16069,
-    'maximum': 16069,
+    'initial': 16133,
+    'maximum': 16133,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -1734,7 +1734,8 @@ var ASM_CONSTS = [function() { if(window.mgnr_ready){ var l=window.mgnr_ready.le
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
- function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; }];
+ function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; },
+ function() { return Date.now(); }];
 
 function _emscripten_asm_const_ii(code, a0) {
   return ASM_CONSTS[code](a0);
@@ -1751,7 +1752,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 
-// STATICTOP = STATIC_BASE + 40464;
+// STATICTOP = STATIC_BASE + 40688;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1762,7 +1763,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 41472
+var tempDoublePtr = 41696
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much

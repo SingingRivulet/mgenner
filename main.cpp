@@ -32,6 +32,7 @@ int main(){
     });
     emscripten_set_main_loop([](){
         V.render();
+        V.playStep();
         V.pollEvent();
     }, 0, 1);
     

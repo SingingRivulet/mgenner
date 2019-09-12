@@ -12,9 +12,13 @@ namespace mgnr{
             std::string info;
             
             bool selected;
+            bool playing;
+            long playTimes;
             
             inline void construct(){
-                selected = false;
+                selected  = false;
+                playing   = false;
+                playTimes =0;
             }
             
             void * indexer;

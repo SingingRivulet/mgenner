@@ -12,13 +12,21 @@ index.js:main.cpp view.o MidiEventList.o MidiEvent.o MidiMessage.o Options.o Mid
 	Options.o \
 	MidiFile.o \
 	midiLoader.o \
+	player.o \
+	synth.o \
 	Binasc.o --bind -o index.js
 
-view.o:view.h view.cpp editTable.o midiLoader.o
+view.o:view.h view.cpp editTable.o midiLoader.o synth.o
 	$(CC) view.cpp -c
 
 midiLoader.o:editTable.h midiLoader.cpp midiMap.o
 	$(CC) midiLoader.cpp -c
+
+synth.o:synth.h synth.cpp player.o
+	$(CC) synth.cpp -c
+
+player.o:player.h player.cpp editTable.o
+	$(CC) player.cpp -c
 
 editTable.o:editTable.h editTable.cpp midiMap.o
 	$(CC) editTable.cpp -c

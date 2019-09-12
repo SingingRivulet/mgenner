@@ -1,6 +1,6 @@
 #ifndef MGNR_VIEW
 #define MGNR_VIEW
-#include "editTable.h"
+#include "synth.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_render.h>
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <array>
 namespace mgnr{
-    class view:public editTable{
+    class view:public synth{
         public:
             view();
             ~view();
@@ -34,6 +34,9 @@ namespace mgnr{
             SDL_Surface * hideModeMsg;
             SDL_Surface * maticMsg;
             SDL_Surface * selAllMsg;
+            SDL_Surface * playMsg;
+            SDL_Surface * stopMsg;
+            SDL_Surface * startMsg;
             
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;

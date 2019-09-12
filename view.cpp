@@ -17,6 +17,9 @@ view::view(){
     hideModeMsg = TTF_RenderText_Solid(font,"隐藏",textColor);
     maticMsg = TTF_RenderText_Solid(font,"吸附",textColor);
     selAllMsg = TTF_RenderText_Solid(font,"全选",textColor);
+    playMsg = TTF_RenderText_Solid(font,"播放",textColor);
+    stopMsg = TTF_RenderText_Solid(font,"暂停",textColor);
+    startMsg = TTF_RenderText_Solid(font,"开头",textColor);
     
     noteSurfaces[0] = TTF_RenderText_Solid(font,"[1/32]",textColor);
     noteSurfaces[1] = TTF_RenderText_Solid(font,"[1/16]",textColor);
@@ -173,6 +176,16 @@ void view::drawNote_end(){
     
     rect.x=512;
     SDL_BlitSurface(selAllMsg, NULL, screen, &rect);
+    
+    rect.x=576;
+    if(playingStatus)
+        SDL_BlitSurface(stopMsg, NULL, screen, &rect);
+    else
+        SDL_BlitSurface(playMsg, NULL, screen, &rect);
+    
+    rect.x=640;
+    SDL_BlitSurface(startMsg, NULL, screen, &rect);
+    
 }
 void view::drawTimeCol(float p){
     SDL_Rect rect;
@@ -213,7 +226,7 @@ void view::drawTableRaw(int from,int to,int t){
         
         char buf[32];
         if(k==0)
-            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(t/12)+1);
+            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(t/12));
         else
             snprintf(buf,32,"%s",pianoKeyName[k]);
         
@@ -307,6 +320,16 @@ void view::pollEvent(){
                 }else
                 if(event.motion.x<576){
                     selAll();
+                }else
+                if(event.motion.x<640){
+                    if(playingStatus){
+                        playStop();
+                    }else{
+                        playStart();
+                    }
+                }else
+                if(event.motion.x<704){
+                    lookAtX=0;
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
