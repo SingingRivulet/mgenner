@@ -12,7 +12,12 @@ midiMap::~midiMap(){
     if(pool)
         delete (npool*)pool;
 }
+void midiMap::onUseInfo(const std::string & info){
+    
+}
 note * midiMap::addNote(float position,float tone,float delay,int v,const std::string & info){
+    onUseInfo(info);
+    
     HBB::vec from;
     HBB::vec to;
     from.set(position , tone);

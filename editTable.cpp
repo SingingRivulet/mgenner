@@ -96,6 +96,7 @@ void editTable::resizeSelected_apply(){
     }
 }
 void editTable::renameSelected(const std::string & n){
+    onUseInfo(n);
     for(auto it:selected){
         it->info = n;
     }
@@ -175,6 +176,8 @@ void editTable::drawTableColumns(){
     float p;
     float r;
     float delta  =maticBlock*noteLength;
+    if(delta<5)
+        return;
     int   befn   =lookAtX/maticBlock;
     float start  =(befn+1)*maticBlock;
     r=start;

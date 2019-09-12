@@ -53,8 +53,10 @@ void editTable::exportMidi(const std::string & filename){
     for(auto it:notes){
         if(it->info.empty()){
             track=0;
+            
             midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
             midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+            
         }else{
             if(it->info.at(0)!='@'){//为@是控制字符
                 auto tit=tracks.find(it->info);
@@ -64,12 +66,16 @@ void editTable::exportMidi(const std::string & filename){
                     tracks[it->info]=trackNum;
                     track=trackNum;
                     ++trackNum;
+                    
                     midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
                     midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+                    
                 }else{
                     track=tit->second;
+                    
                     midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
                     midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+                    
                 }
                 
             }

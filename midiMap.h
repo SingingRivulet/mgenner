@@ -12,6 +12,9 @@ namespace mgnr{
             note * addNote(float position,float tone,float delay,int v,const std::string & info);
             void removeNote(note * p);
             void resizeNote(note * p);
+            
+            void onUseInfo(const std::string & info);
+            
             void clear();
             
             int find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg);

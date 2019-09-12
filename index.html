@@ -116,8 +116,9 @@
   <span>
      当前位置：<span id="note-begin">0</span>,<span id="note-tone">0</span><br>
      <span id="note-using"></span><br>
-     <span><a href="javascript:(function(){document.getElementById('midi_file').click();})()">导入midi</a><input type="file" id="midi_file" name="midi_file" style="display:none"></span><br>
-     <span><a href="javascript:expMidi()">导出midi</a></span>
+     <span><a href="javascript:(function(){document.getElementById('midi_file').click();})()">打开</a><input type="file" id="midi_file" name="midi_file" style="display:none"></span><br>
+     <span><a href="javascript:expMidi()">导出midi</a></span><br>
+     <span><a href="javascript:saveFile()">保存</a></span><br>
   </span>
 </span>
 
@@ -140,6 +141,20 @@
       	var file = document.getElementById("midi_file").files[0];//读取文件 
         	var url=URL.createObjectURL(file);
         	loadMidiFile(url);
+      }
+      
+      function saveFile() {
+      	toStringData(function(s){
+      	    var blob = new Blob([s], {type: "application/octet-binary"});;
+      	    var url = window.URL.createObjectURL(blob); 
+      	    console.log(url);
+      	    var link = document.createElement('a'); 
+      	    link.style.display = 'none'; 
+      	    link.href = url; 
+      	    link.setAttribute('download', "export.mgnr"); 
+      	    document.body.appendChild(link); 
+      	    link.click();
+      	});
       }
       
       function expMidi() {
@@ -227,6 +242,7 @@
       };
     </script>
     <script async type="text/javascript" src="index.js"></script>
+    使用方法：用鼠标轮子和键盘方向键移动界面，按q w 键缩放
   </body>
 </html>
 
