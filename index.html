@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Emscripten-Generated Code</title>
+    <title>mGenNer Editor-Singing Rivulet Project</title>
     <style>
       body {
         font-family: arial;
@@ -115,7 +115,9 @@
   
   <span>
      当前位置：<span id="note-begin">0</span>,<span id="note-tone">0</span><br>
-     <span id="note-using"></span>
+     <span id="note-using"></span><br>
+     <span><a href="javascript:(function(){document.getElementById('midi_file').click();})()">导入midi</a><input type="file" id="midi_file" name="midi_file" style="display:none"></span><br>
+     <span><a href="javascript:expMidi()">导出midi</a></span>
   </span>
 </span>
 
@@ -133,6 +135,24 @@
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
       var spinnerElement = document.getElementById('spinner');
+      
+      document.getElementById("midi_file").onchange=function() {
+      	var file = document.getElementById("midi_file").files[0];//读取文件 
+        	var url=URL.createObjectURL(file);
+        	loadMidiFile(url);
+      }
+      
+      function expMidi() {
+      	var blob = exportMidiFile();
+      	var url = window.URL.createObjectURL(blob); 
+      	console.log(url);
+      	var link = document.createElement('a'); 
+      	link.style.display = 'none'; 
+      	link.href = url; 
+      	link.setAttribute('download', "export.mid"); 
+      	document.body.appendChild(link); 
+      	link.click();
+      }
 
       var Module = {
         preRun: [],
