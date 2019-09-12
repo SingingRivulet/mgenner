@@ -7,3 +7,4 @@ midi在线编辑器，使用emscripten开发，留有js API，便于与自己的
 `loadStringData(string)` 加载序列化的字符串数据  
 `loadMidiFile(url)` 从url加载文件(支持mid格式或者自己的序列化格式)  
 `toStringData(function(data){})` 将数据转成序列化格式（异步）  
+`exportMidiFile()`　导出mid格式（返回一个blob）  

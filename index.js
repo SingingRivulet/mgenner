@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 41216,
+    STACK_BASE = 41696,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5284096,
-    DYNAMIC_BASE = 5284096,
-    DYNAMICTOP_PTR = 41184;
+    STACK_MAX = 5284576,
+    DYNAMIC_BASE = 5284576,
+    DYNAMICTOP_PTR = 41664;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1730,7 +1730,7 @@ var tempI64;
 
 // === Body ===
 
-var ASM_CONSTS = [function() { if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; },
+var ASM_CONSTS = [function() { if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); var url = window.URL.createObjectURL(blob); var link = document.createElement('a'); link.style.display = 'none'; link.href = url; link.setAttribute('download', "export.mid"); document.body.appendChild(link); link.click(); }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; },
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
@@ -1751,7 +1751,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 
-// STATICTOP = STATIC_BASE + 40192;
+// STATICTOP = STATIC_BASE + 40672;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1762,7 +1762,7 @@ function _emscripten_asm_const_idd(code, a0, a1) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 41200
+var tempDoublePtr = 41680
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8973,6 +8973,12 @@ var ___getTypeName = Module["___getTypeName"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["___getTypeName"].apply(null, arguments)
+};
+
+var _exportMidiFile = Module["_exportMidiFile"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_exportMidiFile"].apply(null, arguments)
 };
 
 var _fflush = Module["_fflush"] = function() {

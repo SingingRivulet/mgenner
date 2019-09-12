@@ -19,6 +19,12 @@ int main(){
             var retPtr = Module._loadMidiFile(ptr);
             _free(ptr);
         };
+        window.exportMidiFile=function(){
+            Module._exportMidiFile();
+            var data=FS.readFile("export.mid");
+            var blob = new Blob([data.buffer], {type: "application/octet-binary"});
+            return blob;
+        };
         window.toStringData=function(c){
             window._toStringData_callback=c;
             Module._toStringData();
@@ -47,6 +53,9 @@ EMSCRIPTEN_BINDINGS(my_module) {
 extern "C"{
     EMSCRIPTEN_KEEPALIVE void loadStringData(char *n){
         V.loadString(n);
+    }
+    EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
+        V.exportMidi("export.mid");
     }
     EMSCRIPTEN_KEEPALIVE void loadMidiFile(char *n){
         emscripten_async_wget(n,"tmp.mid",
