@@ -3,7 +3,7 @@ namespace mgnr{
 
 player::player(){
     tempo=120;
-    TPQ=240;
+    TPQ=120;
     playingStatus = false;
     playTimes=0;
 }

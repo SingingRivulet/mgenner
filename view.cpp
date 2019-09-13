@@ -186,6 +186,12 @@ void view::drawNote_end(){
     rect.x=640;
     SDL_BlitSurface(startMsg, NULL, screen, &rect);
     
+    rect.x=704;
+    snprintf(buf,64,"TPQ %d",TPQ);
+    msg = TTF_RenderText_Solid(font,buf,textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
+    
 }
 void view::drawTimeCol(float p){
     SDL_Rect rect;
@@ -330,6 +336,17 @@ void view::pollEvent(){
                 }else
                 if(event.motion.x<704){
                     lookAtX=0;
+                }else
+                if(event.motion.x<784){
+                    lookAtX=0;
+                    int t = EM_ASM_INT({
+                        var jsString = prompt("TPQ",$0);
+                        if(!jsString)
+                            return 0;
+                        return parseInt(jsString);
+                    },TPQ);
+                    if(t>1)
+                        TPQ=t;
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){

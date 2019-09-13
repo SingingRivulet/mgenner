@@ -323,6 +323,8 @@ void editTable::drawNoteAbs(float begin,float tone,float delay,float volume,cons
 void editTable::toString(std::string & str){
     str="MGNR V1.0\n";
     char tbuf[1024];
+    snprintf(tbuf,sizeof(tbuf),"!T%d\n",TPQ);
+    str+=tbuf;
     for(auto it:notes){
         snprintf(tbuf,sizeof(tbuf),"+%s %f %f %f %d\n",it->info.c_str(),it->begin,it->tone,it->delay,it->volume);
         str+=tbuf;
@@ -334,22 +336,34 @@ void editTable::loadString(const std::string & str){
     while(!iss.eof()){
         bzero(buf,1024);
         iss.getline(buf,1024);
-        if(buf[0]=='+' && strlen(buf)>2){
-            std::istringstream ts(buf+1);
+        if(buf[0]=='+'){
+            if(strlen(buf)>2){
+                
+                std::istringstream ts(buf+1);
             
-            std::string info;
-            float position;
-            float tone;
-            float delay;
-            int v;
+                std::string info;
+                float position;
+                float tone;
+                float delay;
+                int v;
             
-            ts>>info;
-            ts>>position;
-            ts>>tone;
-            ts>>delay;
-            ts>>v;
+                ts>>info;
+                ts>>position;
+                ts>>tone;
+                ts>>delay;
+                ts>>v;
             
-            addNote(position,tone,delay,v,info);
+                addNote(position,tone,delay,v,info);
+                
+            }
+        }else
+        if(buf[0]=='!'){
+            if(strlen(buf)>=3){
+                if(buf[1]=='T'){
+                    int t=atoi(buf+2);
+                    TPQ=t;
+                }
+            }
         }
     }
 }

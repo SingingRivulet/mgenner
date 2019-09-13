@@ -12,7 +12,7 @@ namespace mgnr{
             void playStep();
             void noteOn(note *);
             void noteOff(note *);
-            int TPQ;
+            
             float tempo;
             float getTime();
             bool playingStatus;

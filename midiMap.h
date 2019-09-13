@@ -25,6 +25,8 @@ namespace mgnr{
             std::string infoFilter;
             std::set<note*> notes;
             
+            int TPQ;
+            
         private:
             HBB indexer;
             void * pool;
