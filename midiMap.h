@@ -13,7 +13,7 @@ namespace mgnr{
             void removeNote(note * p);
             void resizeNote(note * p);
             
-            void onUseInfo(const std::string & info);
+            virtual void onUseInfo(const std::string & info)=0;
             
             void clear();
             

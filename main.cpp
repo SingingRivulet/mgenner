@@ -3,12 +3,6 @@
 mgnr::view V;
 int main(){
     EM_ASM({
-        if(window.mgnr_ready){
-            var l=window.mgnr_ready.length;
-            for(var i=0;i<l;i++){
-                window.mgnr_ready[i]();
-            }
-        }
         window.loadStringData=function(s){
             var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL);
             var retPtr = Module._loadStringData(ptr);
@@ -29,6 +23,12 @@ int main(){
             window._toStringData_callback=c;
             Module._toStringData();
         };
+        if(window.mgnr_ready){
+            var l=window.mgnr_ready.length;
+            for(var i=0;i<l;i++){
+                window.mgnr_ready[i]();
+            }
+        }
     });
     emscripten_set_main_loop([](){
         V.render();

@@ -3,7 +3,7 @@ namespace mgnr{
 
 player::player(){
     tempo=120;
-    TPQ=120;
+    TPQ=240;
     playingStatus = false;
     playTimes=0;
 }
@@ -50,7 +50,7 @@ void player::noteOn(note * n){
         if(!n->playing){
             n->playing = true;
             playing.insert(n);
-            
+            onNoteOn(n);
         }
         n->playTimes=playTimes;
     }
@@ -59,7 +59,7 @@ void player::noteOff(note * n){
     if(n){
         n->playing = false;
         playing.erase(n);
-        
+        onNoteOff(n);
     }
 }
 

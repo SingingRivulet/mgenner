@@ -137,6 +137,20 @@
       var progressElement = document.getElementById('progress');
       var spinnerElement = document.getElementById('spinner');
       
+      window.mgnr_ready=[];
+      window.mgnr_ready.push(function () {
+      	if(location.hash){
+      		if(location.hash[0]=='#'){
+      			var arr = location.hash.split("#");
+      			if(arr.length>=2){
+      				var url = arr[1];
+      				console.log("load:"+url);
+      				loadMidiFile(url);
+      			}
+      		}
+      	}
+      });
+      
       document.getElementById("midi_file").onchange=function() {
       	var file = document.getElementById("midi_file").files[0];//读取文件 
         	var url=URL.createObjectURL(file);
@@ -241,6 +255,11 @@
         };
       };
     </script>
+    <script src="Base64.js" type="text/javascript"></script>
+    <script src="Base64binary.js" type="text/javascript"></script>
+    <script src="WebAudioAPI.js" type="text/javascript"></script>
+    <script src="MIDI.min.js" type="text/javascript"></script>
+    <script src="player.js" type="text/javascript"></script>
     <script async type="text/javascript" src="index.js"></script>
     使用方法：用鼠标轮子和键盘方向键移动界面，按q w 键缩放
   </body>
