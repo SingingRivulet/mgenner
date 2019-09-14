@@ -4,6 +4,7 @@
 #include "note.h"
 #include <string>
 #include <set>
+#include <map>
 namespace mgnr{
     class midiMap{
         public:
@@ -24,12 +25,22 @@ namespace mgnr{
             
             std::string infoFilter;
             std::set<note*> notes;
+            std::map<noteIndex,note*> timeIndex;
+            
+            std::map<float,int> timeMap;
             
             int TPQ;
+            
+            int getTempo(float tick);
+            void addTempo(float tick,int tp);
+            
+            void removeControl(float begin,const std::string & info);
+            void addControl(float begin,const std::string & info);
             
         private:
             HBB indexer;
             void * pool;
+            int id;
     };
 }
 #endif

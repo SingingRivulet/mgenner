@@ -40,7 +40,13 @@ void editTable::loadMidi(const std::string & str){
             }
         }
     }
-
+    
+    for(int i=0; i<midifile.getNumEvents(0); i++){
+        if(midifile.getEvent(0,i).isTempo()){//是设置时间
+            int tp = midifile.getEvent(0,i).getTempoBPM();
+            addTempo(midifile.getEvent(0,i).tick,tp);
+        }
+    }
 }
 
 void editTable::exportMidi(const std::string & filename){
@@ -82,6 +88,9 @@ void editTable::exportMidi(const std::string & filename){
                 
             }
         }
+    }
+    for(auto it:timeMap){//添加time map
+        midifile.addTempo(0,it.first,it.second);
     }
     midifile.write(filename);
 }

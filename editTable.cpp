@@ -98,7 +98,17 @@ void editTable::resizeSelected_apply(){
 void editTable::renameSelected(const std::string & n){
     onUseInfo(n);
     for(auto it:selected){
+        if(!it->info.empty()){
+            if(it->info[0]=='@'){
+                removeControl(it->begin,it->info);
+            }
+        }
         it->info = n;
+        if(!n.empty()){
+            if(n[0]=='@'){
+                addControl(it->begin,n);
+            }
+        }
     }
 }
 int editTable::selAll(){
