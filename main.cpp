@@ -23,6 +23,9 @@ int main(){
             window._toStringData_callback=c;
             Module._toStringData();
         };
+        window.synthOutput=function(c){
+            Module._synthOutput();
+        };
         if(window.mgnr_ready){
             var l=window.mgnr_ready.length;
             for(var i=0;i<l;i++){
@@ -96,5 +99,8 @@ extern "C"{
             if(window._toStringData_callback)
                 window._toStringData_callback(UTF8ToString($0));
         },tmpbuf.c_str());
+    }
+    EMSCRIPTEN_KEEPALIVE void synthOutput(){
+        V.synthOutput();
     }
 }

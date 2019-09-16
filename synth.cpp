@@ -1,18 +1,23 @@
 #include "synth.h"
 namespace mgnr{
+
+synth::~synth(){
+    clearTracks();
+}
+
 void synth::callJsNoteOn(const char * info,int tone,int vol){
     EM_ASM({
         var info=UTF8ToString($0);
         var tone=$1;
         var vol =$2;
-        MIDI.noteOn(0, tone, vol, 0);
+        mgnr.noteOn(info, tone, vol);
     }, info,tone,vol);
 }
 void synth::callJsNoteOff(const char * info,int tone){
     EM_ASM({
         var info=UTF8ToString($0);
         var tone=$1;
-        MIDI.noteOff(0, tone, 0);
+        mgnr.noteOff(info, tone);
     }, info,tone);
 }
 void synth::onNoteOn(note * n){
@@ -31,7 +36,14 @@ void synth::onNoteOff(note * n){
     callJsNoteOff(n->info.c_str(), n->tone);
 }
 void synth::onUseInfo(const std::string & info){
-    
+    if(info.empty())
+        return;
+    if(info[0]=='@')
+        return;
+    EM_ASM({
+        var info=UTF8ToString($0);
+        mgnr.loadName(info);
+    },info.c_str());
 }
 
 }
