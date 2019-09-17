@@ -55,10 +55,11 @@ namespace mgnr{
             void splitTracks();//将midimap分解成音轨
             void clearTracks();
             
-            void synthOutput_init();
-            void synthOutput_addChannel(int);
-            void synthOutput_addIntoChannel(int channel,const voiceTrack&);
-            void synthOutput_free();
+            void synthOutput_init(int);
+            void synthOutput_addWord(int channel,const std::string & word,int tone,int volume,float sec);
+            void synthOutput_addPause(int channel,float sec);
+            void synthOutput_addIntoChannel(int channel,const voiceTrack & );
+            void synthOutput_start();
     };
 }
 #endif

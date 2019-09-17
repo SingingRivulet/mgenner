@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 42208,
+    STACK_BASE = 42336,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5285088,
-    DYNAMIC_BASE = 5285088,
-    DYNAMICTOP_PTR = 42176;
+    STACK_MAX = 5285216,
+    DYNAMIC_BASE = 5285216,
+    DYNAMICTOP_PTR = 42304;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1739,7 +1739,11 @@ var ASM_CONSTS = [function() { window.loadStringData=function(s){ var ptr = allo
  function() { return Date.now(); },
  function($0) { var info=UTF8ToString($0); mgnr.loadName(info); },
  function($0, $1) { var info=UTF8ToString($0); var tone=$1; mgnr.noteOff(info, tone); },
- function($0, $1, $2) { var info=UTF8ToString($0); var tone=$1; var vol =$2; mgnr.noteOn(info, tone, vol); }];
+ function($0, $1, $2) { var info=UTF8ToString($0); var tone=$1; var vol =$2; mgnr.noteOn(info, tone, vol); },
+ function($0) { mgnr.synth.init($0); },
+ function() { mgnr.synth.start(); },
+ function($0, $1) { mgnr.synth.addPause($0,$1); },
+ function($0, $1, $2, $3, $4) { mgnr.synth.addWord($0,UTF8ToString($1),$2,$3,$4); }];
 
 function _emscripten_asm_const_ii(code, a0) {
   return ASM_CONSTS[code](a0);
@@ -1747,6 +1751,14 @@ function _emscripten_asm_const_ii(code, a0) {
 
 function _emscripten_asm_const_idd(code, a0, a1) {
   return ASM_CONSTS[code](a0, a1);
+}
+
+function _emscripten_asm_const_iid(code, a0, a1) {
+  return ASM_CONSTS[code](a0, a1);
+}
+
+function _emscripten_asm_const_iiiiid(code, a0, a1, a2, a3, a4) {
+  return ASM_CONSTS[code](a0, a1, a2, a3, a4);
 }
 
 function _emscripten_asm_const_i(code) {
@@ -1764,7 +1776,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 41184;
+// STATICTOP = STATIC_BASE + 41312;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1775,7 +1787,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 42192
+var tempDoublePtr = 42320
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8899,8 +8911,10 @@ var asmLibraryArg = {
   "_emscripten_asm_const_i": _emscripten_asm_const_i,
   "_emscripten_asm_const_idd": _emscripten_asm_const_idd,
   "_emscripten_asm_const_ii": _emscripten_asm_const_ii,
+  "_emscripten_asm_const_iid": _emscripten_asm_const_iid,
   "_emscripten_asm_const_iii": _emscripten_asm_const_iii,
   "_emscripten_asm_const_iiii": _emscripten_asm_const_iiii,
+  "_emscripten_asm_const_iiiiid": _emscripten_asm_const_iiiiid,
   "_emscripten_async_wget": _emscripten_async_wget,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,
   "_emscripten_get_now": _emscripten_get_now,

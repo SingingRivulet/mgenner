@@ -23,6 +23,12 @@ void synth::splitTracks(){
     
     std::multimap<int,note*> sortedNotes;//对音符进行排序
     for(auto it:notes){
+        if(it->info.empty()){//没命名
+            continue;
+        }
+        if(it->info[0]=='@'){//控制符
+            continue;
+        }
         int begin = it->begin;
         sortedNotes.insert(std::pair<int,note*>(begin,it));
     }
