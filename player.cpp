@@ -69,18 +69,17 @@ void player::noteOff(note * n){
     }
 }
 
-float player::getTime(){
-    int res=EM_ASM_INT({
+int player::getTime(){
+    return EM_ASM_INT({
         return Date.now();
     });
-    return ((float)res)/1000.0;
 }
 
 void player::goNextStep(){
-    float tt    = getTime();
-    float delta = tt-lastTime;
+    int tt    = getTime();
+    int delta = tt-lastTime;
     lastTime    = tt;
-    float dtick = ticksPerSecond()*delta;
+    float dtick = ticksPerSecond()*(delta/1000.0);
     lookAtX+=dtick;
 }
 
