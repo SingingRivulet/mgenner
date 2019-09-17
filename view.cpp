@@ -28,9 +28,12 @@ view::view(){
     noteSurfaces[4] = TTF_RenderText_Solid(font,"[ 1/2]",textColor);
     noteSurfaces[5] = TTF_RenderText_Solid(font,"[   1]",textColor);
     
+    toneMapInit();
+    
     resizeMode=false;
     ScrX=3;
     noteStatus=3;
+    lastTime=0;
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -192,6 +195,19 @@ void view::drawNote_end(){
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
     
+    
+    int nowTime=EM_ASM_INT({
+        return Date.now();
+    });
+    
+    int fps=1.0/((nowTime-lastTime)/1000.0);
+    lastTime=nowTime;
+    rect.x=windowWidth-80;
+    rect.y=windowHeight-30;
+    snprintf(buf,64,"FPS %d",fps);
+    msg = TTF_RenderText_Solid(font,buf,textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
 }
 void view::drawTimeCol(float p){
     SDL_Rect rect;
@@ -200,6 +216,19 @@ void view::drawTimeCol(float p){
     rect.w=2;
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 20));
+}
+void view::toneMapInit(){
+    SDL_Color textColor = {255, 255, 255};
+    static const char * pianoKeyName[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+    for(int i=0;i<128;i++){
+        int k = i%12;
+        char buf[32];
+        if(k==0)
+            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(i/12));
+        else
+            snprintf(buf,32,"%s",pianoKeyName[k]);
+        toneMap[i] = TTF_RenderText_Solid(font,buf,textColor);
+    }
 }
 void view::drawTableRaw(int from,int to,int t){
     SDL_Rect rect;
@@ -216,8 +245,6 @@ void view::drawTableRaw(int from,int to,int t){
     static const int    pianoColorG []={ 20,10  , 20, 10 , 20, 20, 10 , 20, 10 , 20, 10 , 20};
     static const int    pianoColorB []={ 30,20  , 30, 20 , 30, 30, 20 , 30, 20 , 30, 20 , 30};
     
-    static const char * pianoKeyName[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
-    
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, pianoColorR[k], pianoColorG[k], pianoColorB[k]));
     
     if(t>=0 && t<128){
@@ -228,19 +255,7 @@ void view::drawTableRaw(int from,int to,int t){
         else
             SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
         
-        SDL_Color textColor = {255, 255, 255};
-        
-        char buf[32];
-        if(k==0)
-            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(t/12));
-        else
-            snprintf(buf,32,"%s",pianoKeyName[k]);
-        
-        auto msg = TTF_RenderText_Solid(font,buf,textColor);
-        
-        SDL_BlitSurface(msg, NULL, screen, &rect);
-        
-        SDL_FreeSurface(msg);
+        SDL_BlitSurface(toneMap[k], NULL, screen, &rect);
     }
     
 }

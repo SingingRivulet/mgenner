@@ -38,6 +38,8 @@ namespace mgnr{
             SDL_Surface * stopMsg;
             SDL_Surface * startMsg;
             
+            SDL_Surface * toneMap[128];
+            
             TTF_Font * font;
             std::unordered_map<std::string,std::array<unsigned char,3> > colors;
             std::unordered_map<std::string,SDL_Surface * > words;
@@ -46,13 +48,15 @@ namespace mgnr{
             int resizeMode_last;
             float ScrX;
             
+            int lastTime;
+            
             //note length
             //1/32 1/16 1/8 1/4 1/2 1
             //15   30   60  120 240 480
             SDL_Surface * noteSurfaces[6];
             int noteStatus;
             void noteLengthChange();
-            
+            void toneMapInit();
             void exportNotes();
     };
 }

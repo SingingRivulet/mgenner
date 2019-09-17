@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 42336,
+    STACK_BASE = 42864,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5285216,
-    DYNAMIC_BASE = 5285216,
-    DYNAMICTOP_PTR = 42304;
+    STACK_MAX = 5285744,
+    DYNAMIC_BASE = 5285744,
+    DYNAMICTOP_PTR = 42832;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1733,10 +1733,10 @@ var tempI64;
 var ASM_CONSTS = [function() { window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); return blob; }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; window.synthOutput=function(c){ Module._synthOutput(); }; if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } },
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
+ function() { return Date.now(); },
  function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
  function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; },
  function($0) { var jsString = prompt("TPQ",$0); if(!jsString) return 0; return parseInt(jsString); },
- function() { return Date.now(); },
  function($0) { var info=UTF8ToString($0); mgnr.loadName(info); },
  function($0, $1) { var info=UTF8ToString($0); var tone=$1; mgnr.noteOff(info, tone); },
  function($0, $1, $2) { var info=UTF8ToString($0); var tone=$1; var vol =$2; mgnr.noteOn(info, tone, vol); },
@@ -1776,7 +1776,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 41312;
+// STATICTOP = STATIC_BASE + 41840;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1787,7 +1787,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 42320
+var tempDoublePtr = 42848
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
