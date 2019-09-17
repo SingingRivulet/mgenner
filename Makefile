@@ -16,7 +16,7 @@ index.js:main.cpp view.o MidiEventList.o MidiEvent.o MidiMessage.o Options.o Mid
 	synth.o \
 	midisplit.o \
 	synthOutput.o \
-	Binasc.o --bind -o index.js
+	Binasc.o --bind -s ALLOW_MEMORY_GROWTH=1 -o index.js
 
 view.o:view.h view.cpp editTable.o midiLoader.o synth.o midisplit.o synthOutput.o
 	$(CC) view.cpp -c
