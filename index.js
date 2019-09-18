@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 42912,
+    STACK_BASE = 42928,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5285792,
-    DYNAMIC_BASE = 5285792,
-    DYNAMICTOP_PTR = 42880;
+    STACK_MAX = 5285808,
+    DYNAMIC_BASE = 5285808,
+    DYNAMICTOP_PTR = 42896;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1732,7 +1732,7 @@ var ASM_CONSTS = [function() { window.loadStringData=function(s){ var ptr = allo
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { return Date.now(); },
- function() { var jsString = prompt("命名"); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
+ function($0) { var jsString = prompt("命名",UTF8ToString($0)); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
  function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; },
  function($0) { var jsString = prompt("TPQ",$0); if(!jsString) return 0; return parseInt(jsString); },
  function($0) { var info=UTF8ToString($0); mgnr.loadName(info); },
@@ -1774,7 +1774,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 41888;
+// STATICTOP = STATIC_BASE + 41904;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1785,7 +1785,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 42896
+var tempDoublePtr = 42912
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much

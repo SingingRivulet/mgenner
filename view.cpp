@@ -286,14 +286,14 @@ void view::pollEvent(){
                 }else
                 if(event.motion.x<192){
                     char *str = (char*)EM_ASM_INT({
-                        var jsString = prompt("命名");
+                        var jsString = prompt("命名",UTF8ToString($0));
                         if(!jsString)
                             return 0;
                         var lengthBytes = lengthBytesUTF8(jsString)+1;
                         var stringOnWasmHeap = _malloc(lengthBytes);
                         stringToUTF8(jsString, stringOnWasmHeap, lengthBytes);
                         return stringOnWasmHeap;
-                    });
+                    },defaultInfo.c_str());
                     if(str!=NULL){
                         char *p=str;
                         while(*p){
