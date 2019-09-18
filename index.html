@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-us">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -130,6 +130,7 @@
      <span><a href="javascript:expMidi()">导出midi</a></span><br>
      <span><a href="javascript:saveFile()">保存</a></span><br>
      <span><a href="javascript:openEngine('')">打开引擎</a></span><br>
+     <span id="soundfont-status">加载音源：<span id="soundfont-status-num">0</span>%</span><br>
   </span>
 </span>
 
@@ -150,7 +151,6 @@
       
       window.mgnr_ready=[];
       window.mgnr_ready.push(function () {
-      	openEngine('none');
       	if(location.hash){
       		if(location.hash[0]=='#'){
       			var arr = location.hash.split("#");
@@ -270,8 +270,8 @@
       	document.getElementById("engine-box").style.display=val; 
       }
     </script>
-    <div id="engine-box">
-    	<a href="javascript:synthOutput()" style="color:#fff;">合成</a>
+    <div id="engine-box" style="display: none;">
+    	<a href="javascript:synthOutput()" style="color:#9bf;">合成</a>
     	<span style="float: right;margin-right:20px;" onclick="openEngine('none')">X</span>
       <iframe src="engine" id="synth-engine" width="99%" height="90%"></iframe>
     </div>

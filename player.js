@@ -5,10 +5,12 @@ window.onload = function () {
 		instruments: [ "acoustic_grand_piano", "synth_drum" ],
 		onprogress: function(state, progress) {
 			//console.log(state, progress);
+			document.getElementById('soundfont-status-num').innerText= parseInt(progress*100);
 		},
 		onsuccess: function() {
 			MIDI.setVolume(0, 127);
 			MIDI.channels[0].instrument=0;
+			document.getElementById('soundfont-status').style.display="none";
 		}
 	});
 };
