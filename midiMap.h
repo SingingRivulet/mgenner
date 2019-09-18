@@ -31,6 +31,14 @@ namespace mgnr{
             
             int TPQ;
             
+            float sectionLen;//小节线
+            
+            inline void setSection(int s){
+                if(s<=0 || s>7)
+                    return;
+                sectionLen=s*120;
+            }
+            
             int getTempo(float tick);
             void addTempo(float tick,int tp);
             

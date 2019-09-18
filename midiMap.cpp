@@ -231,6 +231,17 @@ void midiMap::addControl(float begin,const std::string & info){
                     timeMap[begin]=tick;
                 }
             }
+        }else
+        if(str[1]=='S'){
+            auto r=str+2;
+            
+            if(strlen(r)>0){
+                int sec=atoi(r);
+                if(sec>0 && sec<8){
+                    printf("set section:%d\n",sec);
+                    setSection(sec);
+                }
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ editTable::editTable(){
     noteLength=0.6;
     defaultDelay=120;
     maticBlock=120;
-    sectionLen=480;
+    setSection(4);
     defaultVolume=50;
     defaultInfo="default";
     selected.clear();
