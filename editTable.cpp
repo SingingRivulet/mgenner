@@ -11,6 +11,7 @@ editTable::editTable(){
     noteLength=0.6;
     defaultDelay=120;
     maticBlock=120;
+    sectionLen=480;
     defaultVolume=50;
     defaultInfo="default";
     selected.clear();
@@ -187,6 +188,7 @@ void editTable::findNote(){
     drawTableRaws();
     
     drawTableColumns();
+    drawSectionLine();
     
     HBB::vec from;
     from.set(lookAtX,realLookAtY);
@@ -228,6 +230,30 @@ void editTable::drawTableColumns(){
             drawTimeCol(p);
         
         r+=maticBlock;
+        
+    }
+}
+void editTable::drawSectionLine(){
+    float p;
+    float r;
+    float delta  =sectionLen*noteLength;
+    if(delta<5)
+        return;
+    int   befn   =lookAtX/sectionLen;
+    float start  =(befn+1)*sectionLen;
+    r=start;
+    
+    while(1){
+        
+        p=(r-lookAtX)*noteLength;
+        
+        if(p>=windowWidth)
+            break;
+        
+        if(p>30 && r>0)
+            drawSectionCol(p);
+        
+        r+=sectionLen;
         
     }
 }

@@ -190,7 +190,7 @@ void view::drawNote_end(){
     SDL_BlitSurface(startMsg, NULL, screen, &rect);
     
     rect.x=704;
-    snprintf(buf,64,"TPQ %d",TPQ);
+    snprintf(buf,64,"TPQ=%d",TPQ);
     msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
@@ -216,6 +216,14 @@ void view::drawTimeCol(float p){
     rect.w=2;
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 20));
+}
+void view::drawSectionCol(float p){
+    SDL_Rect rect;
+    rect.x=p;
+    rect.y=0;
+    rect.w=3;
+    rect.h=windowHeight;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 5));
 }
 void view::toneMapInit(){
     SDL_Color textColor = {255, 255, 255};

@@ -37,9 +37,11 @@ namespace mgnr{
             void drawTableRaws();
             bool drawToneRaw(int t);
             void drawTableColumns();
+            void drawSectionLine();
             
             virtual void drawTableRaw(int from,int to,int t)=0;
             virtual void drawTimeCol(float p)=0;
+            virtual void drawSectionCol(float p)=0;
             
             void toString(std::string & str);
             void loadString(const std::string & str);
@@ -58,6 +60,7 @@ namespace mgnr{
             bool  automaticX;//自动吸附模式（起始）
             bool  automaticY;//自动吸附模式（音高）
             float maticBlock;//起始时间吸附到这个的整数倍
+            float sectionLen;//小节线
             float defaultDelay;//持续时间
             int   defaultVolume;//音量
             std::string defaultInfo;//信息
