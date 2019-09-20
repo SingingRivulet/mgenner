@@ -1,7 +1,14 @@
 #include "view.h"
 #include <emscripten/bind.h>
 mgnr::view V;
+bool inIframe=false;
 int main(){
+    inIframe=(EM_ASM_INT({
+        if (self != top)
+            return 1;
+        else
+            return 0;
+    })==1);
     EM_ASM({
         window.loadStringData=function(s){
             var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL);
@@ -48,12 +55,15 @@ int main(){
             }
         }
     });
-    emscripten_set_main_loop([](){
-        V.render();
-        V.playStep();
-        V.pollEvent();
-    }, 0, 1);
-    
+    if(inIframe){
+        
+    }else{
+        emscripten_set_main_loop([](){
+            V.render();
+            V.playStep();
+            V.pollEvent();
+        }, 0, 1);
+    }
 }
 
 void setDefaultDelay(float d){
@@ -76,7 +86,30 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
         V.exportMidi("export.mid");
     }
-    EMSCRIPTEN_KEEPALIVE void loadMidiFile(char *n){
+    static std::string compareFile;
+    EMSCRIPTEN_KEEPALIVE void loadMidiFile(char * n){
+        compareFile.clear();
+        char * cmp = n;
+        while(1){
+            if(*cmp=='\0')
+                break;
+            else
+            if(*cmp==':'){
+                *cmp='\0';
+                ++cmp;
+                if(*cmp!='\0'){
+                    compareFile=cmp;
+                }
+            }
+                
+            ++cmp;
+        }
+        
+        printf("load:%s\n",n);
+        if(!compareFile.empty()){
+            printf("compare:%s\n",compareFile.c_str());
+        }
+        
         emscripten_async_wget(n,"tmp.mid",
             [](const char *){
                 printf("load file success\n");
@@ -100,6 +133,56 @@ extern "C"{
                 
                     V.loadMidi("tmp.mid");
                 
+                }
+                if(inIframe){
+                    EM_ASM({//向父窗口发送hash
+                        toHashSerious(function(h){
+                            window.parent.postMessage({
+                                'mode':'diff',
+                                'hash':h
+                            },'/');
+                        });
+                    });
+                }else{
+                    if(!compareFile.empty()){
+                        EM_ASM({
+                            var filename=UTF8ToString($0);
+                            var ifm=document.body.appendChild(document.createElement('iframe'));
+                            ifm.height=2;
+                            ifm.width=2;
+                            window.addEventListener('message',function(e) {
+                                var d = e.data;
+                                //console.log(d);
+                                if(d.mode=='diff'){
+                                    document.body.removeChild(ifm);
+                                    var bx = document.getElementById("controls");
+                                    if(bx){
+                                        var div = bx.appendChild(document.createElement('div'));
+                                        div.style['overflow-y']="scroll";
+                                        var info = div.appendChild(document.createElement('span'));
+                                        info.innerHTML="midi对比：<br>";
+                                    
+                                        var used=false;
+                                        midiDiff(d.hash,function(t){
+                                            used=true;
+                                            var link = div.appendChild(document.createElement('a'));
+                                            link.href = "javascript:seekTick("+t+")";
+                                            link.innerText = "差异："+t;
+                                            div.appendChild(document.createElement('br'));
+                                        });
+                                        if(!used){
+                                            var nothing = div.appendChild(document.createElement('span'));
+                                            nothing.innerHTML="暂无差异<br>";
+                                        }
+                                    }
+                                }
+                                
+                            });
+                            var url=location.origin+location.pathname+"#"+filename;
+                            //console.log(url);
+                            ifm.src=url;
+                        },compareFile.c_str());
+                    }
                 }
             }
             ,[](const char *){

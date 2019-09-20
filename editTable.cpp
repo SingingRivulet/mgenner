@@ -76,6 +76,10 @@ void editTable::clearSelected(){
     }
     selected.clear();
 }
+void editTable::clearNotes(){
+    clear();
+    selected.clear();
+}
 void editTable::removeSelected(){
     for(auto it:selected){
         removeNote(it);

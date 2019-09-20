@@ -2,7 +2,7 @@
 midi在线编辑器，使用emscripten开发，留有js API，便于与自己的前端应用嵌合。  
 ![img](shot.png)
 本项目为歌声合成器设计，没有采用音轨的机制，而是采用了允许对每个音符命名的方式。生成Midi文件的时候会自动按照命名生成音轨。  
-[在线使用](http://game.sinriv.com/mgenner)  
+[在线使用](http://midi.sinriv.com/edit)  
 ## js API  
 基本api:  
 `loadStringData(string)` 加载序列化的字符串数据  

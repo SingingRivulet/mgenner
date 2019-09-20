@@ -98,13 +98,11 @@ void synth::splitTracks(){
     printf("track num:%d\n",tnum);
     
 }
-static int hash(const char * str)
-{
+static int hash(const char * str){
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
  
-    while (*str)
-    {
+    while (*str){
         hash = hash * seed + (*str++);
     }
  
@@ -166,6 +164,8 @@ void synth::diff(const std::string & in,std::function<void (int)> const & callba
     while(!iss.eof()){
         bzero(buf,1024);
         iss.getline(buf,1024);
+        if(strlen(buf)<2)
+            continue;
         std::istringstream ibuf(buf);
         int t,h;
         ibuf>>t;

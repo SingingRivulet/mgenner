@@ -24,6 +24,7 @@ namespace mgnr{
             int  selAll();
             void clearSelected();
             void removeSelected();
+            void clearNotes();
             void renameSelected(const std::string & n);
             void resizeSelected(int delta);
             void resizeSelected_apply();
