@@ -23,8 +23,23 @@ int main(){
             window._toStringData_callback=c;
             Module._toStringData();
         };
+        window.toHashSerious=function(c){
+            window._toHashSerious_callback=c;
+            Module._toHashSerious();
+        };
         window.synthOutput=function(c){
             Module._synthOutput();
+        };
+        window.midiDiff=function(s,c){
+            window._midiDiff_callback=c;
+            var lengthBytes = lengthBytesUTF8(s)+1;
+            var stringOnWasmHeap = _malloc(lengthBytes);
+            stringToUTF8(s, stringOnWasmHeap, lengthBytes);
+            Module._midiDiff(stringOnWasmHeap);
+            _free(stringOnWasmHeap);
+        };
+        window.seekTick=function(t){
+            Module._seek(t);
         };
         if(window.mgnr_ready){
             var l=window.mgnr_ready.length;
@@ -92,6 +107,17 @@ extern "C"{
             }
         );
     }
+    EMSCRIPTEN_KEEPALIVE void toHashSerious(){
+        std::string tmpbuf;
+        V.toHashSerious(tmpbuf);
+        EM_ASM_({
+            if(window._toHashSerious_callback)
+                window._toHashSerious_callback(UTF8ToString($0));
+        },tmpbuf.c_str());
+    }
+    EMSCRIPTEN_KEEPALIVE void seek(int posi){
+        V.lookAtX=posi;
+    }
     EMSCRIPTEN_KEEPALIVE void toStringData(){
         std::string tmpbuf;
         V.toString(tmpbuf);
@@ -102,5 +128,13 @@ extern "C"{
     }
     EMSCRIPTEN_KEEPALIVE void synthOutput(){
         V.synthOutput();
+    }
+    EMSCRIPTEN_KEEPALIVE void midiDiff(const char * s){
+        V.diff(s,[&](int posi){
+            EM_ASM_({
+                if(window._midiDiff_callback)
+                    window._midiDiff_callback($0);
+            },posi);
+        });
     }
 }

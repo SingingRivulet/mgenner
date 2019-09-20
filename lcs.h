@@ -17,9 +17,9 @@ namespace mgnr{
         
         int al=A.size(),bl=B.size();
         //虚构一个矩阵 m[al][bl]
-        for(register int j=0;j<bl;++j){
+        for(int j=0;j<bl;++j){
             const T & elmb = B.at(j);
-            for(register int i=0;i<al;++i){
+            for(int i=0;i<al;++i){
                 const T & elma = A.at(i);
                 if(elma == elmb){
                     if(lastline){
@@ -34,7 +34,7 @@ namespace mgnr{
                 }
             }
             if(lastline){
-                for(register int i=0;i<al;++i){
+                for(int i=0;i<al;++i){
                     if(i==al-1 && lastline->at(i)>0){//最后一个位置
                         callback(i,j-1,lastline->at(i));
                     }else
@@ -44,7 +44,7 @@ namespace mgnr{
                 }
             }
             if(j==bl-1 && thisline){//清算没处理完的
-                for(register int i=0;i<al;++i){
+                for(int i=0;i<al;++i){
                     if(thisline->at(i)>0){
                         callback(i,j,thisline->at(i));
                     }
@@ -54,7 +54,7 @@ namespace mgnr{
                 lastline=thisline;
                 thisline=&buf2;
             }else{
-                register std::vector<T> * tmp = thisline;//交换两行
+                auto tmp = thisline;//交换两行
                 thisline = lastline;
                 lastline = tmp;
             }

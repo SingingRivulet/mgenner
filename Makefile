@@ -30,7 +30,7 @@ synthOutput.o:synth.h synthOutput.cpp player.o
 midisplit.o:synth.h midisplit.cpp player.o
 	$(CC) midisplit.cpp -c
 
-synth.o:synth.h synth.cpp player.o
+synth.o:synth.h synth.cpp player.o lcs.h
 	$(CC) synth.cpp -c
 
 player.o:player.h player.cpp editTable.o

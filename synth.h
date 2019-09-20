@@ -1,9 +1,11 @@
 #ifndef MGNR_SYNTH
 #define MGNR_SYNTH
 #include "player.h"
+#include "lcs.h"
 #include <set>
 #include <list>
 #include <vector>
+#include <sstream>
 #include <SDL/SDL_audio.h>
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -43,6 +45,11 @@ namespace mgnr{
             void onUseInfo(const std::string & info);
             
             void synthOutput();//链接外部引擎合成
+            
+            void toHashSerious(std::vector<std::pair<int,int> > & out);
+            void diff(const std::string & out,std::function<void (int)> const & callback);
+            void diff(const std::vector<std::pair<int,int> > & out,std::function<void (int)> const & callback);
+            void toHashSerious(std::string & out);
             
             std::vector<voiceTrack*> tracks;
             

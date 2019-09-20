@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 42928,
+    STACK_BASE = 43808,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5285808,
-    DYNAMIC_BASE = 5285808,
-    DYNAMICTOP_PTR = 42896;
+    STACK_MAX = 5286688,
+    DYNAMIC_BASE = 5286688,
+    DYNAMICTOP_PTR = 43776;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1728,8 +1728,10 @@ var tempI64;
 
 // === Body ===
 
-var ASM_CONSTS = [function() { window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); return blob; }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; window.synthOutput=function(c){ Module._synthOutput(); }; if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } },
+var ASM_CONSTS = [function() { window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); return blob; }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; window.toHashSerious=function(c){ window._toHashSerious_callback=c; Module._toHashSerious(); }; window.synthOutput=function(c){ Module._synthOutput(); }; window.midiDiff=function(s,c){ window._midiDiff_callback=c; var lengthBytes = lengthBytesUTF8(s)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(s, stringOnWasmHeap, lengthBytes); Module._midiDiff(stringOnWasmHeap); _free(stringOnWasmHeap); }; window.seekTick=function(t){ Module._seek(t); }; if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } },
+ function($0) { if(window._toHashSerious_callback) window._toHashSerious_callback(UTF8ToString($0)); },
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
+ function($0) { if(window._midiDiff_callback) window._midiDiff_callback($0); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { return Date.now(); },
  function($0) { var jsString = prompt("命名",UTF8ToString($0)); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
@@ -1774,7 +1776,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 41904;
+// STATICTOP = STATIC_BASE + 42784;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1785,7 +1787,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 42912
+var tempDoublePtr = 43792
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -9131,6 +9133,12 @@ var _memset = Module["_memset"] = function() {
   return Module["asm"]["_memset"].apply(null, arguments)
 };
 
+var _midiDiff = Module["_midiDiff"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_midiDiff"].apply(null, arguments)
+};
+
 var _pthread_cond_broadcast = Module["_pthread_cond_broadcast"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -9143,10 +9151,22 @@ var _sbrk = Module["_sbrk"] = function() {
   return Module["asm"]["_sbrk"].apply(null, arguments)
 };
 
+var _seek = Module["_seek"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_seek"].apply(null, arguments)
+};
+
 var _synthOutput = Module["_synthOutput"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_synthOutput"].apply(null, arguments)
+};
+
+var _toHashSerious = Module["_toHashSerious"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_toHashSerious"].apply(null, arguments)
 };
 
 var _toStringData = Module["_toStringData"] = function() {
