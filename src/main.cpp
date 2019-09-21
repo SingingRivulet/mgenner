@@ -177,10 +177,10 @@ extern "C"{
                                                 div.appendChild(document.createElement('br'));
                                             },
                                             function(a,b,c,d){
-                                                var link = div.appendChild(document.createElement('a'));
-                                                link.href = "javascript:seekTick("+a+")";
-                                                link.innerText = "A["+a+","+b+"]=B["+c+","+d+"]";
-                                                div.appendChild(document.createElement('br'));
+                                                var span = div.appendChild(document.createElement('span'));
+                                                span.innerHTML = 
+                                                    "A[<a href='javascript:seekTick("+a+")'>"+a+
+                                                    "</a>,<a href='javascript:seekTick("+b+")'>"+b+"</a>]=B["+c+","+d+"]<br>";
                                             }
                                         );
                                         if(!used){
