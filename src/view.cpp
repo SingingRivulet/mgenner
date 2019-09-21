@@ -232,7 +232,7 @@ void view::toneMapInit(){
         int k = i%12;
         char buf[32];
         if(k==0)
-            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(int)(i/12));
+            snprintf(buf,32,"%s\t%d",pianoKeyName[k],(i/12));
         else
             snprintf(buf,32,"%s",pianoKeyName[k]);
         toneMap[i] = TTF_RenderText_Solid(font,buf,textColor);
@@ -263,7 +263,7 @@ void view::drawTableRaw(int from,int to,int t){
         else
             SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
         
-        SDL_BlitSurface(toneMap[k], NULL, screen, &rect);
+        SDL_BlitSurface(toneMap[t], NULL, screen, &rect);
     }
     
 }
