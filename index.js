@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 44880,
+    STACK_BASE = 45296,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5287760,
-    DYNAMIC_BASE = 5287760,
-    DYNAMICTOP_PTR = 44848;
+    STACK_MAX = 5288176,
+    DYNAMIC_BASE = 5288176,
+    DYNAMICTOP_PTR = 45264;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1729,12 +1729,13 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = [function() { if (self != top) return 1; else return 0; },
- function() { window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); return blob; }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; window.toHashSerious=function(c){ window._toHashSerious_callback=c; Module._toHashSerious(); }; window.synthOutput=function(c){ Module._synthOutput(); }; window.midiDiff=function(s,c){ window._midiDiff_callback=c; var lengthBytes = lengthBytesUTF8(s)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(s, stringOnWasmHeap, lengthBytes); Module._midiDiff(stringOnWasmHeap); _free(stringOnWasmHeap); }; window.seekTick=function(t){ Module._seek(t); }; if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } },
+ function() { window.loadStringData=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadStringData(ptr); _free(ptr); }; window.loadMidiFile=function(s){ var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL); var retPtr = Module._loadMidiFile(ptr); _free(ptr); }; window.exportMidiFile=function(){ Module._exportMidiFile(); var data=FS.readFile("export.mid"); var blob = new Blob([data.buffer], {type: "application/octet-binary"}); return blob; }; window.toStringData=function(c){ window._toStringData_callback=c; Module._toStringData(); }; window.toHashSerious=function(c){ window._toHashSerious_callback=c; Module._toHashSerious(); }; window.synthOutput=function(c){ Module._synthOutput(); }; window.midiDiff=function(s,c,m){ window._midiDiff_callback_diff=c; window._midiDiff_callback_same=m; var lengthBytes = lengthBytesUTF8(s)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(s, stringOnWasmHeap, lengthBytes); Module._midiDiff(stringOnWasmHeap); _free(stringOnWasmHeap); }; window.seekTick=function(t){ Module._seek(t); }; if(window.mgnr_ready){ var l=window.mgnr_ready.length; for(var i=0;i<l;i++){ window.mgnr_ready[i](); } } },
  function($0) { if(window._toHashSerious_callback) window._toHashSerious_callback(UTF8ToString($0)); },
  function($0) { if(window._toStringData_callback) window._toStringData_callback(UTF8ToString($0)); },
  function() { toHashSerious(function(h){ window.parent.postMessage({ 'mode':'diff', 'hash':h },'/'); }); },
- function($0) { var filename=UTF8ToString($0); var ifm=document.body.appendChild(document.createElement('iframe')); ifm.height=2; ifm.width=2; window.addEventListener('message',function(e) { var d = e.data; if(d.mode=='diff'){ document.body.removeChild(ifm); var bx = document.getElementById("controls"); if(bx){ var div = bx.appendChild(document.createElement('div')); div.style['overflow-y']="scroll"; var info = div.appendChild(document.createElement('span')); info.innerHTML="midi对比：<br>"; var used=false; midiDiff(d.hash,function(t){ used=true; var link = div.appendChild(document.createElement('a')); link.href = "javascript:seekTick("+t+")"; link.innerText = "差异："+t; div.appendChild(document.createElement('br')); }); if(!used){ var nothing = div.appendChild(document.createElement('span')); nothing.innerHTML="暂无差异<br>"; } } } }); var url=location.origin+location.pathname+"#"+filename; ifm.src=url; },
- function($0) { if(window._midiDiff_callback) window._midiDiff_callback($0); },
+ function($0) { var filename=UTF8ToString($0); var ifm=document.body.appendChild(document.createElement('iframe')); ifm.height=2; ifm.width=2; window.addEventListener('message',function(e) { var d = e.data; if(d.mode=='diff'){ document.body.removeChild(ifm); var bx = document.getElementById("controls"); if(bx){ var div = bx.appendChild(document.createElement('div')); div.style['overflow']="scroll"; var info = div.appendChild(document.createElement('span')); info.innerHTML="midi对比：<br>"; var used=false; midiDiff(d.hash, function(t){ used=true; var link = div.appendChild(document.createElement('a')); link.href = "javascript:seekTick("+t+")"; link.innerText = "差异："+t; div.appendChild(document.createElement('br')); }, function(a,b,c,d){ var link = div.appendChild(document.createElement('a')); link.href = "javascript:seekTick("+a+")"; link.innerText = "A["+a+","+b+"]=B["+c+","+d+"]"; div.appendChild(document.createElement('br')); } ); if(!used){ var nothing = div.appendChild(document.createElement('span')); nothing.innerHTML="暂无差异<br>"; } } } }); var url=location.origin+location.pathname+"#"+filename; ifm.src=url; },
+ function($0) { if(window._midiDiff_callback_diff) window._midiDiff_callback_diff($0); },
+ function($0, $1, $2, $3) { if(window._midiDiff_callback_same) window._midiDiff_callback_same($0,$1,$2,$3); },
  function($0, $1) { if(window.noteptr==null){ window.noteptr={}; window.noteptr.begin=document.getElementById("note-begin"); window.noteptr.tone=document.getElementById("note-tone"); } window.noteptr.begin.innerText=$0; window.noteptr.tone.innerText=$1; },
  function() { return Date.now(); },
  function($0) { var jsString = prompt("命名",UTF8ToString($0)); if(!jsString) return 0; var lengthBytes = lengthBytesUTF8(jsString)+1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(jsString, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; },
@@ -1754,6 +1755,10 @@ function _emscripten_asm_const_i(code) {
 
 function _emscripten_asm_const_ii(code, a0) {
   return ASM_CONSTS[code](a0);
+}
+
+function _emscripten_asm_const_iiiii(code, a0, a1, a2, a3) {
+  return ASM_CONSTS[code](a0, a1, a2, a3);
 }
 
 function _emscripten_asm_const_idd(code, a0, a1) {
@@ -1779,7 +1784,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 43856;
+// STATICTOP = STATIC_BASE + 44272;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1790,7 +1795,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 44864
+var tempDoublePtr = 45280
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8979,6 +8984,7 @@ var asmLibraryArg = {
   "_emscripten_asm_const_iid": _emscripten_asm_const_iid,
   "_emscripten_asm_const_iii": _emscripten_asm_const_iii,
   "_emscripten_asm_const_iiii": _emscripten_asm_const_iiii,
+  "_emscripten_asm_const_iiiii": _emscripten_asm_const_iiiii,
   "_emscripten_asm_const_iiiiid": _emscripten_asm_const_iiiiid,
   "_emscripten_async_wget": _emscripten_async_wget,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,

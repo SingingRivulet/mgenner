@@ -157,7 +157,7 @@ void synth::toHashSerious(std::vector<std::pair<int,int> > & out){
     }
     
 }
-void synth::diff(const std::string & in,std::function<void (int)> const & callback){
+void synth::diff(const std::string & in,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s){
     std::istringstream iss(in);
     char buf[1024];
     std::vector<std::pair<int,int> > data;
@@ -172,9 +172,9 @@ void synth::diff(const std::string & in,std::function<void (int)> const & callba
         ibuf>>h;
         data.push_back(std::pair<int,int>(t,h));
     }
-    diff(data,callback);
+    diff(data,callback_d,callback_s);
 }
-void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void (int)> const & callback){
+void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s){
     std::vector<std::pair<int,int> > me;
     toHashSerious(me);
     std::vector<int> A,B,Am,Bm;
@@ -198,6 +198,9 @@ void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void 
     LCS(A,B,[&](int im,int iin,int len){
         ++id;
         try{
+            if(len>2){
+                callback_s(me.at(im-len+1).first , me.at(im).first , in.at(iin-len+1).first , in.at(iin).first);
+            }
             for(int i=0;i<len;i++){
                 Am.at(im -i)=id;
                 Bm.at(iin-i)=id;
@@ -216,7 +219,7 @@ void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void 
         if(Am.at(i) == 0){
             last = 0;
             if(!inArea){//差异区域开始
-                callback(tick);
+                callback_d(tick);
             }
             inArea=true;
         }else{
@@ -225,7 +228,7 @@ void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void 
             }else{
                 if(Am.at(i) != last && i!=0){
                     //发现删除过
-                    callback(tick);
+                    callback_d(tick);
                 }
             }
             last = Am.at(i);

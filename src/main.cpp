@@ -37,8 +37,9 @@ int main(){
         window.synthOutput=function(c){
             Module._synthOutput();
         };
-        window.midiDiff=function(s,c){
-            window._midiDiff_callback=c;
+        window.midiDiff=function(s,c,m){
+            window._midiDiff_callback_diff=c;
+            window._midiDiff_callback_same=m;
             var lengthBytes = lengthBytesUTF8(s)+1;
             var stringOnWasmHeap = _malloc(lengthBytes);
             stringToUTF8(s, stringOnWasmHeap, lengthBytes);
@@ -158,18 +159,26 @@ extern "C"{
                                     var bx = document.getElementById("controls");
                                     if(bx){
                                         var div = bx.appendChild(document.createElement('div'));
-                                        div.style['overflow-y']="scroll";
+                                        div.style['overflow']="scroll";
                                         var info = div.appendChild(document.createElement('span'));
                                         info.innerHTML="midi对比：<br>";
                                     
                                         var used=false;
-                                        midiDiff(d.hash,function(t){
-                                            used=true;
-                                            var link = div.appendChild(document.createElement('a'));
-                                            link.href = "javascript:seekTick("+t+")";
-                                            link.innerText = "差异："+t;
-                                            div.appendChild(document.createElement('br'));
-                                        });
+                                        midiDiff(d.hash,
+                                            function(t){
+                                                used=true;
+                                                var link = div.appendChild(document.createElement('a'));
+                                                link.href = "javascript:seekTick("+t+")";
+                                                link.innerText = "差异："+t;
+                                                div.appendChild(document.createElement('br'));
+                                            },
+                                            function(a,b,c,d){
+                                                var link = div.appendChild(document.createElement('a'));
+                                                link.href = "javascript:seekTick("+a+")";
+                                                link.innerText = "A["+a+","+b+"]=B["+c+","+d+"]";
+                                                div.appendChild(document.createElement('br'));
+                                            }
+                                        );
                                         if(!used){
                                             var nothing = div.appendChild(document.createElement('span'));
                                             nothing.innerHTML="暂无差异<br>";
@@ -213,11 +222,19 @@ extern "C"{
         V.synthOutput();
     }
     EMSCRIPTEN_KEEPALIVE void midiDiff(const char * s){
-        V.diff(s,[&](int posi){
-            EM_ASM_({
-                if(window._midiDiff_callback)
-                    window._midiDiff_callback($0);
-            },posi);
-        });
+        V.diff(s,
+            [&](int posi){
+                EM_ASM_({
+                    if(window._midiDiff_callback_diff)
+                        window._midiDiff_callback_diff($0);
+                },posi);
+            },
+            [&](int as,int ae,int bs,int be){
+                EM_ASM_({
+                    if(window._midiDiff_callback_same)
+                        window._midiDiff_callback_same($0,$1,$2,$3);
+                },as,ae,bs,be);
+            }
+        );
     }
 }
