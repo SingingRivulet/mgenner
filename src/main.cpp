@@ -30,6 +30,10 @@ int main(){
             window._toStringData_callback=c;
             Module._toStringData();
         };
+        window.toRelative=function(c){
+            window._toRelative_callback=c;
+            Module._toRelative();
+        };
         window.toHashSerious=function(c){
             window._toHashSerious_callback=c;
             Module._toHashSerious();
@@ -205,6 +209,14 @@ extern "C"{
         EM_ASM_({
             if(window._toHashSerious_callback)
                 window._toHashSerious_callback(UTF8ToString($0));
+        },tmpbuf.c_str());
+    }
+    EMSCRIPTEN_KEEPALIVE void toRelative(){
+        std::string tmpbuf;
+        V.selectedToRelative(tmpbuf);
+        EM_ASM_({
+            if(window._toRelative_callback)
+                window._toRelative_callback(UTF8ToString($0));
         },tmpbuf.c_str());
     }
     EMSCRIPTEN_KEEPALIVE void seek(int posi){

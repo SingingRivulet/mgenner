@@ -3,6 +3,7 @@
 #include "midiMap.h"
 #include <emscripten.h>
 #include <sstream>
+#include <list>
 #include <stdio.h>
 namespace mgnr{
     class editTable:public midiMap{
@@ -24,6 +25,7 @@ namespace mgnr{
             int  selAll();
             void clearSelected();
             void removeSelected();
+            void selectedToRelative(std::string & out);
             void clearNotes();
             void renameSelected(const std::string & n);
             void resizeSelected(int delta);

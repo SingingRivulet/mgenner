@@ -407,5 +407,31 @@ void editTable::loadString(const std::string & str){
         }
     }
 }
+void editTable::selectedToRelative(std::string & out){
+    std::map<int,std::set<note*> > ns;
+    for(auto it:selected){
+        ns[it->begin].insert(it);
+    }
+    std::list<int> single;
+    for(auto it:ns){
+        auto topn =it.second.begin();
+        if(topn != it.second.end()){
+            single.push_back((*topn)->tone);
+        }
+    }
+    char buf[64];
+    out="0 ";
+    if(!single.empty()){
+        auto it=single.begin();
+        int last = *it;
+        ++it;
+        for(;it!=single.end();++it){
+            int delta = *it - last;
+            last = *it;
+            snprintf(buf,64,"%d ",delta);
+            out+=buf;
+        }
+    }
+}
 
 }
