@@ -1,5 +1,6 @@
 window.onload = function () {
 	//console.log("load soundfont");
+	if (self != top)return;
 	MIDI.loadPlugin({
 		soundfontUrl: "./soundfont/basic/",
 		instruments: [ "acoustic_grand_piano", "synth_drum" ],
