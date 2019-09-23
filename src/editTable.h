@@ -44,7 +44,7 @@ namespace mgnr{
             
             virtual void drawTableRaw(int from,int to,int t)=0;
             virtual void drawTimeCol(float p)=0;
-            virtual void drawSectionCol(float p)=0;
+            virtual void drawSectionCol(float p,int n)=0;
             
             void toString(std::string & str);
             void loadString(const std::string & str);

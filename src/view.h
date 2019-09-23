@@ -20,7 +20,7 @@ namespace mgnr{
             
             void drawTableRaw(int from,int to,int t);
             void drawTimeCol(float p);
-            void drawSectionCol(float p);
+            void drawSectionCol(float p,int n);
             
             void pollEvent();
             

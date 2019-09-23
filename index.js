@@ -1707,8 +1707,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 16133,
-    'maximum': 16133,
+    'initial': 16141,
+    'maximum': 16141,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -8891,6 +8891,7 @@ function nullFunc_v(x) { abortFnPtrError(x, 'v'); }
 function nullFunc_vf(x) { abortFnPtrError(x, 'vf'); }
 function nullFunc_vi(x) { abortFnPtrError(x, 'vi'); }
 function nullFunc_vif(x) { abortFnPtrError(x, 'vif'); }
+function nullFunc_vifi(x) { abortFnPtrError(x, 'vifi'); }
 function nullFunc_vii(x) { abortFnPtrError(x, 'vii'); }
 function nullFunc_viii(x) { abortFnPtrError(x, 'viii'); }
 function nullFunc_viiii(x) { abortFnPtrError(x, 'viiii'); }
@@ -8923,6 +8924,7 @@ var asmLibraryArg = {
   "nullFunc_vf": nullFunc_vf,
   "nullFunc_vi": nullFunc_vi,
   "nullFunc_vif": nullFunc_vif,
+  "nullFunc_vifi": nullFunc_vifi,
   "nullFunc_vii": nullFunc_vii,
   "nullFunc_viii": nullFunc_viii,
   "nullFunc_viiii": nullFunc_viiii,
@@ -9321,6 +9323,12 @@ var dynCall_vif = Module["dynCall_vif"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["dynCall_vif"].apply(null, arguments)
+};
+
+var dynCall_vifi = Module["dynCall_vifi"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["dynCall_vifi"].apply(null, arguments)
 };
 
 var dynCall_vii = Module["dynCall_vii"] = function() {

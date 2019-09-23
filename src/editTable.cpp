@@ -249,16 +249,23 @@ void editTable::drawSectionLine(){
     
     while(1){
         
+        ++befn;
+        
         p=(r-lookAtX)*noteLength;
         
         if(p>=windowWidth)
             break;
         
         if(p>30 && r>0)
-            drawSectionCol(p);
+            drawSectionCol(p,befn+1);
         
         r+=sectionLen;
         
+    }
+    if(lookAtX<0){
+        float posi = (-lookAtX)*noteLength;
+        if(posi>30 && posi<windowWidth)
+            drawSectionCol(posi,1);
     }
 }
 void editTable::drawTableRaws(){

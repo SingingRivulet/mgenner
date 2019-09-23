@@ -217,13 +217,22 @@ void view::drawTimeCol(float p){
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 20));
 }
-void view::drawSectionCol(float p){
+void view::drawSectionCol(float p,int n){
     SDL_Rect rect;
     rect.x=p;
     rect.y=0;
     rect.w=3;
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 5));
+    
+    rect.y = windowHeight-30;
+    rect.h = 30;
+    SDL_Color textColor = {64, 128, 128};
+    char buf[64];
+    snprintf(buf,64,"%d",n);
+    auto msg = TTF_RenderText_Solid(font,buf,textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
 }
 void view::toneMapInit(){
     SDL_Color textColor = {255, 255, 255};
