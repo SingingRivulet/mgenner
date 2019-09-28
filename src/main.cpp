@@ -94,7 +94,14 @@ extern "C"{
     static std::string compareFile;
     EMSCRIPTEN_KEEPALIVE void loadMidiFile(char * n){
         compareFile.clear();
-        char * cmp = n;
+        char * cmp=NULL;
+        
+        if(n[0]=='h' && n[1]=='t' && n[2]=='t' && n[3]=='p')
+            goto start;
+        if(n[0]=='b' && n[1]=='l' && n[2]=='o' && n[3]=='b')
+            goto start;
+        
+        cmp = n;
         while(1){
             if(*cmp=='\0')
                 break;
@@ -114,6 +121,8 @@ extern "C"{
         if(!compareFile.empty()){
             printf("compare:%s\n",compareFile.c_str());
         }
+        
+        start:
         
         emscripten_async_wget(n,"tmp.mid",
             [](const char *){
