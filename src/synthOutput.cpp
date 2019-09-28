@@ -1,4 +1,6 @@
 #include "synth.h"
+#include <stdio.h>
+#include <iostream>
 namespace mgnr{
 
 void synth::synthOutput(){
@@ -108,6 +110,75 @@ void synth::synthOutput_start(){
     EM_ASM({
         mgnr.synth.start();
     });
+}
+
+void synth::toThemesTrain(std::string & out,int delta){
+    if(timeIndex.empty())
+        return;
+    auto endIt = timeIndex.end();
+    --endIt;
+    if(endIt != timeIndex.end()){
+        out.clear();
+        int end = endIt->second->begin + endIt->second->delay;
+        int posi=0;
+        while(posi<end){
+            HBB::vec from(posi,0) , to(posi+delta,128);
+            
+            struct self_t{
+                std::string inputs;
+                int m;
+                int begin,end,delta;
+            }self;
+            self.inputs.clear();
+            self.m    = -1;
+            self.begin= posi;
+            self.end  = posi+delta;
+            self.delta= delta;
+            
+            find(from,to,[](note * n,void * arg){
+                auto self = (self_t*)arg;
+                
+                int noteBegin = n->begin;
+                int noteEnd   = n->begin + n->delay;
+                
+                if(noteBegin > self->end || noteEnd < self->begin)
+                    return;
+                
+                if(noteBegin < self->begin)
+                    noteBegin= self->begin;
+                
+                if(noteEnd > self->end)
+                    noteEnd= self->end;
+                
+                int noteLen = noteEnd - noteBegin;
+                if(noteLen < (self->delta/2))
+                    return;
+                
+                char buf[32];
+                snprintf(buf,32,"%d",(int)n->tone);
+                
+                if(!self->inputs.empty())
+                    self->inputs+=",";
+                
+                self->inputs+=buf;
+                
+                if(n->selected){
+                    self->m = n->tone;
+                }
+            },&self);
+            
+            
+            char buf[32];
+                snprintf(buf,32,"%d",self.m);
+            
+            if(self.inputs.empty())
+                out += std::string("-1=")+buf+"\n";
+            else
+                out += self.inputs+"="+buf+"\n";
+            
+            posi+=delta;
+        }
+    }
 }
 
 }

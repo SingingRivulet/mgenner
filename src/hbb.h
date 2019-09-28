@@ -19,6 +19,10 @@ namespace mgnr{
                     X=i.X;
                     Y=i.Y;
                 }
+                vec(float iX , float iY){
+                    X=iX;
+                    Y=iY;
+                }
                 const vec & operator=(const vec & i){
                     X=i.X;
                     Y=i.Y;

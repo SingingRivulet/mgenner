@@ -10,6 +10,17 @@ int main(){
             return 0;
     })==1);
     EM_ASM({
+        window.downloadString=function(s,name){
+            var blob = new Blob([s], {type: "application/octet-binary"});;
+            var url = window.URL.createObjectURL(blob); 
+            console.log(url);
+            var link = document.createElement('a'); 
+            link.style.display = 'none'; 
+            link.href = url; 
+            link.setAttribute('download', name); 
+            document.body.appendChild(link); 
+            link.click();
+        };
         window.loadStringData=function(s){
             var ptr = allocate(intArrayFromString(s), 'i8', ALLOC_NORMAL);
             var retPtr = Module._loadStringData(ptr);
@@ -29,6 +40,20 @@ int main(){
         window.toStringData=function(c){
             window._toStringData_callback=c;
             Module._toStringData();
+        };
+        window.toThemesTrain=function(c,dt){
+            window._toThemesTrain_callback=c;
+            Module._toThemesTrain(parseInt(dt));
+        };
+        window.downloadThemesTrain=function(){
+            var s = prompt("block length");
+            var i = parseInt(s);
+            if(i<=0){
+                i=1;
+            }
+            toThemesTrain(function(s){
+                downloadString(s,"outTunner");
+            },i);
         };
         window.toRelative=function(c){
             window._toRelative_callback=c;
@@ -211,6 +236,14 @@ extern "C"{
                 printf("load file fail\n");
             }
         );
+    }
+    EMSCRIPTEN_KEEPALIVE void toThemesTrain(int delta){
+        std::string tmpbuf;
+        V.toThemesTrain(tmpbuf,delta);
+        EM_ASM_({
+            if(window._toThemesTrain_callback)
+                window._toThemesTrain_callback(UTF8ToString($0));
+        },tmpbuf.c_str());
     }
     EMSCRIPTEN_KEEPALIVE void toHashSerious(){
         std::string tmpbuf;

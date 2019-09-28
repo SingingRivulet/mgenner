@@ -50,6 +50,7 @@ namespace mgnr{
             void diff(const std::string & out,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s);
             void diff(const std::vector<std::pair<int,int> > & out,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s);
             void toHashSerious(std::string & out);
+            void toThemesTrain(std::string & out,int delta);//生成主旋律预测训练数据（供outTunner使用）
             
             std::vector<voiceTrack*> tracks;
             
