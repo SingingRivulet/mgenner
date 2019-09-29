@@ -1,6 +1,7 @@
 #include "synth.h"
 #include <stdio.h>
 #include <iostream>
+#include <set>
 namespace mgnr{
 
 void synth::synthOutput(){
@@ -112,6 +113,74 @@ void synth::synthOutput_start(){
     });
 }
 
+void synth::toThemesPredict(std::string & out,int delta){
+    if(timeIndex.empty())
+        return;
+    auto endIt = timeIndex.end();
+    --endIt;
+    if(endIt != timeIndex.end()){
+        out.clear();
+        int end = endIt->second->begin + endIt->second->delay;
+        int posi=0;
+        while(posi<end){
+            HBB::vec from(posi,0) , to(posi+delta,128);
+            
+            struct self_t{
+                std::set<int> inputs;
+                int begin,end,delta;
+            }self;
+            self.inputs.clear();
+            self.begin= posi;
+            self.end  = posi+delta;
+            self.delta= delta;
+            
+            find(from,to,[](note * n,void * arg){
+                auto self = (self_t*)arg;
+                
+                int noteBegin = n->begin;
+                int noteEnd   = n->begin + n->delay;
+                
+                if(noteBegin > self->end || noteEnd < self->begin)
+                    return;
+                
+                if(noteBegin < self->begin)
+                    noteBegin= self->begin;
+                
+                if(noteEnd > self->end)
+                    noteEnd= self->end;
+                
+                int noteLen = noteEnd - noteBegin;
+                if(noteLen < (self->delta/2))
+                    return;
+                
+                self->inputs.insert(n->tone);
+                
+            },&self);
+            
+            
+            if(self.inputs.empty())
+                out += "-1\n";
+            else{
+                char buf2[32];
+                
+                auto it = self.inputs.begin();
+                if(it!=self.inputs.end()){
+                    snprintf(buf2,32,"%d",*it);
+                    out+=buf2;
+                }
+                
+                ++it;
+                
+                for(;it!=self.inputs.end();++it){
+                    snprintf(buf2,32,",%d",*it);
+                    out+=buf2;
+                }
+                out += "\n";
+            }
+            posi+=delta;
+        }
+    }
+}
 void synth::toThemesTrain(std::string & out,int delta){
     if(timeIndex.empty())
         return;
@@ -125,7 +194,7 @@ void synth::toThemesTrain(std::string & out,int delta){
             HBB::vec from(posi,0) , to(posi+delta,128);
             
             struct self_t{
-                std::string inputs;
+                std::set<int> inputs;
                 int m;
                 int begin,end,delta;
             }self;
@@ -154,13 +223,7 @@ void synth::toThemesTrain(std::string & out,int delta){
                 if(noteLen < (self->delta/2))
                     return;
                 
-                char buf[32];
-                snprintf(buf,32,"%d",(int)n->tone);
-                
-                if(!self->inputs.empty())
-                    self->inputs+=",";
-                
-                self->inputs+=buf;
+                self->inputs.insert(n->tone);
                 
                 if(n->selected){
                     self->m = n->tone;
@@ -173,9 +236,23 @@ void synth::toThemesTrain(std::string & out,int delta){
             
             if(self.inputs.empty())
                 out += std::string("-1=")+buf+"\n";
-            else
-                out += self.inputs+"="+buf+"\n";
-            
+            else{
+                char buf2[32];
+                
+                auto it = self.inputs.begin();
+                if(it!=self.inputs.end()){
+                    snprintf(buf2,32,"%d",*it);
+                    out+=buf2;
+                }
+                
+                ++it;
+                
+                for(;it!=self.inputs.end();++it){
+                    snprintf(buf2,32,",%d",*it);
+                    out+=buf2;
+                }
+                out += std::string("=")+buf+"\n";
+            }
             posi+=delta;
         }
     }

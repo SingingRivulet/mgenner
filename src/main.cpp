@@ -45,6 +45,10 @@ int main(){
             window._toThemesTrain_callback=c;
             Module._toThemesTrain(parseInt(dt));
         };
+        window.toThemesPredict=function(c,dt){
+            window._toThemesPredict_callback=c;
+            Module._toThemesPredict(parseInt(dt));
+        };
         window.downloadThemesTrain=function(){
             var s = prompt("block length");
             var i = parseInt(s);
@@ -52,6 +56,16 @@ int main(){
                 i=1;
             }
             toThemesTrain(function(s){
+                downloadString(s,"outTunner");
+            },i);
+        };
+        window.downloadThemesPredict=function(){
+            var s = prompt("block length");
+            var i = parseInt(s);
+            if(i<=0){
+                i=1;
+            }
+            toThemesPredict(function(s){
                 downloadString(s,"outTunner");
             },i);
         };
@@ -243,6 +257,14 @@ extern "C"{
         EM_ASM_({
             if(window._toThemesTrain_callback)
                 window._toThemesTrain_callback(UTF8ToString($0));
+        },tmpbuf.c_str());
+    }
+    EMSCRIPTEN_KEEPALIVE void toThemesPredict(int delta){
+        std::string tmpbuf;
+        V.toThemesPredict(tmpbuf,delta);
+        EM_ASM_({
+            if(window._toThemesPredict_callback)
+                window._toThemesPredict_callback(UTF8ToString($0));
         },tmpbuf.c_str());
     }
     EMSCRIPTEN_KEEPALIVE void toHashSerious(){
