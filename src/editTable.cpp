@@ -171,18 +171,7 @@ int editTable::selectByArea(int x,int y,int len){
         auto self = (editTable*)arg;
         if(!n->selected){//未选择就加上选择
             self->selected.insert(n);
-            printf("select:%f %f %s delay:%f volume:%d\n",n->begin,n->tone,n->info.c_str(),n->delay,n->volume);
             n->selected=true;
-            
-            if(n->info != self->defaultInfo){
-                printf("use note name:%s\n",n->info.c_str());
-                self->defaultInfo = n->info;
-            }
-            
-        }else{
-            self->selected.erase(n);//第二次点击取消选择
-            printf("unselect:%f %f\n",n->begin,n->tone);
-            n->selected=false;
         }
     },this);
     
