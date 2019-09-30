@@ -226,7 +226,8 @@ void synth::toThemesTrain(std::string & out,int delta){
                 self->inputs.insert(n->tone);
                 
                 if(n->selected){
-                    self->m = n->tone;
+                    if(n->tone > self->m)
+                        self->m = n->tone;
                 }
             },&self);
             

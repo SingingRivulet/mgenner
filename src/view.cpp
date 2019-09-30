@@ -1,7 +1,10 @@
 #include "view.h"
+#include <algorithm>
 namespace mgnr{
 
 view::view(){
+    selectByBox  = false;
+    selectingByBox  = false;
     windowWidth  = 1024;
     windowHeight = 480;
     SDL_Init( SDL_INIT_VIDEO );
@@ -20,6 +23,8 @@ view::view(){
     playMsg = TTF_RenderText_Solid(font,"播放",textColor);
     stopMsg = TTF_RenderText_Solid(font,"暂停",textColor);
     startMsg = TTF_RenderText_Solid(font,"开头",textColor);
+    selectByBoxMsg = TTF_RenderText_Solid(font,"框选",textColor);
+    selectByBoxOffMsg = TTF_RenderText_Solid(font,"输入",textColor);
     
     noteSurfaces[0] = TTF_RenderText_Solid(font,"[1/32]",textColor);
     noteSurfaces[1] = TTF_RenderText_Solid(font,"[1/16]",textColor);
@@ -27,6 +32,11 @@ view::view(){
     noteSurfaces[3] = TTF_RenderText_Solid(font,"[ 1/4]",textColor);
     noteSurfaces[4] = TTF_RenderText_Solid(font,"[ 1/2]",textColor);
     noteSurfaces[5] = TTF_RenderText_Solid(font,"[   1]",textColor);
+    
+    selectBoxX = 0;
+    selectBoxY = 0;
+    selectBoxXend = 0;
+    selectBoxYend = 0;
     
     toneMapInit();
     
@@ -126,6 +136,50 @@ void view::drawNote(int fx,int fy,int tx,int ty, int volume,const std::string & 
     
 }
 void view::drawNote_end(){
+    if(selectingByBox){
+        int bx,ex,by,ey;
+        if(selectBoxX<selectBoxXend){
+            bx = selectBoxX;
+            ex = selectBoxXend;
+        }else{
+            ex = selectBoxX;
+            bx = selectBoxXend;
+        }
+        if(selectBoxY<selectBoxYend){
+            by = selectBoxY;
+            ey = selectBoxYend;
+        }else{
+            ey = selectBoxY;
+            by = selectBoxYend;
+        }
+        if(!(bx==ex || by==ey)){
+            SDL_Rect rect;
+            rect.x=bx;
+            rect.y=by;
+            rect.w=1;
+            rect.h=ey-by;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+            rect.x=ex;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+            
+            rect.x=bx;
+            rect.y=by;
+            rect.h=1;
+            rect.w=ex-bx;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+            rect.y=ey;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+            /*
+            rect.x=bx;
+            rect.y=by;
+            rect.h=1;
+            rect.w=ey-by;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+            rect.x=ex;
+            SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255 , 255 , 255));
+             */
+        }
+    }
     if(displayBuffer.showing){
         EM_ASM_({
             if(window.noteptr==null){
@@ -195,6 +249,11 @@ void view::drawNote_end(){
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
     
+    rect.x=780;
+    if(selectByBox)
+        SDL_BlitSurface(selectByBoxOffMsg, NULL, screen, &rect);
+    else
+        SDL_BlitSurface(selectByBoxMsg, NULL, screen, &rect);
     
     int nowTime=EM_ASM_INT({
         return Date.now();
@@ -379,9 +438,22 @@ void view::pollEvent(){
                     },TPQ);
                     if(t>1)
                         TPQ=t;
+                }else
+                if(event.motion.x<844){
+                    if(selectByBox)
+                        selectByBox=false;
+                    else
+                        selectByBox=true;
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
+                if(selectByBox){
+                    selectingByBox = true;
+                    selectBoxX = event.motion.x;
+                    selectBoxY = event.motion.y;
+                    selectBoxXend = event.motion.x;
+                    selectBoxYend = event.motion.y;
+                }else
                 if(clickToSelect(event.motion.x , event.motion.y)<=0)
                     addDisplaied();
             }else
@@ -391,6 +463,35 @@ void view::pollEvent(){
             }
         }else
         if (event.type == SDL_MOUSEBUTTONUP){
+            if(selectingByBox && SDL_BUTTON_LEFT == event.button.button){
+                selectingByBox = false;
+                {
+                    int bx,ex,by,ey;
+                    if(selectBoxX<selectBoxXend){
+                        bx = selectBoxX;
+                        ex = selectBoxXend;
+                    }else{
+                        ex = selectBoxX;
+                        bx = selectBoxXend;
+                    }
+                    if(selectBoxY<selectBoxYend){
+                        ey = selectBoxY;
+                        by = selectBoxYend;
+                    }else{
+                        by = selectBoxY;
+                        ey = selectBoxYend;
+                    }
+                    auto pb=screenToAbs(bx,by);
+                    auto pe=screenToAbs(ex,ey);
+                    find(pb,pe,[](note * n , void * arg){//调用HBB搜索
+                        auto self = (view*)arg;
+                        if(!n->selected){//未选择就加上选择
+                            self->selected.insert(n);
+                            n->selected=true;
+                        }
+                    },this);
+                }
+            }else
             if(SDL_BUTTON_RIGHT == event.button.button){
                 resizeSelected_apply();
                 resizeMode=false;
@@ -398,6 +499,10 @@ void view::pollEvent(){
         }else
         if (event.type == SDL_MOUSEMOTION){//移动鼠标
             clickToDisplay(event.motion.x , event.motion.y);
+            if(selectingByBox){
+                selectBoxXend = event.motion.x;
+                selectBoxYend = event.motion.y;
+            }
             if(resizeMode){
                 resizeSelected(event.motion.x-resizeMode_last);
             }

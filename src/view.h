@@ -38,6 +38,8 @@ namespace mgnr{
             SDL_Surface * playMsg;
             SDL_Surface * stopMsg;
             SDL_Surface * startMsg;
+            SDL_Surface * selectByBoxMsg;
+            SDL_Surface * selectByBoxOffMsg;
             
             SDL_Surface * toneMap[128];
             
@@ -59,6 +61,13 @@ namespace mgnr{
             void noteLengthChange();
             void toneMapInit();
             void exportNotes();
+            
+            bool selectByBox;
+            bool selectingByBox;
+            int selectBoxX;
+            int selectBoxY;
+            int selectBoxXend;
+            int selectBoxYend;
     };
 }
 #endif
