@@ -124,6 +124,15 @@ EMSCRIPTEN_BINDINGS(my_module) {
 }
 
 extern "C"{
+    EMSCRIPTEN_KEEPALIVE void selectByArea(int x,int y,int len){
+        V.selectByArea(x,y,len);
+    }
+    EMSCRIPTEN_KEEPALIVE void addNote(int x,int y,int d ,int v){
+        V.addNote(x,y,d,v,V.defaultInfo);
+    }
+    EMSCRIPTEN_KEEPALIVE void clearSelected(){
+        V.clearSelected();
+    }
     EMSCRIPTEN_KEEPALIVE void loadStringData(char *n){
         V.loadString(n);
     }

@@ -34,6 +34,8 @@ namespace mgnr{
             void clickToDisplay(int x,int y);
             void clickToDisplay_close();
             
+            int selectByArea(int x,int y,int len);
+            
             void drawNoteAbs(note*);//画音符绝对坐标
             void drawNoteAbs(float begin,float tone,float delay,float volume,const std::string & info,bool selected,bool onlydisplay=false);
             void findNote();//根据参数找到搜索矩形，利用HBB找到音符
