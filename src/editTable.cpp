@@ -163,8 +163,8 @@ int editTable::clickToSelect(int x,int y){
     
 }
 int editTable::selectByArea_unique(int x,int y,int len){
-    auto f = HBB::vec(0,y);
-    auto t = HBB::vec(128,y+len);
+    auto f = HBB::vec(x,0);
+    auto t = HBB::vec(x+len,128);
     
     int selNum = 0;
     
@@ -178,8 +178,8 @@ int editTable::selectByArea_unique(int x,int y,int len){
     if(selNum>0)
         return 0;
     
-    f.X = x;
-    t.X = x+0.9;
+    f.Y = y;
+    t.Y = y+0.9;
     
     return find(f,t,[](note * n , void * arg){
         auto self = (editTable*)arg;
@@ -193,7 +193,7 @@ int editTable::selectByArea_unique(int x,int y,int len){
 int editTable::selectByArea(int x,int y,int len){
     
     auto f = HBB::vec(x,y);
-    auto t = HBB::vec(x+0.9,y+len);
+    auto t = HBB::vec(x+len,y+0.9);
     
     return find(f,t,[](note * n , void * arg){//调用HBB搜索
         auto self = (editTable*)arg;
