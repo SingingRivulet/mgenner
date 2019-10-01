@@ -162,6 +162,34 @@ int editTable::clickToSelect(int x,int y){
     },this);
     
 }
+int editTable::selectByArea_unique(int x,int y,int len){
+    auto f = HBB::vec(0,y);
+    auto t = HBB::vec(128,y+len);
+    
+    int selNum = 0;
+    
+    find(f,t,[](note * n , void * arg){//调用HBB搜索
+        int * num = (int*)arg;
+        if(n->selected){
+            ++(*num);
+        }
+    },&selNum);
+    
+    if(selNum>0)
+        return 0;
+    
+    f.X = x;
+    t.X = x+0.9;
+    
+    return find(f,t,[](note * n , void * arg){
+        auto self = (editTable*)arg;
+        if(!n->selected){//未选择就加上选择
+            self->selected.insert(n);
+            n->selected=true;
+        }
+    },this);
+    
+}
 int editTable::selectByArea(int x,int y,int len){
     
     auto f = HBB::vec(x,y);

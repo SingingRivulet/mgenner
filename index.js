@@ -9189,6 +9189,12 @@ var _selectByArea = Module["_selectByArea"] = function() {
   return Module["asm"]["_selectByArea"].apply(null, arguments)
 };
 
+var _selectByArea_unique = Module["_selectByArea_unique"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_selectByArea_unique"].apply(null, arguments)
+};
+
 var _synthOutput = Module["_synthOutput"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');

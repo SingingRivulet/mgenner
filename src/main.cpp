@@ -127,6 +127,9 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE void selectByArea(int x,int y,int len){
         V.selectByArea(x,y,len);
     }
+    EMSCRIPTEN_KEEPALIVE void selectByArea_unique(int x,int y,int len){
+        V.selectByArea_unique(x,y,len);
+    }
     EMSCRIPTEN_KEEPALIVE void addNote(int x,int y,int d ,int v){
         V.addNote(x,y,d,v,V.defaultInfo);
     }
