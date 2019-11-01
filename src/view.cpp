@@ -344,7 +344,7 @@ void view::hideMode(){
 }
 void view::pollEvent(){
     SDL_Event event;
-    if (SDL_PollEvent(&event)){
+    while (SDL_PollEvent(&event)){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
             if(resizeMode)
                 return;
