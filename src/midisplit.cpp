@@ -108,9 +108,9 @@ static int hash(const char * str){
  
     return (hash & 0x7FFFFFFF);
 }
-void synth::toHashSerious(std::string & out){
+void synth::toHashSeries(std::string & out){
     std::vector<std::pair<int,int> > ser;
-    toHashSerious(ser);
+    toHashSeries(ser);
     out.clear();
     char buf[64];
     for(auto it:ser){
@@ -118,7 +118,7 @@ void synth::toHashSerious(std::string & out){
         out+=buf;
     }
 }
-void synth::toHashSerious(std::vector<std::pair<int,int> > & out){
+void synth::toHashSeries(std::vector<std::pair<int,int> > & out){
     std::multimap<int,note*> sortedNotes;//对音符进行排序
     for(auto it:notes){
         if(it->info.empty()){//没命名
@@ -176,7 +176,7 @@ void synth::diff(const std::string & in,std::function<void (int)> const & callba
 }
 void synth::diff(const std::vector<std::pair<int,int> > & in,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s){
     std::vector<std::pair<int,int> > me;
-    toHashSerious(me);
+    toHashSeries(me);
     std::vector<int> A,B,Am,Bm;
     
     A.resize(me.size());

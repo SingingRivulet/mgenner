@@ -73,9 +73,9 @@ int main(){
             window._toRelative_callback=c;
             Module._toRelative();
         };
-        window.toHashSerious=function(c){
-            window._toHashSerious_callback=c;
-            Module._toHashSerious();
+        window.toHashSeries=function(c){
+            window._toHashSeries_callback=c;
+            Module._toHashSeries();
         };
         window.synthOutput=function(c){
             Module._synthOutput();
@@ -201,7 +201,7 @@ extern "C"{
                 }
                 if(inIframe){
                     EM_ASM({//向父窗口发送hash
-                        toHashSerious(function(h){
+                        toHashSeries(function(h){
                             window.parent.postMessage({
                                 'mode':'diff',
                                 'hash':h
@@ -279,12 +279,12 @@ extern "C"{
                 window._toThemesPredict_callback(UTF8ToString($0));
         },tmpbuf.c_str());
     }
-    EMSCRIPTEN_KEEPALIVE void toHashSerious(){
+    EMSCRIPTEN_KEEPALIVE void toHashSeries(){
         std::string tmpbuf;
-        V.toHashSerious(tmpbuf);
+        V.toHashSeries(tmpbuf);
         EM_ASM_({
-            if(window._toHashSerious_callback)
-                window._toHashSerious_callback(UTF8ToString($0));
+            if(window._toHashSeries_callback)
+                window._toHashSeries_callback(UTF8ToString($0));
         },tmpbuf.c_str());
     }
     EMSCRIPTEN_KEEPALIVE void toRelative(){

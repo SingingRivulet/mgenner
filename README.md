@@ -10,6 +10,6 @@ midi在线编辑器，使用emscripten开发，留有js API，便于与自己的
 `toStringData(function(data){})` 将数据转成序列化格式（异步）  
 `exportMidiFile()`　导出mid格式（返回一个blob）  
 配合以下三个函数可实现对比两个midi文件的差异  
-`toHashSerious(function(data){})` 将midi数据转换成序列哈希（用来进行diff操作）  
+`toHashSeries(function(data){})` 将midi数据转换成序列哈希（用来进行diff操作）  
 `midiDiff(hash,function(tick){})` 将序列哈希与自己对比，将与自己不同的tick通过回调函数返回  
 `seekTick(tick)` 跳转到指定tick  

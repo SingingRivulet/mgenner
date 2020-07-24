@@ -46,10 +46,10 @@ namespace mgnr{
             
             void synthOutput();//链接外部引擎合成
             
-            void toHashSerious(std::vector<std::pair<int,int> > & out);
+            void toHashSeries(std::vector<std::pair<int,int> > & out);
             void diff(const std::string & out,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s);
             void diff(const std::vector<std::pair<int,int> > & out,std::function<void (int)> const & callback_d,std::function<void (int,int,int,int)> const & callback_s);
-            void toHashSerious(std::string & out);
+            void toHashSeries(std::string & out);
             void toThemesTrain(std::string & out,int delta);//生成主旋律预测训练数据（供outTunner使用）
             void toThemesPredict(std::string & out,int delta);//生成主旋律预测数据（供outTunner使用）
             
