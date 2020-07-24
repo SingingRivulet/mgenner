@@ -58,12 +58,19 @@ void editTable::exportMidi(const std::string & filename){
     midifile.setTPQ(TPQ);//0音轨
     midifile.addTrack();//0音轨
     
+    struct noteMap_t{
+        int tone,volume,time;
+        bool isNoteOn;
+    };
+    
+    std::map<int,std::vector<noteMap_t*> > noteMap;
+    
     for(auto it:notes){
         if(it->info.empty()){
             track=0;
             
-            midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
-            midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+            //midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
+            //midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
             
         }else{
             if(it->info.at(0)!='@'){//为@是控制字符
@@ -75,14 +82,47 @@ void editTable::exportMidi(const std::string & filename){
                     track=trackNum;
                     ++trackNum;
                     
-                    midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
-                    midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+                    auto p1 = new noteMap_t;
+                    p1->tone   = it->tone;
+                    p1->volume = it->volume > 100 ? 100 : it->volume;
+                    p1->time   = it->begin;
+                    p1->isNoteOn = true;
+                    
+                    auto p2 = new noteMap_t;
+                    p2->tone   = it->tone;
+                    p2->volume = 0;
+                    p2->time   = it->begin + it->delay;
+                    p2->isNoteOn = false;
+                    
+                    auto & lst = noteMap[track];
+                    lst.push_back(p1);
+                    lst.push_back(p2);
+                    
+                    //midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
+                    //midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
                     
                 }else{
                     track=tit->second;
                     
-                    midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
-                    midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
+                    
+                    auto p1 = new noteMap_t;
+                    p1->tone   = it->tone;
+                    p1->volume = it->volume > 100 ? 100 : it->volume;
+                    p1->time   = it->begin;
+                    p1->isNoteOn = true;
+                    
+                    auto p2 = new noteMap_t;
+                    p2->tone   = it->tone;
+                    p2->volume = 0;
+                    p2->time   = it->begin + it->delay;
+                    p2->isNoteOn = false;
+                    
+                    auto & lst = noteMap[track];
+                    lst.push_back(p1);
+                    lst.push_back(p2);
+                    
+                    //midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
+                    //midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
                     
                 }
                 
@@ -91,6 +131,22 @@ void editTable::exportMidi(const std::string & filename){
     }
     for(auto it:timeMap){//添加time map
         midifile.addTempo(0,it.first,it.second);
+    }
+    for(auto itlst:noteMap){
+        int tk = itlst.first;
+        
+        sort(itlst.second.begin(),itlst.second.end(),[](noteMap_t * a,noteMap_t * b){
+            return a->time < b->time;
+        });
+        
+        for(auto it:itlst.second){//扫描音轨
+            if(it->isNoteOn){
+                midifile.addNoteOn(tk, it->time , 0, it->tone , it->volume);
+            }else{
+                midifile.addNoteOff(tk, it->time , 0, it->tone);
+            }
+            delete it;
+        }
     }
     midifile.write(filename);
 }
