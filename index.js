@@ -1220,11 +1220,11 @@ function updateGlobalBufferAndViews(buf) {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 46640,
+    STACK_BASE = 46672,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5289520,
-    DYNAMIC_BASE = 5289520,
-    DYNAMICTOP_PTR = 46608;
+    STACK_MAX = 5289552,
+    DYNAMIC_BASE = 5289552,
+    DYNAMICTOP_PTR = 46640;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1745,8 +1745,8 @@ var ASM_CONSTS = [function() { if (self != top) return 1; else return 0; },
  function($0) { var jsString = prompt("响度",$0); if(!jsString) return $0; var r = parseInt(jsString); if(r<=0 || r>=128) return $0; return r; },
  function($0) { var jsString = prompt("TPQ",$0); if(!jsString) return 0; return parseInt(jsString); },
  function($0) { var info=UTF8ToString($0); mgnr.loadName(info); },
- function($0, $1) { var info=UTF8ToString($0); var tone=$1; mgnr.noteOff(info, tone); },
- function($0, $1, $2) { var info=UTF8ToString($0); var tone=$1; var vol =$2; mgnr.noteOn(info, tone, vol); },
+ function($0, $1) { try{ var info=UTF8ToString($0); var tone=$1; mgnr.noteOff(info, tone); }catch(e){} },
+ function($0, $1, $2) { try{ var info=UTF8ToString($0); var tone=$1; var vol =$2; mgnr.noteOn(info, tone, vol); }catch(e){} },
  function($0) { mgnr.synth.init($0); },
  function() { mgnr.synth.start(); },
  function($0, $1) { mgnr.synth.addPause($0,$1); },
@@ -1787,7 +1787,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 45616;
+// STATICTOP = STATIC_BASE + 45648;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1798,7 +1798,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 46624
+var tempDoublePtr = 46656
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much

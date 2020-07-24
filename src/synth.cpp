@@ -7,17 +7,21 @@ synth::~synth(){
 
 void synth::callJsNoteOn(const char * info,int tone,int vol){
     EM_ASM({
-        var info=UTF8ToString($0);
-        var tone=$1;
-        var vol =$2;
-        mgnr.noteOn(info, tone, vol);
+        try{
+            var info=UTF8ToString($0);
+            var tone=$1;
+            var vol =$2;
+            mgnr.noteOn(info, tone, vol);
+        }catch(e){}
     }, info,tone,vol);
 }
 void synth::callJsNoteOff(const char * info,int tone){
     EM_ASM({
-        var info=UTF8ToString($0);
-        var tone=$1;
-        mgnr.noteOff(info, tone);
+        try{
+            var info=UTF8ToString($0);
+            var tone=$1;
+            mgnr.noteOff(info, tone);
+        }catch(e){}
     }, info,tone);
 }
 void synth::onNoteOn(note * n){
