@@ -25,6 +25,7 @@ view::view(){
     startMsg = TTF_RenderText_Solid(font,"开头",textColor);
     selectByBoxMsg = TTF_RenderText_Solid(font,"框选",textColor);
     selectByBoxOffMsg = TTF_RenderText_Solid(font,"输入",textColor);
+    undoMsg = TTF_RenderText_Solid(font,"撤销",textColor);
     
     noteSurfaces[0] = TTF_RenderText_Solid(font,"[1/32]",textColor);
     noteSurfaces[1] = TTF_RenderText_Solid(font,"[1/16]",textColor);
@@ -254,7 +255,11 @@ void view::drawNote_end(){
         SDL_BlitSurface(selectByBoxOffMsg, NULL, screen, &rect);
     else
         SDL_BlitSurface(selectByBoxMsg, NULL, screen, &rect);
+
     
+    rect.x=844;
+    SDL_BlitSurface(undoMsg, NULL, screen, &rect);
+
     int nowTime=EM_ASM_INT({
         return Date.now();
     });
@@ -444,6 +449,10 @@ void view::pollEvent(){
                         selectByBox=false;
                     else
                         selectByBox=true;
+                }else
+                if(event.motion.x<904){
+                    undo();
+                    printf("undo\n");
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){

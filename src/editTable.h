@@ -5,7 +5,28 @@
 #include <sstream>
 #include <list>
 #include <stdio.h>
+#include <memory>
 namespace mgnr{
+    struct noteInfo{
+        //音符数据（如果是删除的话）
+        float position;
+        float tone;
+        float delay;
+        int volume;
+        std::string info;
+        noteInfo(note * p){
+            position = p->begin;
+            tone     = p->tone;
+            delay    = p->delay;
+            volume   = p->volume;
+            info     = p->info;
+        }
+    };
+    struct history{
+        bool isAdd;
+        int note;//音符，如果是添加的话，将会存在
+        std::list<std::unique_ptr<noteInfo> > notes;
+    };
     class editTable:public midiMap{
         public:
             editTable();
@@ -84,6 +105,9 @@ namespace mgnr{
                 float tone;
                 bool  showing;
             }displayBuffer;
+            void undo();
+        private:
+            std::list<std::unique_ptr<history> > histories;
     };
 }
 #endif

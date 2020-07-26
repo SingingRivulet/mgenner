@@ -40,6 +40,7 @@ namespace mgnr{
             SDL_Surface * startMsg;
             SDL_Surface * selectByBoxMsg;
             SDL_Surface * selectByBoxOffMsg;
+            SDL_Surface * undoMsg;
             
             SDL_Surface * toneMap[128];
             

@@ -68,7 +68,15 @@ void editTable::automatic(float & x,float & y){
 note * editTable::clickToAdd(int x,int y){
     auto p=screenToAbs(x,y);
     automatic(p.X , p.Y);
-    return addNote(p.X , p.Y , defaultDelay , defaultVolume , defaultInfo);
+    auto ptr = addNote(p.X , p.Y , defaultDelay , defaultVolume , defaultInfo);
+    
+    printf("add %d %d\n",x,y);
+    std::unique_ptr<history> hisptr (new history);//插入历史记录
+    hisptr->isAdd = true;
+    hisptr->note = ptr->id;
+    histories.push_back(std::move(hisptr));
+    
+    return ptr;
 }
 void editTable::clearSelected(){
     for(auto it:selected){
@@ -81,11 +89,22 @@ void editTable::clearNotes(){
     selected.clear();
 }
 void editTable::removeSelected(){
+    if(selected.empty())
+        return;
+    
+    std::unique_ptr<history> hisptr (new history);//插入历史记录
+    hisptr->isAdd = false;
+    
     for(auto it:selected){
+        std::unique_ptr<noteInfo> np(new noteInfo(it));
+        hisptr->notes.push_back(std::move(np));
         removeNote(it);
     }
+    
     printf("delete notes\n");
     selected.clear();
+    
+    histories.push_back(std::move(hisptr));
 }
 void editTable::resizeSelected(int delta){
     auto rd = (float)delta/((float)noteLength*256);
@@ -220,7 +239,13 @@ void editTable::clickToDisplay_close(){
 
 void editTable::addDisplaied(){
     if(displayBuffer.showing){
-        addNote(displayBuffer.begin , displayBuffer.tone , defaultDelay , defaultVolume , defaultInfo);
+        
+        printf("add %f %f\n",displayBuffer.begin , displayBuffer.tone);
+        std::unique_ptr<history> hisptr (new history);//插入历史记录
+        hisptr->isAdd = true;
+        hisptr->note = addNote(displayBuffer.begin , displayBuffer.tone , defaultDelay , defaultVolume , defaultInfo)->id;
+        histories.push_back(std::move(hisptr));
+        
         displayBuffer.showing=false;
     }
 }
@@ -481,6 +506,22 @@ void editTable::selectedToRelative(std::string & out){
             snprintf(buf,64,"%d ",delta);
             out+=buf;
         }
+    }
+}
+
+void editTable::undo(){
+    auto it = histories.rbegin();
+    if(it!=histories.rend()){
+        if((*it)->isAdd){
+            printf("isAdd\n");
+            removeNoteById((*it)->note);
+        }else{
+            printf("isRemove\n");
+            for(auto & itn:(*it)->notes){
+                addNote(itn->position,itn->tone,itn->delay,itn->volume,itn->info);
+            }
+        }
+        histories.pop_back();
     }
 }
 

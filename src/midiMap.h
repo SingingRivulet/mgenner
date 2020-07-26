@@ -45,7 +45,22 @@ namespace mgnr{
             void removeControl(float begin,const std::string & info);
             void addControl(float begin,const std::string & info);
             
+            inline void removeNoteById(int id){
+                auto p = seekNoteById(id);
+                if(p){
+                    removeNote(p);
+                }
+            }
+
+            inline note * seekNoteById(int id){
+                auto it = noteIDs.find(id);
+                if(it!=noteIDs.end()){
+                    return it->second;
+                }
+                return NULL;
+            }
         private:
+            std::map<int,note*> noteIDs;
             HBB indexer;
             void * pool;
             int id;

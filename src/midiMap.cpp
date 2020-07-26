@@ -27,6 +27,7 @@ note * midiMap::addNote(float position,float tone,float delay,int v,const std::s
     
     auto p  = ((npool*)pool)->get();
     p->construct();
+    p->id=++id;
     p->startId=++id;//0是默认值，用0可能会出问题
     p->endId=++id;//分配两个id，防止时间为0的情况
     
@@ -38,6 +39,8 @@ note * midiMap::addNote(float position,float tone,float delay,int v,const std::s
     
     p->getBeginIndex();
     p->getEndIndex();
+
+    noteIDs[p->id] = p;
     timeIndex[p->beginIndex] = p;
     timeIndex[p->endIndex] = p;
     
@@ -68,7 +71,7 @@ void midiMap::resizeNote(note * p){
         to = from;
         to.X += p->delay;
         to.Y += 0.9;
-        
+
         timeIndex.erase(p->endIndex);
         p->getEndIndex();//更新尾部索引
         timeIndex[p->endIndex] = p;
@@ -89,6 +92,7 @@ void midiMap::removeNote(note * p){
             }
         }
         notes.erase(p);
+        noteIDs.erase(p->id);
         timeIndex.erase(p->beginIndex);
         timeIndex.erase(p->endIndex);
         ((npool*)pool)->del(p);

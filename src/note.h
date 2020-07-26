@@ -35,6 +35,7 @@ namespace mgnr{
             float tone;
             float delay;
             int volume;
+            int id;
             int startId;
             int endId;
             
