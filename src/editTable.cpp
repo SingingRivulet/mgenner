@@ -61,7 +61,7 @@ void editTable::automatic(float & x,float & y){
         }
     }
     if(automaticY){
-        y=(int)y;
+        y=(int)floor(y);
     }
 }
 
