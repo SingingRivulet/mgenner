@@ -1,4 +1,4 @@
-CC = em++ -std=c++11
+CC = em++ -std=c++11 -Os
 
 ../index.js:main.cpp view.o MidiEventList.o MidiEvent.o MidiMessage.o Options.o MidiFile.o Binasc.o
 	$(CC) main.cpp \
