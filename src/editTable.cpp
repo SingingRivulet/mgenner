@@ -477,6 +477,7 @@ void editTable::loadString(const std::string & str){
                 if(buf[1]=='T'){
                     int t=atoi(buf+2);
                     TPQ=t;
+                    rebuildNoteLen();
                 }
             }
         }

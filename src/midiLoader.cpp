@@ -16,6 +16,7 @@ void editTable::loadMidi(const std::string & str){
     midifile.linkNotePairs();
     
     TPQ=midifile.getTicksPerQuarterNote();
+    rebuildNoteLen();
     cout << "TPQ: " << TPQ << endl;
     int tracks = midifile.getTrackCount();
     

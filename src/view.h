@@ -26,6 +26,8 @@ namespace mgnr{
             
             void hideMode();
             
+            void rebuildNoteLen();
+            
         private:
             
             SDL_Surface * screen;
@@ -54,9 +56,6 @@ namespace mgnr{
             
             int lastTime;
             
-            //note length
-            //1/32 1/16 1/8 1/4 1/2 1
-            //15   30   60  120 240 480
             SDL_Surface * noteSurfaces[6];
             int noteStatus;
             void noteLengthChange();

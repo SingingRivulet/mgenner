@@ -30,6 +30,7 @@ namespace mgnr{
             std::map<float,double> timeMap;
             
             int TPQ;
+            virtual void rebuildNoteLen()=0;
             
             float sectionLen;//小节线
             

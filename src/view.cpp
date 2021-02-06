@@ -441,8 +441,10 @@ void view::pollEvent(){
                             return 0;
                         return parseInt(jsString);
                     },TPQ);
-                    if(t>1)
+                    if(t>1){
                         TPQ=t;
+                        rebuildNoteLen();
+                    }
                 }else
                 if(event.motion.x<844){
                     if(selectByBox)
@@ -566,9 +568,16 @@ void view::noteLengthChange(){
     ++noteStatus;
     if(noteStatus>5)
         noteStatus=0;
-    const static int lens[]={15,30,60,120,240,480};
-    defaultDelay=lens[noteStatus];
-    maticBlock=lens[noteStatus];
+    rebuildNoteLen();
+}
+void view::rebuildNoteLen(){
+    //note length
+    //1/32 1/16 1/8 1/4 1/2 1
+    if(noteStatus>5 || noteStatus<0)
+        noteStatus=0;
+    const static float lens[]={1.0/8.0 , 1.0/4.0 , 1/2.0 , 1.0 , 2.0 , 4.0};
+    defaultDelay=lens[noteStatus]*TPQ;
+    maticBlock=lens[noteStatus]*TPQ;
 }
 void view::exportNotes(){
     std::string s;
