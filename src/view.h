@@ -1,6 +1,7 @@
 #ifndef MGNR_VIEW
 #define MGNR_VIEW
 #include "synth.h"
+#include "kalman.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_render.h>
@@ -68,6 +69,8 @@ namespace mgnr{
             int selectBoxY;
             int selectBoxXend;
             int selectBoxYend;
+            
+            scalar_kalman_t fpsSmooth;
     };
 }
 #endif

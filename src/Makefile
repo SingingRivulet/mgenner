@@ -16,10 +16,14 @@ CC = em++ -std=c++11
 	synth.o \
 	midisplit.o \
 	synthOutput.o \
+	kalman.o \
 	Binasc.o --bind -s ALLOW_MEMORY_GROWTH=1 -o ../index.js
 
-view.o:view.h view.cpp editTable.o midiLoader.o synth.o midisplit.o synthOutput.o
+view.o:view.h view.cpp editTable.o midiLoader.o synth.o midisplit.o synthOutput.o kalman.o
 	$(CC) view.cpp -c
+
+kalman.o:kalman.h kalman.cpp
+	$(CC) kalman.cpp -c
 
 midiLoader.o:editTable.h midiLoader.cpp midiMap.o
 	$(CC) midiLoader.cpp -c

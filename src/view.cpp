@@ -45,6 +45,8 @@ view::view(){
     ScrX=3;
     noteStatus=3;
     lastTime=0;
+    
+    scalar_kalman_init(&fpsSmooth ,1,1,0.01,1);
 }
 view::~view(){
     TTF_CloseFont(font);
@@ -268,7 +270,7 @@ void view::drawNote_end(){
     lastTime=nowTime;
     rect.x=windowWidth-80;
     rect.y=windowHeight-30;
-    snprintf(buf,64,"FPS %d",fps);
+    snprintf(buf,64,"FPS %d",(int)scalar_kalman(&fpsSmooth,fps));
     msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
