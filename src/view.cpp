@@ -578,6 +578,7 @@ void view::rebuildNoteLen(){
     const static float lens[]={1.0/8.0 , 1.0/4.0 , 1/2.0 , 1.0 , 2.0 , 4.0};
     defaultDelay=lens[noteStatus]*TPQ;
     maticBlock=lens[noteStatus]*TPQ;
+    setSection();
 }
 void view::exportNotes(){
     std::string s;

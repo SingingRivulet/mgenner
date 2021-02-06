@@ -33,11 +33,16 @@ namespace mgnr{
             virtual void rebuildNoteLen()=0;
             
             float sectionLen;//小节线
+            int section;
             
             inline void setSection(int s){
-                if(s<=0 || s>7)
-                    return;
-                sectionLen=s*120;
+                section = s;
+                setSection();
+            }
+            inline void setSection(){
+                if(section<=0 || section>7)
+                    section=4;
+                sectionLen=section*TPQ;
             }
             
             double getTempo(float tick);
