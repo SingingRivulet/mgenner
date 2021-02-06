@@ -55,7 +55,7 @@ HBB::vec editTable::screenToAbs(int x,int y){
 void editTable::automatic(float & x,float & y){
     if(automaticX){
         if(maticBlock>0){
-            int num    = x/maticBlock;
+            int num    = floor(x/maticBlock);
             float real = num*maticBlock;
             x=real;
         }
