@@ -43,7 +43,7 @@ void editTable::loadMidi(const std::string & str){
     
     for(int i=0; i<midifile.getNumEvents(0); i++){
         if(midifile.getEvent(0,i).isTempo()){//是设置时间
-            int tp = round(midifile.getEvent(0,i).getTempoBPM());
+            double tp = midifile.getEvent(0,i).getTempoBPM();
             addTempo(midifile.getEvent(0,i).tick,tp);
         }
     }

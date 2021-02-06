@@ -12,10 +12,10 @@ void player::playStep(){
     if(playingStatus){
         playTimes++;
         
-        int tp=getTempo(lookAtX);
-        if(tp!=tempo){
+        double tp=getTempo(lookAtX);
+        if(round(tp-tempo)!=0){
             tempo=tp;
-            printf("set tempo:%d\n",tempo);
+            printf("set tempo:%f\n",tempo);
         }
         
         //获取所有此时刻的音符

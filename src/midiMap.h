@@ -27,7 +27,7 @@ namespace mgnr{
             std::set<note*> notes;
             std::map<noteIndex,note*> timeIndex;
             
-            std::map<float,int> timeMap;
+            std::map<float,double> timeMap;
             
             int TPQ;
             
@@ -39,8 +39,8 @@ namespace mgnr{
                 sectionLen=s*120;
             }
             
-            int getTempo(float tick);
-            void addTempo(float tick,int tp);
+            double getTempo(float tick);
+            void addTempo(float tick,double tp);
             
             void removeControl(float begin,const std::string & info);
             void addControl(float begin,const std::string & info);

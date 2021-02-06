@@ -13,7 +13,7 @@ namespace mgnr{
             void noteOn(note *);
             void noteOff(note *);
             
-            int tempo;
+            double tempo;
             int getTime();
             bool playingStatus;
             
