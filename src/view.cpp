@@ -6,7 +6,7 @@ view::view(){
     selectByBox  = false;
     selectingByBox  = false;
     windowWidth  = 1024;
-    windowHeight = 480;
+    windowHeight = 500;
     SDL_Init( SDL_INIT_VIDEO );
     screen = SDL_SetVideoMode( windowWidth, windowHeight, 0,SDL_HWSURFACE | SDL_DOUBLEBUF );
     
@@ -291,7 +291,7 @@ void view::drawSectionCol(float p,int n){
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 5));
     
-    rect.y = windowHeight-30;
+    rect.y = windowHeight-60;
     rect.h = 30;
     SDL_Color textColor = {64, 128, 128};
     char buf[64];
@@ -299,6 +299,31 @@ void view::drawSectionCol(float p,int n){
     auto msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
+}
+void view::drawTempo(float p,double t){
+    SDL_Rect rect;
+    rect.x=p;
+    rect.y=0;
+    rect.w=1;
+    rect.h=windowHeight;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 128, 128, 128));
+    
+    rect.y = windowHeight-30;
+    rect.h = 30;
+    SDL_Color textColor = {64, 128, 128};
+    char buf[64];
+    snprintf(buf,64,"BPM=%d",(int)round(t));
+    auto msg = TTF_RenderText_Solid(font,buf,textColor);
+    SDL_BlitSurface(msg, NULL, screen, &rect);
+    SDL_FreeSurface(msg);
+}
+void view::drawTempoPadd(){
+    SDL_Rect rect;
+    rect.x=0;
+    rect.y=windowHeight-30;
+    rect.w=windowWidth;
+    rect.h=30;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0 , 0 , 30));
 }
 void view::toneMapInit(){
     SDL_Color textColor = {255, 255, 255};
@@ -458,6 +483,9 @@ void view::pollEvent(){
                     undo();
                     printf("undo\n");
                 }
+            }else
+            if(event.motion.y>windowHeight-30){
+                //底部条
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
                 if(selectByBox){

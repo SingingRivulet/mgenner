@@ -65,10 +65,13 @@ namespace mgnr{
             bool drawToneRaw(int t);
             void drawTableColumns();
             void drawSectionLine();
+            void drawTempoLine();
             
             virtual void drawTableRaw(int from,int to,int t)=0;
             virtual void drawTimeCol(float p)=0;
             virtual void drawSectionCol(float p,int n)=0;
+            virtual void drawTempo(float p,double t)=0;
+            virtual void drawTempoPadd()=0;
             
             void toString(std::string & str);
             void loadString(const std::string & str);

@@ -3,6 +3,7 @@
 #include "hbb.h"
 #include "note.h"
 #include <string>
+#include <functional>
 #include <set>
 #include <map>
 namespace mgnr{
@@ -27,7 +28,7 @@ namespace mgnr{
             std::set<note*> notes;
             std::map<noteIndex,note*> timeIndex;
             
-            std::map<float,double> timeMap;
+            std::map<int,double> timeMap;
             
             int TPQ;
             virtual void rebuildNoteLen()=0;
@@ -45,8 +46,9 @@ namespace mgnr{
                 sectionLen=section*TPQ;
             }
             
-            double getTempo(float tick);
-            void addTempo(float tick,double tp);
+            double getTempo(int tick);
+            void addTempo(int tick,double tp);
+            void getTempo(int begin,const std::function<bool(int,double)> & callback);//获取一段区域的速度
             
             void removeControl(float begin,const std::string & info);
             void addControl(float begin,const std::string & info);

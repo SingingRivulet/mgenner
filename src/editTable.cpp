@@ -273,6 +273,7 @@ void editTable::findNote(){
         auto self = (editTable*)arg;
         self->drawNoteAbs(n);
     },this);
+    drawTempoLine();
 }
 
 void editTable::drawNoteAbs(note * n){
@@ -304,6 +305,20 @@ void editTable::drawTableColumns(){
         r+=maticBlock;
         
     }
+}
+void editTable::drawTempoLine(){
+    drawTempoPadd();
+    getTempo(lookAtX,[&](int tick,double tempo){
+        auto p=(tick-lookAtX)*noteLength;
+        if(p<0)
+            p = 0;
+        if(p>windowWidth){
+            return false;
+        }else{
+            drawTempo(p,tempo);
+        }
+        return true;
+    });
 }
 void editTable::drawSectionLine(){
     float p;

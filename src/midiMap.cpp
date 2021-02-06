@@ -185,7 +185,7 @@ int midiMap::find(float step,void(*callback)(note*,void*),void * arg){
     },&s);
     return s.num;
 }
-double midiMap::getTempo(float tick){
+double midiMap::getTempo(int tick){
     if(timeMap.empty())
         return 120;
     auto it = timeMap.upper_bound(tick);//获取大于tick的第一个元素
@@ -199,10 +199,31 @@ double midiMap::getTempo(float tick){
     it--;//向前移动一步
     return it->second;
 }
-void midiMap::addTempo(float tick,double tp){
+void midiMap::addTempo(int tick,double tp){
     char str[64];
     snprintf(str,64,"@T%f",tp);
     addNote(tick,-1,120,100,str);
+}
+void midiMap::getTempo(int begin,const std::function<bool(int,double)> & callback){
+    if(timeMap.empty()){
+        callback(0,120);
+        return;
+    }
+    auto it = timeMap.upper_bound(begin);//获取大于tick的第一个元素
+    if(it==timeMap.end()){//指向结尾
+        it--;
+        callback(it->first , it->second);
+        return;
+    }
+    if(it==timeMap.begin()){//指向开头
+    
+    }else{
+        it--;//向前移动一步
+    }
+    while(it!=timeMap.end()){
+        if(!callback(it->first , it->second))break;
+        ++it;
+    }
 }
 void midiMap::removeControl(float begin,const std::string & info){
     if(!info.empty() && info[0]=='@' && info.size()>2){
