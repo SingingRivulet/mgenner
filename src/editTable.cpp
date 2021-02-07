@@ -25,6 +25,7 @@ void editTable::render(){
     drawNote_begin();
     findNote();
     drawDisplay();
+    drawTempoLine();
     drawNote_end();
 }
 
@@ -62,6 +63,27 @@ void editTable::automatic(float & x,float & y){
     }
     if(automaticY){
         y=(int)floor(y);
+    }
+}
+void editTable::clickToRemoveTempo(int x,int y){
+    auto p=screenToAbs(x,y);
+    automatic(p.X , p.Y);
+    if(EM_ASM_INT({return confirm("确定删除速度控制吗？")?1:0;})==1){
+        removeTempoBeforePos(p.X);
+    }
+}
+void editTable::clickToSetTempo(int x,int y){
+    auto p=screenToAbs(x,y);
+    automatic(p.X , p.Y);
+    double res = EM_ASM_DOUBLE({
+        var jsString = prompt("设置速度（BPM）");
+        if(!jsString)
+            return -1;
+        var r = Number(jsString);
+        return r;
+    });
+    if(res>0){
+        addTempo(p.X,res);
     }
 }
 
@@ -273,7 +295,6 @@ void editTable::findNote(){
         auto self = (editTable*)arg;
         self->drawNoteAbs(n);
     },this);
-    drawTempoLine();
 }
 
 void editTable::drawNoteAbs(note * n){
@@ -459,6 +480,10 @@ void editTable::toString(std::string & str){
         snprintf(tbuf,sizeof(tbuf),"+%s %f %f %f %d\n",it->info.c_str(),it->begin,it->tone,it->delay,it->volume);
         str+=tbuf;
     }
+    for(auto it:timeMap){
+        snprintf(tbuf,sizeof(tbuf),"!B%d %lf\n",it.first,it.second);
+        str+=tbuf;
+    }
 }
 void editTable::loadString(const std::string & str){
     std::istringstream iss(str);
@@ -493,6 +518,12 @@ void editTable::loadString(const std::string & str){
                     int t=atoi(buf+2);
                     TPQ=t;
                     rebuildNoteLen();
+                }else if(buf[1]=='B'){
+                    int tick = 0;
+                    double tpo = 120;
+                    if(sscanf(buf+2 , "%d %lf",&tick,&tpo)>=2){
+                        addTempo(tick,tpo);
+                    }
                 }
             }
         }

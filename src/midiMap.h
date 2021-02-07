@@ -48,6 +48,7 @@ namespace mgnr{
             
             double getTempo(int tick);
             void addTempo(int tick,double tp);
+            void removeTempoBeforePos(int tick);
             void getTempo(int begin,const std::function<bool(int,double)> & callback);//获取一段区域的速度
             
             void removeControl(float begin,const std::string & info);

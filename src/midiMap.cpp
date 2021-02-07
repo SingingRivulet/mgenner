@@ -200,9 +200,11 @@ double midiMap::getTempo(int tick){
     return it->second;
 }
 void midiMap::addTempo(int tick,double tp){
-    char str[64];
-    snprintf(str,64,"@T%f",tp);
-    addNote(tick,-1,120,100,str);
+    //char str[64];
+    //snprintf(str,64,"@T%f",tp);
+    //addNote(tick,-1,120,100,str);
+    printf("add tempo:%d %f\n",tick,tp);
+    timeMap[tick]=tp;
 }
 void midiMap::getTempo(int begin,const std::function<bool(int,double)> & callback){
     if(timeMap.empty()){
@@ -224,6 +226,22 @@ void midiMap::getTempo(int begin,const std::function<bool(int,double)> & callbac
         if(!callback(it->first , it->second))break;
         ++it;
     }
+}
+void midiMap::removeTempoBeforePos(int tick){
+    if(timeMap.empty())
+        return;
+    auto it = timeMap.upper_bound(tick);//获取大于tick的第一个元素
+    if(it==timeMap.end()){//指向结尾
+        it--;
+        timeMap.erase(it);
+        return;
+    }
+    if(it==timeMap.begin()){//指向开头
+        timeMap.erase(it);
+        return;
+    }
+    it--;//向前移动一步
+    timeMap.erase(it);
 }
 void midiMap::removeControl(float begin,const std::string & info){
     if(!info.empty() && info[0]=='@' && info.size()>2){

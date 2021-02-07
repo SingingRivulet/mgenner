@@ -486,6 +486,11 @@ void view::pollEvent(){
             }else
             if(event.motion.y>windowHeight-30){
                 //底部条
+                if(SDL_BUTTON_LEFT == event.button.button){
+                    clickToSetTempo(event.motion.x , event.motion.y);
+                }else if(SDL_BUTTON_RIGHT == event.button.button){
+                    clickToRemoveTempo(event.motion.x , event.motion.y);
+                }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
                 if(selectByBox){

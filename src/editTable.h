@@ -43,6 +43,8 @@ namespace mgnr{
             note * clickToAdd(int x,int y);
             void addDisplaied();
             int  clickToSelect(int x,int y);
+            void clickToSetTempo(int x,int y);
+            void clickToRemoveTempo(int x,int y);
             int  selAll();
             void clearSelected();
             void removeSelected();
