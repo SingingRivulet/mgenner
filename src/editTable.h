@@ -23,8 +23,15 @@ namespace mgnr{
         }
     };
     struct history{
-        bool isAdd;
+        enum{
+            H_NOTE_ADD,
+            H_NOTE_DEL,
+            H_TEMPO_ADD,
+            H_TEMPO_DEL
+        }method;
         int note;//音符，如果是添加的话，将会存在
+        int begin;//起始时间
+        double tempo;//添加删除速度时使用
         std::list<std::unique_ptr<noteInfo> > notes;
     };
     class editTable:public midiMap{

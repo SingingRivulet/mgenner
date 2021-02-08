@@ -199,12 +199,14 @@ double midiMap::getTempo(int tick){
     it--;//向前移动一步
     return it->second;
 }
-void midiMap::addTempo(int tick,double tp){
-    //char str[64];
-    //snprintf(str,64,"@T%f",tp);
-    //addNote(tick,-1,120,100,str);
-    printf("add tempo:%d %f\n",tick,tp);
-    timeMap[tick]=tp;
+bool midiMap::addTempo(int tick,double tp){
+    if(timeMap.find(tick)==timeMap.end()){
+        printf("add tempo:%d %f\n",tick,tp);
+        timeMap[tick]=tp;
+        return true;
+    }else{
+        return false;
+    }
 }
 void midiMap::getTempo(int begin,const std::function<bool(int,double)> & callback){
     if(timeMap.empty()){
@@ -227,21 +229,25 @@ void midiMap::getTempo(int begin,const std::function<bool(int,double)> & callbac
         ++it;
     }
 }
-void midiMap::removeTempoBeforePos(int tick){
+std::tuple<bool,int,double> midiMap::removeTempoBeforePos(int tick){
     if(timeMap.empty())
-        return;
+        return std::make_tuple(false,0,0.0);
     auto it = timeMap.upper_bound(tick);//获取大于tick的第一个元素
     if(it==timeMap.end()){//指向结尾
         it--;
+        auto res = std::make_tuple(true,it->first,it->second);
         timeMap.erase(it);
-        return;
+        return res;
     }
     if(it==timeMap.begin()){//指向开头
+        auto res = std::make_tuple(true,it->first,it->second);
         timeMap.erase(it);
-        return;
+        return res;
     }
     it--;//向前移动一步
+    auto res = std::make_tuple(true,it->first,it->second);
     timeMap.erase(it);
+    return res;
 }
 void midiMap::removeControl(float begin,const std::string & info){
     if(!info.empty() && info[0]=='@' && info.size()>2){

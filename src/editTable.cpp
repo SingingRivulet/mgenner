@@ -69,7 +69,17 @@ void editTable::clickToRemoveTempo(int x,int y){
     auto p=screenToAbs(x,y);
     automatic(p.X , p.Y);
     if(EM_ASM_INT({return confirm("确定删除速度控制吗？")?1:0;})==1){
-        removeTempoBeforePos(p.X);
+        auto res = removeTempoBeforePos(p.X);
+        if(std::get<0>(res)==true){
+            auto & tick = std::get<1>(res);
+            auto & tempo = std::get<2>(res);
+            printf("remove tempo:%d=>%f\n",tick,tempo);
+            std::unique_ptr<history> hisptr (new history);//插入历史记录
+            hisptr->method = history::H_TEMPO_DEL;
+            hisptr->tempo = tempo;
+            hisptr->begin = tick;
+            histories.push_back(std::move(hisptr));
+        }
     }
 }
 void editTable::clickToSetTempo(int x,int y){
@@ -83,7 +93,13 @@ void editTable::clickToSetTempo(int x,int y){
         return r;
     });
     if(res>0){
-        addTempo(p.X,res);
+        if(addTempo(p.X,res)){
+            std::unique_ptr<history> hisptr (new history);//插入历史记录
+            hisptr->method = history::H_TEMPO_ADD;
+            hisptr->tempo = res;
+            hisptr->begin = p.X;
+            histories.push_back(std::move(hisptr));
+        }
     }
 }
 
@@ -94,7 +110,7 @@ note * editTable::clickToAdd(int x,int y){
     
     printf("add %d %d\n",x,y);
     std::unique_ptr<history> hisptr (new history);//插入历史记录
-    hisptr->isAdd = true;
+    hisptr->method = history::H_NOTE_ADD;
     hisptr->note = ptr->id;
     histories.push_back(std::move(hisptr));
     
@@ -115,7 +131,7 @@ void editTable::removeSelected(){
         return;
     
     std::unique_ptr<history> hisptr (new history);//插入历史记录
-    hisptr->isAdd = false;
+    hisptr->method = history::H_NOTE_DEL;
     
     for(auto it:selected){
         std::unique_ptr<noteInfo> np(new noteInfo(it));
@@ -264,7 +280,7 @@ void editTable::addDisplaied(){
         
         printf("add %f %f\n",displayBuffer.begin , displayBuffer.tone);
         std::unique_ptr<history> hisptr (new history);//插入历史记录
-        hisptr->isAdd = true;
+        hisptr->method = history::H_NOTE_ADD;
         hisptr->note = addNote(displayBuffer.begin , displayBuffer.tone , defaultDelay , defaultVolume , defaultInfo)->id;
         histories.push_back(std::move(hisptr));
         
@@ -559,14 +575,16 @@ void editTable::selectedToRelative(std::string & out){
 void editTable::undo(){
     auto it = histories.rbegin();
     if(it!=histories.rend()){
-        if((*it)->isAdd){
-            printf("isAdd\n");
+        if((*it)->method==history::H_NOTE_ADD){
             removeNoteById((*it)->note);
-        }else{
-            printf("isRemove\n");
+        }else if((*it)->method==history::H_NOTE_DEL){
             for(auto & itn:(*it)->notes){
                 addNote(itn->position,itn->tone,itn->delay,itn->volume,itn->info);
             }
+        }else if((*it)->method==history::H_TEMPO_ADD){
+            timeMap.erase((*it)->begin);
+        }else if((*it)->method==history::H_TEMPO_DEL){
+            addTempo((*it)->begin,(*it)->tempo);
         }
         histories.pop_back();
     }
