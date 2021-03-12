@@ -89,6 +89,26 @@ int main(){
             Module._midiDiff(stringOnWasmHeap);
             _free(stringOnWasmHeap);
         };
+        window.addChord=function(p , root , name , format , length , root_base , v , info){
+            info = info || 'default';
+            var lroot   = lengthBytesUTF8(root)+1;
+            var lname   = lengthBytesUTF8(name)+1;
+            var lformat = lengthBytesUTF8(format)+1;
+            var linfo   = lengthBytesUTF8(info)+1;
+            var proot   = _malloc(lroot);
+            var pname   = _malloc(lname);
+            var pformat = _malloc(lformat);
+            var pinfo   = _malloc(linfo);
+            stringToUTF8(root, proot, lroot);
+            stringToUTF8(name, pname, lname);
+            stringToUTF8(format, pformat, lformat);
+            stringToUTF8(info, pinfo, linfo);
+            Module._addChord(p,proot,pname,pformat,length,root_base,v,pinfo);
+            _free(proot);
+            _free(pname);
+            _free(pformat);
+            _free(pinfo);
+        };
         window.seekTick=function(t){
             Module._seek(t);
         };
@@ -138,6 +158,9 @@ extern "C"{
     }
     EMSCRIPTEN_KEEPALIVE void loadStringData(char *n){
         V.loadString(n);
+    }
+    EMSCRIPTEN_KEEPALIVE void addChord(int p , char * root , char * name , char * format , int length , int root_base,int v,char * info){
+        V.addChord(p,root,name,format,length,root_base,v,info);
     }
     EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
         V.exportMidi("export.mid");

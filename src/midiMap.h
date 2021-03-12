@@ -6,13 +6,17 @@
 #include <functional>
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <tuple>
+#include <vector>
 namespace mgnr{
     class midiMap{
         public:
             midiMap();
             ~midiMap();
             note * addNote(float position,float tone,float delay,int v,const std::string & info);
+            void addChord(float position,
+                const std::string & root , const std::string & name , const char * format, float length , int root_base = 0,int v = 70,const std::string & info = "default",bool useTPQ = true);
             void removeNote(note * p);
             void resizeNote(note * p);
             
@@ -74,6 +78,8 @@ namespace mgnr{
             HBB indexer;
             void * pool;
             int id;
+            std::unordered_map<std::string,std::vector<int> > chord_map;
+            std::map<std::string,int> chord_map_note;
     };
 }
 #endif

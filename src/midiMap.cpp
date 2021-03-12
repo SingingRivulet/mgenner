@@ -6,6 +6,33 @@ typedef mempool<note> npool;
 
 midiMap::midiMap(){
     pool=new npool;
+    
+    chord_map["maj3"] =  {0, 4, 7, 0};   // 大三和弦 根音-大三度-纯五度
+    chord_map["min3"] =  {0, 3, 7, 0};   //小三和弦 根音-小三度-纯五度
+    chord_map["aug3"] =  {0, 4, 8, 0};   //增三和弦 根音-大三度-增五度
+    chord_map["dim3"] =  {0, 3, 6, 0};   //减三和弦 根音-小三度-减五度
+    chord_map["M7"]   =  {0, 4, 7, 11};  //大七和弦 根音-大三度-纯五度-大七度
+    chord_map["Mm7"]  =  {0, 4, 7, 10};  //属七和弦 根音-大三度-纯五度-小七度
+    chord_map["m7"]   =  {0, 3, 7, 10};  //小七和弦 根音-小三度-纯五度-小七度
+    chord_map["mM7"]  =  {0, 3, 7, 11};  //小大七和弦 根音-小三度-纯五度-大七度
+    chord_map["aug7"] =  {0, 4, 8, 10};  //增七和弦 根音-大三度-增五度-小七度
+    chord_map["augM7"]=  {0, 4, 8, 11};  //增大七和弦 根音-大三度-增五度-小七度
+    chord_map["m7b5"] =  {0, 3, 6, 10};  //半减七和弦 根音-小三度-减五度-减七度
+    chord_map["dim7"] =  {0, 3, 6, 9};   //减减七和弦 根音-小三度-减五度-减七度
+    int n = 60;
+    chord_map_note["C"] = n;
+    n+=2;
+    chord_map_note["D"] = n;
+    n+=2;
+    chord_map_note["E"] = n;
+    n+=1;
+    chord_map_note["F"] = n;
+    n+=2;
+    chord_map_note["G"] = n;
+    n+=2;
+    chord_map_note["A"] = n;
+    n+=2;
+    chord_map_note["B"] = n;
 }
 midiMap::~midiMap(){
     clear();
@@ -14,6 +41,32 @@ midiMap::~midiMap(){
 }
 void midiMap::onUseInfo(const std::string & info){
     
+}
+void midiMap::addChord(float position,const std::string & root , const std::string & name , const char * format, float length , int root_base,int v,const std::string & info,bool useTPQ){
+    auto cmnit = chord_map_note.find(root);
+    auto cmit = chord_map.find(name);
+    if(cmnit==chord_map_note.end() || cmit==chord_map.end())
+        return;
+    
+    int lform = strlen(format);
+
+    int root_note = cmnit->second + root_base*12;
+    const std::vector<int> & chord = cmit->second;
+    float tm  = length/lform;
+    float pos = position;
+    if(useTPQ){
+        tm*=TPQ;
+        pos*=TPQ;
+    }
+    
+    for(int i=0;i<lform;++i){
+        int dis = format[i]-'0';
+        try{
+            int note = root_note + chord.at(dis);
+            addNote(pos , note , tm , v , info);
+        }catch(...){}
+        pos += tm;
+    }
 }
 note * midiMap::addNote(float position,float tone,float delay,int v,const std::string & info){
     onUseInfo(info);
