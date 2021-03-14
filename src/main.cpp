@@ -10,6 +10,7 @@ int main(){
             return 0;
     })==1);
     EM_ASM({
+        window.note_name = Array("C","C#","D","D#","E","F","F#","G","G#","A","A#","B");
         window.downloadString=function(s,name){
             var blob = new Blob([s], {type: "application/octet-binary"});;
             var url = window.URL.createObjectURL(blob); 
@@ -107,16 +108,28 @@ int main(){
             _free(stringOnWasmHeap);
             return res;
         };
-        window.getMainNote=function(from,num,s){
+        window.getMainNote=function(from,num,callback,s){
             s = s|"";
-            var res = [];
             var lengthBytes = lengthBytesUTF8(s)+1;
             var stringOnWasmHeap = _malloc(lengthBytes);
             stringToUTF8(s, stringOnWasmHeap, lengthBytes);
             for(var i=0;i<num;++i){
-                res.push(Module._getSectionNote(i+from,stringOnWasmHeap));
+                callback(Module._getSectionNote(i+from,stringOnWasmHeap));
             }
             _free(stringOnWasmHeap);
+        };
+        window.getMainNoteName=function(from,num,shift,s){
+            var res = [];
+            getMainNote(from,num,function(note){
+                if(note!=-1){
+                    var n = note+shift;
+                    if(n<0)
+                        n+=24;
+                    res.push(note_name[n%12]);
+                }else{
+                    res.push("None");
+                }
+            },s);
             return res;
         };
         window.addChord=function(p , root , name , format , length , root_base , v , info){
