@@ -192,7 +192,7 @@ void view::drawNote_end(){
             }
             window.noteptr.begin.innerText=$0;
             window.noteptr.tone.innerText=$1;
-        }, displayBuffer.begin , displayBuffer.tone);
+        }, displayBuffer.begin/TPQ , displayBuffer.tone);
     }
     SDL_Rect rect;
     rect.x=0;

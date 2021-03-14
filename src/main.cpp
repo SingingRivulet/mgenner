@@ -89,6 +89,36 @@ int main(){
             Module._midiDiff(stringOnWasmHeap);
             _free(stringOnWasmHeap);
         };
+        window.getAreaNote=function(b,d,s){
+            s = s|"";
+            var lengthBytes = lengthBytesUTF8(s)+1;
+            var stringOnWasmHeap = _malloc(lengthBytes);
+            stringToUTF8(s, stringOnWasmHeap, lengthBytes);
+            var res = Module._getAreaNote(b,d,stringOnWasmHeap);
+            _free(stringOnWasmHeap);
+            return res;
+        };
+        window.getSectionNote=function(b,s){
+            s = s|"";
+            var lengthBytes = lengthBytesUTF8(s)+1;
+            var stringOnWasmHeap = _malloc(lengthBytes);
+            stringToUTF8(s, stringOnWasmHeap, lengthBytes);
+            var res = Module._getSectionNote(b,stringOnWasmHeap);
+            _free(stringOnWasmHeap);
+            return res;
+        };
+        window.getMainNote=function(from,num,s){
+            s = s|"";
+            var res = [];
+            var lengthBytes = lengthBytesUTF8(s)+1;
+            var stringOnWasmHeap = _malloc(lengthBytes);
+            stringToUTF8(s, stringOnWasmHeap, lengthBytes);
+            for(var i=0;i<num;++i){
+                res.push(Module._getSectionNote(i+from,stringOnWasmHeap));
+            }
+            _free(stringOnWasmHeap);
+            return res;
+        };
         window.addChord=function(p , root , name , format , length , root_base , v , info){
             info = info || 'default';
             var lroot   = lengthBytesUTF8(root)+1;
@@ -159,8 +189,14 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE void loadStringData(char *n){
         V.loadString(n);
     }
-    EMSCRIPTEN_KEEPALIVE void addChord(int p , char * root , char * name , char * format , int length , int root_base,int v,char * info){
+    EMSCRIPTEN_KEEPALIVE void addChord(float p , char * root , char * name , char * format , float length , int root_base,int v,char * info){
         V.addChord(p,root,name,format,length,root_base,v,info);
+    }
+    EMSCRIPTEN_KEEPALIVE int getAreaNote(float b,float d,char * s){
+        return V.getAreaNote(b,d,s);
+    }
+    EMSCRIPTEN_KEEPALIVE int getSectionNote(float b,char * s){
+        return V.getSectionNote(b,s);
     }
     EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
         V.exportMidi("export.mid");

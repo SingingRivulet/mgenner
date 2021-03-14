@@ -45,7 +45,7 @@ void midiMap::onUseInfo(const std::string & info){
 void midiMap::addChord(float position,const std::string & root , const std::string & name , const char * format, float length , int root_base,int v,const std::string & info,bool useTPQ){
     auto cmnit = chord_map_note.find(root);
     auto cmit = chord_map.find(name);
-    if(cmnit==chord_map_note.end() || cmit==chord_map.end())
+    if(cmnit==chord_map_note.end() || cmit==chord_map.end() || length<=0)
         return;
     
     int lform = strlen(format);
@@ -346,6 +346,68 @@ void midiMap::addControl(float begin,const std::string & info){
             }
         }
     }
+}
+int midiMap::getAreaNote(float begin,float len,const std::string & info,float forceLen,float minLen){
+    struct self_t{
+        std::vector<std::tuple<float,float,int> > tones;
+        float sum;
+        float begin;
+        std::string info;
+    }self;
+    self.sum = 0;
+    self.info = info;
+    self.begin = begin;
+    find(HBB::vec(begin,0),HBB::vec(begin+len,128),[](note * n,void * arg){//获取
+        auto self = (self_t*)arg;
+        if(!self->info.empty()){
+            if(n->info!=self->info){
+                return;
+            }
+        }
+        if(n->begin<self->begin){
+            float delta = n->begin - self->begin;
+            float dur = n->delay+delta;
+            if(dur>=1){
+                self->tones.push_back(std::make_tuple(n->begin-delta , dur , n->tone));
+                self->sum+=dur;
+            }
+        }else{
+            self->tones.push_back(std::make_tuple(n->begin,n->delay,n->tone));
+            self->sum+=n->delay;
+        }
+    },&self);
+    
+    if(self.tones.empty() || self.sum<=0)
+        return -1;
+    
+    std::map<int,float> tone_time;
+    for(auto & it:self.tones){
+        tone_time[std::get<2>(it)] += std::get<1>(it)/self.sum;
+    }
+    
+    for(auto & it:tone_time){
+        if(it.second > forceLen){
+            return it.first;
+        }
+    }
+    
+    for(auto & it:self.tones){
+        if(tone_time[std::get<2>(it)]>=minLen){
+            return std::get<2>(it);
+        }
+    }
+    return -1;
+}
+int midiMap::getSectionNote(float sec,const std::string & info,float forceLen,float minLen){
+    float len = TPQ;
+    float pos = len*section*sec;
+    for(int i=0;i<section;++i){
+        int res = getAreaNote(pos,len,info,forceLen,minLen);
+        if(res!=-1){
+            return res;
+        }
+    }
+    return -1;
 }
 
 }//namespace mgnr

@@ -59,6 +59,9 @@ namespace mgnr{
             void removeControl(float begin,const std::string & info);
             void addControl(float begin,const std::string & info);
             
+            int getAreaNote(float begin,float len,const std::string & info,float forceLen=0.6666,float minLen=0.25);//获取一个范围内的主要音符
+            int getSectionNote(float sec,const std::string & info,float forceLen=0.6666,float minLen=0.25);
+            
             inline void removeNoteById(int id){
                 auto p = seekNoteById(id);
                 if(p){
