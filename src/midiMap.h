@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <tuple>
 #include <vector>
+#include <algorithm>
 namespace mgnr{
     class midiMap{
         public:
@@ -61,6 +62,8 @@ namespace mgnr{
             
             int getAreaNote(float begin,float len,const std::string & info,float forceLen=0.6666,float minLen=0.25);//获取一个范围内的主要音符
             int getSectionNote(float sec,const std::string & info,float forceLen=0.6666,float minLen=0.25);
+            
+            int getBaseTone();//获取调性
             
             inline void removeNoteById(int id){
                 auto p = seekNoteById(id);

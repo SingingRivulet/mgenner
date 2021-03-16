@@ -381,6 +381,9 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE void synthOutput(){
         V.synthOutput();
     }
+    EMSCRIPTEN_KEEPALIVE int getBaseTone(){
+        return V.getBaseTone();
+    }
     EMSCRIPTEN_KEEPALIVE void midiDiff(const char * s){
         V.diff(s,
             [&](int posi){

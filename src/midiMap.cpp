@@ -42,6 +42,47 @@ midiMap::~midiMap(){
 void midiMap::onUseInfo(const std::string & info){
     
 }
+static bool isNotHalfNote(int note,int base){
+    const static bool l[] = {true,false,true,false,true,true,false,true,false,true,false,true};
+    return l[(note-base)%12];
+}
+static bool isMajor(int note){
+    const static bool l[] = {true,false,false,false,true,false,false,true,false,false,false,false};
+    return l[note%12];
+}
+int midiMap::getBaseTone(){
+    std::tuple<int,float> major_prob[12];
+    for(int base=0;base<12;++base){
+        int note_count = 0;
+        int nh_count = 0;
+        for(auto note:notes){
+            ++note_count;
+            if(isNotHalfNote(note->tone , base)){
+                ++nh_count;
+            }
+        }
+        if(note_count==0){
+            major_prob[base]=std::make_tuple(base,0);
+        }else{
+            major_prob[base]=std::make_tuple(base,((float)nh_count)/((float)note_count));
+        }
+    }
+    std::sort(major_prob,major_prob+12,[](const std::tuple<int,float>& x,const std::tuple<int,float>& y){
+        return std::get<1>(x)>std::get<1>(y);
+    });
+    for(auto it:major_prob){
+        printf("%d %f\n",std::get<0>(it),std::get<1>(it));
+    }
+    if(isMajor(std::get<1>(major_prob[0]))){
+        return std::get<0>(major_prob[0]);
+    }else{
+        if(std::get<1>(major_prob[1])==std::get<1>(major_prob[0])){
+            return std::get<0>(major_prob[1]);
+        }else{
+            return std::get<0>(major_prob[0]);
+        }
+    }
+}
 void midiMap::addChord(float position,const std::string & root , const std::string & name , const char * format, float length , int root_base,int v,const std::string & info,bool useTPQ){
     auto cmnit = chord_map_note.find(root);
     auto cmit = chord_map.find(name);
