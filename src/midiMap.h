@@ -37,6 +37,8 @@ namespace mgnr{
             std::map<int,double> timeMap;
             
             int TPQ;
+            float XShift;
+            int baseTone;
             virtual void rebuildNoteLen()=0;
             
             float sectionLen;//小节线
@@ -85,6 +87,7 @@ namespace mgnr{
             void * pool;
             int id;
             std::unordered_map<std::string,std::vector<int> > chord_map;
+            std::unordered_map<std::string,int> note_number_map;
             std::map<std::string,int> chord_map_note;
     };
 }

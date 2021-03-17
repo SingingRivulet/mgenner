@@ -11,6 +11,7 @@ int main(){
     })==1);
     EM_ASM({
         window.note_name = Array("C","C#","D","D#","E","F","F#","G","G#","A","A#","B");
+        window.note_number = Array("1","1#","2","2#","3","4","4#","5","5#","6","6#","7");
         window.downloadString=function(s,name){
             var blob = new Blob([s], {type: "application/octet-binary"});;
             var url = window.URL.createObjectURL(blob); 
@@ -125,7 +126,7 @@ int main(){
                     var n = note+shift;
                     if(n<0)
                         n+=24;
-                    res.push(note_name[n%12]);
+                    res.push(note_number[(n+Module._getBaseToneCache())%12]);
                 }else{
                     res.push("None");
                 }
@@ -213,6 +214,9 @@ extern "C"{
     }
     EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
         V.exportMidi("export.mid");
+    }
+    EMSCRIPTEN_KEEPALIVE int getBaseToneCache(){
+        return V.baseTone;
     }
     static std::string compareFile;
     EMSCRIPTEN_KEEPALIVE void loadMidiFile(char * n){

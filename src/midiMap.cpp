@@ -6,6 +6,8 @@ typedef mempool<note> npool;
 
 midiMap::midiMap(){
     pool=new npool;
+    XShift = 0;
+    baseTone = 0;
     
     chord_map["maj3"] =  {0, 4, 7, 0};   // 大三和弦 根音-大三度-纯五度
     chord_map["min3"] =  {0, 3, 7, 0};   //小三和弦 根音-小三度-纯五度
@@ -19,6 +21,18 @@ midiMap::midiMap(){
     chord_map["augM7"]=  {0, 4, 8, 11};  //增大七和弦 根音-大三度-增五度-小七度
     chord_map["m7b5"] =  {0, 3, 6, 10};  //半减七和弦 根音-小三度-减五度-减七度
     chord_map["dim7"] =  {0, 3, 6, 9};   //减减七和弦 根音-小三度-减五度-减七度
+    note_number_map["1"]  = 0;
+    note_number_map["1#"] = 1;
+    note_number_map["2"]  = 2;
+    note_number_map["2#"] = 3;
+    note_number_map["3"]  = 4;
+    note_number_map["4"]  = 5;
+    note_number_map["4#"] = 6;
+    note_number_map["5"]  = 7;
+    note_number_map["5#"] = 8;
+    note_number_map["6"]  = 9;
+    note_number_map["6#"] = 10;
+    note_number_map["7"]  = 11;
     int n = 60;
     chord_map_note["C"] = n;
     n+=2;
@@ -74,14 +88,15 @@ int midiMap::getBaseTone(){
         printf("%d %f\n",std::get<0>(it),std::get<1>(it));
     }
     if(isMajor(std::get<1>(major_prob[0]))){
-        return std::get<0>(major_prob[0]);
+        baseTone = std::get<0>(major_prob[0]);
     }else{
         if(std::get<1>(major_prob[1])==std::get<1>(major_prob[0])){
-            return std::get<0>(major_prob[1]);
+            baseTone = std::get<0>(major_prob[1]);
         }else{
-            return std::get<0>(major_prob[0]);
+            baseTone = std::get<0>(major_prob[0]);
         }
     }
+    return baseTone;
 }
 void midiMap::addChord(float position,const std::string & root , const std::string & name , const char * format, float length , int root_base,int v,const std::string & info,bool useTPQ){
     auto cmnit = chord_map_note.find(root);
@@ -97,13 +112,14 @@ void midiMap::addChord(float position,const std::string & root , const std::stri
     float pos = position;
     if(useTPQ){
         tm*=TPQ;
-        pos*=TPQ;
+        pos*=TPQ*length;
     }
+    pos += XShift*TPQ;
     
     for(int i=0;i<lform;++i){
         int dis = format[i]-'0';
         try{
-            int note = root_note + chord.at(dis);
+            int note = root_note + chord.at(dis) +baseTone;
             addNote(pos , note , tm , v , info);
         }catch(...){}
         pos += tm;
@@ -441,7 +457,7 @@ int midiMap::getAreaNote(float begin,float len,const std::string & info,float fo
 }
 int midiMap::getSectionNote(float sec,const std::string & info,float forceLen,float minLen){
     float len = TPQ;
-    float pos = len*section*sec;
+    float pos = len*(section*sec+XShift);
     for(int i=0;i<section;++i){
         int res = getAreaNote(pos,len,info,forceLen,minLen);
         if(res!=-1){
