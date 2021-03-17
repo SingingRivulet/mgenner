@@ -128,7 +128,7 @@ int main(){
                         n+=24;
                     res.push(note_number[(n+Module._getBaseToneCache())%12]);
                 }else{
-                    res.push("None");
+                    res.push("0");
                 }
             },s);
             return res;
