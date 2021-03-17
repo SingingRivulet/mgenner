@@ -153,6 +153,18 @@ int main(){
             _free(pformat);
             _free(pinfo);
         };
+        window.addNumberChord=function(p , name , length , root_base , v , info){
+            info = info || 'default';
+            var lname   = lengthBytesUTF8(name)+1;
+            var linfo   = lengthBytesUTF8(info)+1;
+            var pname   = _malloc(lname);
+            var pinfo   = _malloc(linfo);
+            stringToUTF8(name, pname, lname);
+            stringToUTF8(info, pinfo, linfo);
+            Module._addNumberChord(p,pname,length,root_base,v,pinfo);
+            _free(pname);
+            _free(pinfo);
+        };
         window.seekTick=function(t){
             Module._seek(t);
         };
@@ -205,6 +217,9 @@ extern "C"{
     }
     EMSCRIPTEN_KEEPALIVE void addChord(float p , char * root , char * name , char * format , float length , int root_base,int v,char * info){
         V.addChord(p,root,name,format,length,root_base,v,info);
+    }
+    EMSCRIPTEN_KEEPALIVE void addNumberChord(float p , char * name , float length , int root_base,int v,char * info){
+        V.addChord(p,name,length,root_base,v,info);
     }
     EMSCRIPTEN_KEEPALIVE int getAreaNote(float b,float d,char * s){
         return V.getAreaNote(b,d,s);

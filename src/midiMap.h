@@ -10,6 +10,7 @@
 #include <tuple>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 namespace mgnr{
     class midiMap{
         public:
@@ -18,6 +19,7 @@ namespace mgnr{
             note * addNote(float position,float tone,float delay,int v,const std::string & info);
             void addChord(float position,
                 const std::string & root , const std::string & name , const char * format, float length , int root_base = 0,int v = 70,const std::string & info = "default",bool useTPQ = true);
+            void addChord(float position,const std::string & name, float length , int root_base = 0,int v = 70,const std::string & info = "default",bool useTPQ = true);
             void removeNote(note * p);
             void resizeNote(note * p);
             

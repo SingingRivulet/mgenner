@@ -125,6 +125,44 @@ void midiMap::addChord(float position,const std::string & root , const std::stri
         pos += tm;
     }
 }
+void midiMap::addChord(float position,const std::string & name, float length,int root_base,int v,const std::string & info,bool useTPQ){
+    char buf[128];
+    snprintf(buf,128,"%s",name.c_str());
+    char * bufp = buf;
+    while(*bufp){
+        if(*bufp=='-')*bufp = ' ';
+        ++bufp;
+    }
+    std::string sbuf;
+    std::istringstream iss(buf);
+    int last = -1;
+    std::vector<int> notes;
+    while(1){
+        sbuf = "";
+        iss>>sbuf;
+        auto it = note_number_map.find(sbuf);
+        if(it==note_number_map.end()){
+            break;
+        }
+        int note = it->second;
+        while(note<last){
+            note+=12;
+        }
+        last = note;
+        notes.push_back(note);
+        //printf("%d\n",note);
+    }
+    float pos = position;
+    float len = length;
+    if(useTPQ){
+        len*=TPQ;
+        pos*=TPQ*length;
+    }
+    for(auto it:notes){
+        int note = root_base*12 + it + 60;
+        addNote(pos , note , len , v , info);
+    }
+}
 note * midiMap::addNote(float position,float tone,float delay,int v,const std::string & info){
     onUseInfo(info);
     
