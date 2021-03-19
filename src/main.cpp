@@ -403,6 +403,9 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE int getBaseTone(){
         return V.getBaseTone();
     }
+    EMSCRIPTEN_KEEPALIVE int setBaseTone(int t){
+        return V.baseTone = t;
+    }
     EMSCRIPTEN_KEEPALIVE void midiDiff(const char * s){
         V.diff(s,
             [&](int posi){
