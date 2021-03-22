@@ -29,7 +29,7 @@ namespace mgnr{
             H_TEMPO_ADD,
             H_TEMPO_DEL
         }method;
-        int note;//音符，如果是添加的话，将会存在
+        std::list<int> noteIds;//音符，如果是添加的话，将会存在
         int begin;//起始时间
         double tempo;//添加删除速度时使用
         std::list<std::unique_ptr<noteInfo> > notes;
@@ -105,6 +105,10 @@ namespace mgnr{
             std::string defaultInfo;//信息
             
             std::set<note*> selected;
+
+            void addChord(float position,
+                const std::string & root , const std::string & name , const char * format, float length , int root_base = 0,int v = 70,const std::string & info = "default",bool useTPQ = true);
+            void addChord(float position,const std::string & name, float length , int root_base = 0,int v = 70,const std::string & info = "default",bool useTPQ = true);
             
         private:
             float noteAreaHeight;

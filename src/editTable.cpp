@@ -111,7 +111,7 @@ note * editTable::clickToAdd(int x,int y){
     printf("add %d %d\n",x,y);
     std::unique_ptr<history> hisptr (new history);//插入历史记录
     hisptr->method = history::H_NOTE_ADD;
-    hisptr->note = ptr->id;
+    hisptr->noteIds.push_back(ptr->id);
     histories.push_back(std::move(hisptr));
     
     return ptr;
@@ -281,7 +281,7 @@ void editTable::addDisplaied(){
         printf("add %f %f\n",displayBuffer.begin , displayBuffer.tone);
         std::unique_ptr<history> hisptr (new history);//插入历史记录
         hisptr->method = history::H_NOTE_ADD;
-        hisptr->note = addNote(displayBuffer.begin , displayBuffer.tone , defaultDelay , defaultVolume , defaultInfo)->id;
+        hisptr->noteIds.push_back(addNote(displayBuffer.begin , displayBuffer.tone , defaultDelay , defaultVolume , defaultInfo)->id);
         histories.push_back(std::move(hisptr));
         
         displayBuffer.showing=false;
@@ -576,7 +576,9 @@ void editTable::undo(){
     auto it = histories.rbegin();
     if(it!=histories.rend()){
         if((*it)->method==history::H_NOTE_ADD){
-            removeNoteById((*it)->note);
+            for(auto id:(*it)->noteIds){
+                removeNoteById(id);
+            }
         }else if((*it)->method==history::H_NOTE_DEL){
             for(auto & itn:(*it)->notes){
                 addNote(itn->position,itn->tone,itn->delay,itn->volume,itn->info);
@@ -588,6 +590,79 @@ void editTable::undo(){
         }
         histories.pop_back();
     }
+}
+void editTable::addChord(float position,const std::string & root , const std::string & name , const char * format, float length , int root_base,int v,const std::string & info,bool useTPQ){
+    auto cmnit = chord_map_note.find(root);
+    auto cmit = chord_map.find(name);
+    if(cmnit==chord_map_note.end() || cmit==chord_map.end() || length<=0)
+        return;
+    
+    int lform = strlen(format);
+
+    int root_note = cmnit->second + root_base*12;
+    const std::vector<int> & chord = cmit->second;
+    float tm  = length/lform;
+    float pos = position;
+    if(useTPQ){
+        tm*=TPQ;
+        pos*=TPQ*length;
+    }
+    pos += XShift*TPQ;
+    
+    std::unique_ptr<history> hisptr (new history);//插入历史记录
+    hisptr->method = history::H_NOTE_ADD;
+    for(int i=0;i<lform;++i){
+        int dis = format[i]-'0';
+        try{
+            if(dis>0){
+                int note = root_note + chord.at(dis) +baseTone;
+                hisptr->noteIds.push_back(addNote(pos , note , tm , v , info)->id);
+            }
+        }catch(...){}
+        pos += tm;
+    }
+    histories.push_back(std::move(hisptr));
+}
+void editTable::addChord(float position,const std::string & name, float length,int root_base,int v,const std::string & info,bool useTPQ){
+    char buf[128];
+    snprintf(buf,128,"%s",name.c_str());
+    char * bufp = buf;
+    while(*bufp){
+        if(*bufp=='-')*bufp = ' ';
+        ++bufp;
+    }
+    std::string sbuf;
+    std::istringstream iss(buf);
+    int last = -1;
+    std::vector<int> notes;
+    while(1){
+        sbuf = "";
+        iss>>sbuf;
+        auto it = note_number_map.find(sbuf);
+        if(it==note_number_map.end()){
+            break;
+        }
+        int note = it->second;
+        while(note<last){
+            note+=12;
+        }
+        last = note;
+        notes.push_back(note);
+        //printf("%d\n",note);
+    }
+    float pos = position;
+    float len = length;
+    if(useTPQ){
+        len*=TPQ;
+        pos*=TPQ*length;
+    }
+    std::unique_ptr<history> hisptr (new history);//插入历史记录
+    hisptr->method = history::H_NOTE_ADD;
+    for(auto it:notes){
+        int note = root_base*12 + it + 60;
+        hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+    }
+    histories.push_back(std::move(hisptr));
 }
 
 }
