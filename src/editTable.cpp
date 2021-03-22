@@ -614,7 +614,7 @@ void editTable::addChord(float position,const std::string & root , const std::st
     for(int i=0;i<lform;++i){
         int dis = format[i]-'0';
         try{
-            if(dis>0){
+            if(dis>=0 && dis<notes.size()){
                 int note = root_note + chord.at(dis) +baseTone;
                 hisptr->noteIds.push_back(addNote(pos , note , tm , v , info)->id);
             }
@@ -669,9 +669,14 @@ void editTable::addChord(float position,const std::string & name, float length,i
         auto fstr = format.c_str();
         int  flen = strlen(fstr);
         len /= flen;
-        for(auto it:notes){
-            int note = root_base*12 + it + 60;
-            hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+        for(int i=0;i<flen;++i){
+            int dis = fstr[i]-'0';
+            try{
+                if(dis>=0 && dis<notes.size()){
+                    int note = root_base*12 + notes.at(dis) + 60;
+                    hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+                }
+            }catch(...){}
             pos += len;
         }
     }
