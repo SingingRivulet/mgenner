@@ -623,7 +623,7 @@ void editTable::addChord(float position,const std::string & root , const std::st
     }
     histories.push_back(std::move(hisptr));
 }
-void editTable::addChord(float position,const std::string & name, float length,int root_base,int v,const std::string & info,bool useTPQ){
+void editTable::addChord(float position,const std::string & name, float length,int root_base,int v,const std::string & info,const std::string & format,bool useTPQ){
     char buf[128];
     snprintf(buf,128,"%s",name.c_str());
     char * bufp = buf;
@@ -656,11 +656,24 @@ void editTable::addChord(float position,const std::string & name, float length,i
         len*=TPQ;
         pos*=TPQ*length;
     }
+    pos += XShift*TPQ;
+    
     std::unique_ptr<history> hisptr (new history);//插入历史记录
     hisptr->method = history::H_NOTE_ADD;
-    for(auto it:notes){
-        int note = root_base*12 + it + 60;
-        hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+    if(format.empty()){
+        for(auto it:notes){
+            int note = root_base*12 + it + 60;
+            hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+        }
+    }else{
+        auto fstr = format.c_str();
+        int  flen = strlen(fstr);
+        len /= flen;
+        for(auto it:notes){
+            int note = root_base*12 + it + 60;
+            hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
+            pos += len;
+        }
     }
     histories.push_back(std::move(hisptr));
 }
