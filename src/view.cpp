@@ -47,6 +47,7 @@ view::view(){
     lastTime=0;
     
     scalar_kalman_init(&fpsSmooth ,1,1,0.01,1);
+    setSection(4);
 }
 view::~view(){
     TTF_CloseFont(font);

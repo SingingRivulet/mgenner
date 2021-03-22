@@ -232,6 +232,12 @@ extern "C"{
     EMSCRIPTEN_KEEPALIVE int getSectionNote(float b,char * s){
         return V.getSectionNote(b,s);
     }
+    EMSCRIPTEN_KEEPALIVE int getSection(){
+        return V.section;
+    }
+    EMSCRIPTEN_KEEPALIVE void setSection(int s){
+        V.setSection(s);
+    }
     EMSCRIPTEN_KEEPALIVE void exportMidiFile(char *n){
         V.exportMidi("export.mid");
     }
