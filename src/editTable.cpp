@@ -661,7 +661,7 @@ void editTable::addChord(float position,const std::string & name, float length,i
     hisptr->method = history::H_NOTE_ADD;
     if(format.empty()){
         for(auto it:notes){
-            int note = root_base*12 + it + 60;
+            int note = root_base*12 + it + 60 +baseTone;
             hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
         }
     }else{
@@ -672,7 +672,7 @@ void editTable::addChord(float position,const std::string & name, float length,i
             int dis = fstr[i]-'0';
             try{
                 if(dis>=0 && dis<notes.size()){
-                    int note = root_base*12 + notes.at(dis) + 60;
+                    int note = root_base*12 + notes.at(dis) + 60 +baseTone;
                     hisptr->noteIds.push_back(addNote(pos , note , len , v , info)->id);
                 }
             }catch(...){}
