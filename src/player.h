@@ -21,7 +21,7 @@ namespace mgnr{
             virtual void onNoteOff(note * n)=0;
             
         private:
-            std::set<note*> playing;
+            std::set<note*> playing,toPlay;
             int lastTime;
             long playTimes;
             inline float secondsPerTick(){//1秒=多少tick

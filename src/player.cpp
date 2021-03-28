@@ -18,6 +18,7 @@ void player::playStep(){
             printf("set tempo:%f\n",tempo);
         }
         
+        toPlay.clear();
         //获取所有此时刻的音符
         find(lookAtX,[](note * n,void * arg){
             auto self = (player*)arg;
@@ -34,6 +35,10 @@ void player::playStep(){
         for(auto it:stopList){
             noteOff(it);
         }
+        for(auto it:toPlay){
+            onNoteOn(it);
+        }
+        toPlay.clear();
         
         //位置前移
         goNextStep();
@@ -56,7 +61,8 @@ void player::noteOn(note * n){
         if(!n->playing){
             n->playing = true;
             playing.insert(n);
-            onNoteOn(n);
+            //onNoteOn(n);
+            toPlay.insert(n);
         }
         n->playTimes=playTimes;
     }
