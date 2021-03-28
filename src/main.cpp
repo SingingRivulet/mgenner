@@ -126,7 +126,7 @@ int main(){
                     var n = note+shift;
                     if(n<0)
                         n+=24;
-                    res.push(note_number[(n+Module._getBaseToneCache())%12]);
+                    res.push(note_number[(n+12-Module._getBaseToneCache())%12]);
                 }else{
                     res.push("0");
                 }
