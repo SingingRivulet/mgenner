@@ -59,7 +59,7 @@ namespace mgnr{
             
             int lastTime;
             
-            SDL_Surface * noteSurfaces[6];
+            SDL_Surface * noteSurfaces[7];
             int noteStatus;
             void noteLengthChange();
             void toneMapInit();

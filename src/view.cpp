@@ -32,7 +32,8 @@ view::view(){
     noteSurfaces[2] = TTF_RenderText_Solid(font,"[ 1/8]",textColor);
     noteSurfaces[3] = TTF_RenderText_Solid(font,"[ 1/4]",textColor);
     noteSurfaces[4] = TTF_RenderText_Solid(font,"[ 1/2]",textColor);
-    noteSurfaces[5] = TTF_RenderText_Solid(font,"[   1]",textColor);
+    noteSurfaces[5] = TTF_RenderText_Solid(font,"[ 3/4]",textColor);
+    noteSurfaces[6] = TTF_RenderText_Solid(font,"[   1]",textColor);
     
     selectBoxX = 0;
     selectBoxY = 0;
@@ -604,7 +605,7 @@ void view::pollEvent(){
 
 void view::noteLengthChange(){
     ++noteStatus;
-    if(noteStatus>5)
+    if(noteStatus>6)
         noteStatus=0;
     rebuildNoteLen();
 }
@@ -613,7 +614,7 @@ void view::rebuildNoteLen(){
     //1/32 1/16 1/8 1/4 1/2 1
     if(noteStatus>5 || noteStatus<0)
         noteStatus=0;
-    const static float lens[]={1.0/8.0 , 1.0/4.0 , 1/2.0 , 1.0 , 2.0 , 4.0};
+    const static float lens[]={1.0/8.0 , 1.0/4.0 , 1/2.0 , 1.0 , 2.0 , 3.0 , 4.0};
     defaultDelay=lens[noteStatus]*TPQ;
     maticBlock=lens[noteStatus]*TPQ;
     setSection();
