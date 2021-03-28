@@ -612,7 +612,7 @@ void view::noteLengthChange(){
 void view::rebuildNoteLen(){
     //note length
     //1/32 1/16 1/8 1/4 1/2 1
-    if(noteStatus>5 || noteStatus<0)
+    if(noteStatus>6 || noteStatus<0)
         noteStatus=0;
     const static float lens[]={1.0/8.0 , 1.0/4.0 , 1/2.0 , 1.0 , 2.0 , 3.0 , 4.0};
     defaultDelay=lens[noteStatus]*TPQ;
