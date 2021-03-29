@@ -279,7 +279,7 @@ extern "C"{
         
         emscripten_async_wget(n,"tmp.mid",
             [](const char *){
-                printf("load file success\n");
+                printf("download file success\n");
                 
                 char tbuf[4096];
                 FILE * fp = fopen("tmp.mid","r");
@@ -361,7 +361,7 @@ extern "C"{
                 }
             }
             ,[](const char *){
-                printf("load file fail\n");
+                printf("download file fail\n");
             }
         );
     }
