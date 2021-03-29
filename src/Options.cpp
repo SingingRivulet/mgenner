@@ -345,7 +345,7 @@ int Options::define(const std::string& aDefinition) {
 	// Error if definition string doesn't contain an equals sign
 	auto location = aDefinition.find("=");
 	if (location == std::string::npos) {
-		std::cerr << "Error: no \"=\" in option definition: " << aDefinition << std::endl;
+		std::cout << "Error: no \"=\" in option definition: " << aDefinition << std::endl;
 		exit(1);
 	}
 
@@ -365,7 +365,7 @@ int Options::define(const std::string& aDefinition) {
 
 	// Option types are only a single charater (b, i, d, c or s)
 	if (otype.size() != 1) {
-		std::cerr << "Error: option type is invalid: " << otype
+		std::cout << "Error: option type is invalid: " << otype
 			  << " in option definition: " << aDefinition << std::endl;
 		exit(1);
 	}
@@ -377,7 +377,7 @@ int Options::define(const std::string& aDefinition) {
 		 otype[0] != OPTION_TYPE_double  &&
 		 otype[0] != OPTION_TYPE_boolean &&
 		 otype[0] != OPTION_TYPE_char ) {
-		std::cerr << "Error: unknown option type \'" << otype[0]
+		std::cout << "Error: unknown option type \'" << otype[0]
 			  << "\' in defintion: " << aDefinition << std::endl;
 		exit(1);
 	}
@@ -396,10 +396,10 @@ int Options::define(const std::string& aDefinition) {
 			continue;
 		} else if (aliases[i] == '|') {
 			if (isDefined(optionName)) {
-				std::cerr << "Option \"" << optionName << "\" from definition:" << std::endl;
-				std::cerr << "\t" << aDefinition << std::endl;
-				std::cerr << "is already defined in: " << std::endl;
-				std::cerr << "\t" << getDefinition(optionName) << std::endl;
+				std::cout << "Option \"" << optionName << "\" from definition:" << std::endl;
+				std::cout << "\t" << aDefinition << std::endl;
+				std::cout << "is already defined in: " << std::endl;
+				std::cout << "\t" << getDefinition(optionName) << std::endl;
 				exit(1);
 			}
 			if (optionName.size() > 0) {
@@ -447,7 +447,7 @@ bool Options::isDefined(const std::string& name) {
 
 const std::string& Options::getArg(int index) {
 	if (index < 0 || index >= (int)m_argument.size()) {
-		std::cerr << "Error: m_argument " << index << " does not exist." << std::endl;
+		std::cout << "Error: m_argument " << index << " does not exist." << std::endl;
 		exit(1);
 	}
 	return m_argument[index];
@@ -1028,7 +1028,7 @@ int Options::getRegIndex(const std::string& optionName) {
 	auto it = m_optionList.find(optionName);
 	if (it == m_optionList.end()) {
 		if (m_options_error_check) {
-			std::cerr << "Error: unknown option \"" << optionName << "\"." << std::endl;
+			std::cout << "Error: unknown option \"" << optionName << "\"." << std::endl;
 			print(std::cout);
 			exit(1);
 		} else {
@@ -1127,7 +1127,7 @@ int Options::storeOption(int gargp, int& position, int& running) {
 			}
 			if (m_oargv[gargp][position] == '=') {
 				if (optionType == OPTION_TYPE_boolean) {
-					std::cerr << "Error: boolean variable cannot have any options: "
+					std::cout << "Error: boolean variable cannot have any options: "
 					     << tempname << std::endl;
 					exit(1);
 				}
@@ -1158,7 +1158,7 @@ int Options::storeOption(int gargp, int& position, int& running) {
 	}
 
 	if (gargp >= m_oargc) {
-		std::cerr << "Error: last option requires a parameter" << std::endl;
+		std::cout << "Error: last option requires a parameter" << std::endl;
 		exit(1);
 	}
 	setModified(tempname, &m_oargv[gargp][position]);

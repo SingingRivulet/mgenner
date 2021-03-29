@@ -211,7 +211,7 @@ int Binasc::writeToBinary(const std::string& outfile,
 	std::ifstream input;
 	input.open(infile.c_str());
 	if (!input.is_open()) {
-		std::cerr << "Cannot open " << infile
+		std::cout << "Cannot open " << infile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -219,7 +219,7 @@ int Binasc::writeToBinary(const std::string& outfile,
 	std::ofstream output;
 	output.open(outfile.c_str());
 	if (!output.is_open()) {
-		std::cerr << "Cannot open " << outfile
+		std::cout << "Cannot open " << outfile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -235,7 +235,7 @@ int Binasc::writeToBinary(const std::string& outfile, std::istream& input) {
 	std::ofstream output;
 	output.open(outfile.c_str());
 	if (!output.is_open()) {
-		std::cerr << "Cannot open " << outfile
+		std::cout << "Cannot open " << outfile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -250,7 +250,7 @@ int Binasc::writeToBinary(std::ostream& out, const std::string& infile) {
 	std::ifstream input;
 	input.open(infile.c_str());
 	if (!input.is_open()) {
-		std::cerr << "Cannot open " << infile
+		std::cout << "Cannot open " << infile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -290,7 +290,7 @@ int Binasc::readFromBinary(const std::string& outfile, const std::string& infile
 	std::ifstream input;
 	input.open(infile.c_str());
 	if (!input.is_open()) {
-		std::cerr << "Cannot open " << infile
+		std::cout << "Cannot open " << infile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -298,7 +298,7 @@ int Binasc::readFromBinary(const std::string& outfile, const std::string& infile
 	std::ofstream output;
 	output.open(outfile.c_str());
 	if (!output.is_open()) {
-		std::cerr << "Cannot open " << outfile
+		std::cout << "Cannot open " << outfile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -314,7 +314,7 @@ int Binasc::readFromBinary(const std::string& outfile, std::istream& input) {
 	std::ofstream output;
 	output.open(outfile.c_str());
 	if (!output.is_open()) {
-		std::cerr << "Cannot open " << outfile
+		std::cout << "Cannot open " << outfile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -329,7 +329,7 @@ int Binasc::readFromBinary(std::ostream& out, const std::string& infile) {
 	std::ifstream input;
 	input.open(infile.c_str());
 	if (!input.is_open()) {
-		std::cerr << "Cannot open " << infile
+		std::cout << "Cannot open " << infile
 		          << " for reading in binasc." << std::endl;
 		return 0;
 	}
@@ -425,7 +425,7 @@ int Binasc::outputStyleBinary(std::ostream& out, std::istream& input) {
 
 	ch = static_cast<uchar>(input.get());
 	if (input.eof()) {
-		std::cerr << "End of the file right away!" << std::endl;
+		std::cout << "End of the file right away!" << std::endl;
 		return 0;
 	}
 
@@ -776,7 +776,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 				case 0xfd:
 					break;
 				case 0xfe:
-					std::cerr << "Error command not yet handled" << std::endl;
+					std::cout << "Error command not yet handled" << std::endl;
 					return 0;
 					break;
 				case 0xff:  // meta message
@@ -983,20 +983,20 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	input.read((char*)&ch, 1);
 
 	if (input.eof()) {
-		std::cerr << "End of the file right away!" << std::endl;
+		std::cout << "End of the file right away!" << std::endl;
 		return 0;
 	}
 
 	// Read the MIDI file header:
 
 	// The first four bytes must be the characters "MThd"
-	if (ch != 'M') { std::cerr << "Not a MIDI file M" << std::endl; return 0; }
+	if (ch != 'M') { std::cout << "Not a MIDI file M" << std::endl; return 0; }
 	input.read((char*)&ch, 1);
-	if (ch != 'T') { std::cerr << "Not a MIDI file T" << std::endl; return 0; }
+	if (ch != 'T') { std::cout << "Not a MIDI file T" << std::endl; return 0; }
 	input.read((char*)&ch, 1);
-	if (ch != 'h') { std::cerr << "Not a MIDI file h" << std::endl; return 0; }
+	if (ch != 'h') { std::cout << "Not a MIDI file h" << std::endl; return 0; }
 	input.read((char*)&ch, 1);
-	if (ch != 'd') { std::cerr << "Not a MIDI file d" << std::endl; return 0; }
+	if (ch != 'd') { std::cout << "Not a MIDI file d" << std::endl; return 0; }
 	tempout << "\"MThd\"";
 	if (m_commentsQ) {
 		tempout << "\t\t\t; MIDI header chunk marker";
@@ -1099,13 +1099,13 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 
 		input.read((char*)&ch, 1);
 		// The first four bytes of a track must be the characters "MTrk"
-		if (ch != 'M') { std::cerr << "Not a MIDI file M2" << std::endl; return 0; }
+		if (ch != 'M') { std::cout << "Not a MIDI file M2" << std::endl; return 0; }
 		input.read((char*)&ch, 1);
-		if (ch != 'T') { std::cerr << "Not a MIDI file T2" << std::endl; return 0; }
+		if (ch != 'T') { std::cout << "Not a MIDI file T2" << std::endl; return 0; }
 		input.read((char*)&ch, 1);
-		if (ch != 'r') { std::cerr << "Not a MIDI file r" << std::endl; return 0; }
+		if (ch != 'r') { std::cout << "Not a MIDI file r" << std::endl; return 0; }
 		input.read((char*)&ch, 1);
-		if (ch != 'k') { std::cerr << "Not a MIDI file k" << std::endl; return 0; }
+		if (ch != 'k') { std::cout << "Not a MIDI file k" << std::endl; return 0; }
 		tempout << "\"MTrk\"";
 		if (m_commentsQ) {
 			tempout << "\t\t\t; MIDI track chunk marker";
@@ -1169,9 +1169,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 		switch (word[i]) {
 			case '\'':
 				if (quoteIndex != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "extra quote in decimal number" << std::endl;
+					std::cout << "extra quote in decimal number" << std::endl;
 					return 0;
 				} else {
 					quoteIndex = i;
@@ -1179,32 +1179,32 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 				break;
 			case '-':
 				if (signIndex != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "cannot have more than two minus signs in number"
+					std::cout << "cannot have more than two minus signs in number"
 						  << std::endl;
 					return 0;
 				} else {
 					signIndex = i;
 				}
 				if (i == 0 || word[i-1] != '\'') {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "minus sign must immediately follow quote mark" << std::endl;
+					std::cout << "minus sign must immediately follow quote mark" << std::endl;
 					return 0;
 				}
 				break;
 			case '.':
 				if (quoteIndex == -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "cannot have decimal marker before quote" << std::endl;
+					std::cout << "cannot have decimal marker before quote" << std::endl;
 					return 0;
 				}
 				if (periodIndex != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "extra period in decimal number" << std::endl;
+					std::cout << "extra period in decimal number" << std::endl;
 					return 0;
 				} else {
 					periodIndex = i;
@@ -1213,15 +1213,15 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			case 'u':
 			case 'U':
 				if (quoteIndex != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "cannot have endian specified after quote" << std::endl;
+					std::cout << "cannot have endian specified after quote" << std::endl;
 					return 0;
 				}
 				if (endianIndex != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "extra \"u\" in decimal number" << std::endl;
+					std::cout << "extra \"u\" in decimal number" << std::endl;
 					return 0;
 				} else {
 					endianIndex = i;
@@ -1230,9 +1230,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			case '8':
 			case '1': case '2': case '3': case '4':
 				if (quoteIndex == -1 && byteCount != -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "invalid byte specificaton before quote in "
+					std::cout << "invalid byte specificaton before quote in "
 						  << "decimal number" << std::endl;
 					return 0;
 				} else if (quoteIndex == -1) {
@@ -1241,17 +1241,17 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 				break;
 			case '0': case '5': case '6': case '7': case '9':
 				if (quoteIndex == -1) {
-					std::cerr << "Error on line " << lineNum << " at token: " << word
+					std::cout << "Error on line " << lineNum << " at token: " << word
 						  << std::endl;
-					std::cerr << "cannot have numbers before quote in decimal number"
+					std::cout << "cannot have numbers before quote in decimal number"
 						  << std::endl;
 					return 0;
 				}
 				break;
 			default:
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "Invalid character in decimal number"
+				std::cout << "Invalid character in decimal number"
 						  " (character number " << i <<")" << std::endl;
 				return 0;
 		}
@@ -1260,22 +1260,22 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 	// there must be a quote character to indicate a decimal number
 	// and there must be a decimal number after the quote
 	if (quoteIndex == -1) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "there must be a quote to signify a decimal number" << std::endl;
+		std::cout << "there must be a quote to signify a decimal number" << std::endl;
 		return 0;
 	} else if (quoteIndex == length - 1) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "there must be a decimal number after the quote" << std::endl;
+		std::cout << "there must be a decimal number after the quote" << std::endl;
 		return 0;
 	}
 
 	// 8 byte decimal output can only occur if reading a double number
 	if (periodIndex == -1 && byteCount == 8) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "only floating-point numbers can use 8 bytes" << std::endl;
+		std::cout << "only floating-point numbers can use 8 bytes" << std::endl;
 		return 0;
 	}
 
@@ -1308,9 +1308,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			  return 1;
 			  break;
 			default:
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "floating-point numbers can be only 4 or 8 bytes" << std::endl;
+				std::cout << "floating-point numbers can be only 4 or 8 bytes" << std::endl;
 				return 0;
 		}
 	}
@@ -1324,9 +1324,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 		if (signIndex != -1) {
 			long tempLong = atoi(&word[quoteIndex + 1]);
 			if (tempLong > 127 || tempLong < -128) {
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "Decimal number out of range from -128 to 127" << std::endl;
+				std::cout << "Decimal number out of range from -128 to 127" << std::endl;
 				return 0;
 			}
 			char charOutput = (char)tempLong;
@@ -1336,9 +1336,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
 			uchar ucharOutput = (uchar)tempLong;
 			if (tempLong > 255) { // || (tempLong < 0)) {
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "Decimal number out of range from 0 to 255" << std::endl;
+				std::cout << "Decimal number out of range from 0 to 255" << std::endl;
 				return 0;
 			}
 			out << ucharOutput;
@@ -1385,9 +1385,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 		case 3:
 			{
 			if (signIndex != -1) {
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "negative decimal numbers cannot be stored in 3 bytes"
+				std::cout << "negative decimal numbers cannot be stored in 3 bytes"
 					  << std::endl;
 				return 0;
 			}
@@ -1427,9 +1427,9 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			}
 			break;
 		default:
-			std::cerr << "Error on line " << lineNum << " at token: " << word
+			std::cout << "Error on line " << lineNum << " at token: " << word
 				  << std::endl;
-			std::cerr << "invalid byte count specification for decimal number" << std::endl;
+			std::cout << "invalid byte count specification for decimal number" << std::endl;
 			return 0;
 	}
 }
@@ -1448,14 +1448,14 @@ int Binasc::processHexWord(std::ostream& out, const std::string& word,
 	uchar outputByte;
 
 	if (length > 2) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word << std::endl;
-		std::cerr << "Size of hexadecimal number is too large.  Max is ff." << std::endl;
+		std::cout << "Error on line " << lineNum << " at token: " << word << std::endl;
+		std::cout << "Size of hexadecimal number is too large.  Max is ff." << std::endl;
 		return 0;
 	}
 
 	if (!isxdigit(word[0]) || (length == 2 && !isxdigit(word[1]))) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word << std::endl;
-		std::cerr << "Invalid character in hexadecimal number." << std::endl;
+		std::cout << "Error on line " << lineNum << " at token: " << word << std::endl;
+		std::cout << "Invalid character in hexadecimal number." << std::endl;
 		return 0;
 	}
 
@@ -1492,14 +1492,14 @@ int Binasc::processAsciiWord(std::ostream& out, const std::string& word,
 	uchar outputByte;
 
 	if (word[0] != '+') {
-		std::cerr << "Error on line " << lineNum << " at token: " << word << std::endl;
-		std::cerr << "character byte must start with \'+\' sign: " << std::endl;
+		std::cout << "Error on line " << lineNum << " at token: " << word << std::endl;
+		std::cout << "character byte must start with \'+\' sign: " << std::endl;
 		return 0;
 	}
 
 	if (length > 2) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word << std::endl;
-		std::cerr << "character byte word is too long -- specify only one character"
+		std::cout << "Error on line " << lineNum << " at token: " << word << std::endl;
+		std::cout << "character byte word is too long -- specify only one character"
 			  << std::endl;
 		return 0;
 	}
@@ -1533,17 +1533,17 @@ int Binasc::processBinaryWord(std::ostream& out, const std::string& word,
 	for (i=0; i<length; i++) {
 		if (word [i] == ',') {
 			if (commaIndex != -1) {
-				std::cerr << "Error on line " << lineNum << " at token: " << word
+				std::cout << "Error on line " << lineNum << " at token: " << word
 					  << std::endl;
-				std::cerr << "extra comma in binary number" << std::endl;
+				std::cout << "extra comma in binary number" << std::endl;
 				return 0;
 			} else {
 				commaIndex = i;
 			}
 		} else if (!(word[i] == '1' || word[i] == '0')) {
-			std::cerr << "Error on line " << lineNum << " at token: " << word
+			std::cout << "Error on line " << lineNum << " at token: " << word
 				  << std::endl;
-			std::cerr << "Invalid character in binary number"
+			std::cout << "Invalid character in binary number"
 					  " (character is " << word[i] <<")" << std::endl;
 			return 0;
 		}
@@ -1551,14 +1551,14 @@ int Binasc::processBinaryWord(std::ostream& out, const std::string& word,
 
 	// comma cannot start or end number
 	if (commaIndex == 0) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "cannot start binary number with a comma" << std::endl;
+		std::cout << "cannot start binary number with a comma" << std::endl;
 		return 0;
 	} else if (commaIndex == length - 1 ) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "cannot end binary number with a comma" << std::endl;
+		std::cout << "cannot end binary number with a comma" << std::endl;
 		return 0;
 	}
 
@@ -1568,22 +1568,22 @@ int Binasc::processBinaryWord(std::ostream& out, const std::string& word,
 		leftDigits = commaIndex;
 		rightDigits = length - commaIndex - 1;
 	} else if (length > 8) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "too many digits in binary number" << std::endl;
+		std::cout << "too many digits in binary number" << std::endl;
 		return 0;
 	}
 	// if there is a comma, then there cannot be more than 4 digits on a side
 	if (leftDigits > 4) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "too many digits to left of comma" << std::endl;
+		std::cout << "too many digits to left of comma" << std::endl;
 		return 0;
 	}
 	if (rightDigits > 4) {
-		std::cerr << "Error on line " << lineNum << " at token: " << word
+		std::cout << "Error on line " << lineNum << " at token: " << word
 			  << std::endl;
-		std::cerr << "too many digits to right of comma" << std::endl;
+		std::cout << "too many digits to right of comma" << std::endl;
 		return 0;
 	}
 
@@ -1632,13 +1632,13 @@ int Binasc::processBinaryWord(std::ostream& out, const std::string& word,
 int Binasc::processVlvWord(std::ostream& out, const std::string& word,
 		int lineNum) {
 	if (word.size() < 2) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 'v' needs to be followed immediately by a decimal digit"
 			  << std::endl;
 		return 0;
 	}
 	if (!isdigit(word[1])) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 'v' needs to be followed immediately by a decimal digit"
 			  << std::endl;
 		return 0;
@@ -1683,14 +1683,14 @@ int Binasc::processVlvWord(std::ostream& out, const std::string& word,
 int Binasc::processMidiTempoWord(std::ostream& out, const std::string& word,
 		int lineNum) {
 	if (word.size() < 2) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 't' needs to be followed immediately by "
 			  << "a floating-point number" << std::endl;
 		return 0;
 	}
 	if (!(isdigit(word[1]) || word[1] == '.' || word[1] == '-'
 			|| word[1] == '+')) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 't' needs to be followed immediately by "
 			  << "a floating-point number" << std::endl;
 		return 0;
@@ -1724,14 +1724,14 @@ int Binasc::processMidiTempoWord(std::ostream& out, const std::string& word,
 int Binasc::processMidiPitchBendWord(std::ostream& out, const std::string& word,
 		int lineNum) {
 	if (word.size() < 2) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 'p' needs to be followed immediately by "
 			  << "a floating-point number" << std::endl;
 		return 0;
 	}
 	if (!(isdigit(word[1]) || word[1] == '.' || word[1] == '-'
 			|| word[1] == '+')) {
-		std::cerr << "Error on line: " << lineNum
+		std::cout << "Error on line: " << lineNum
 			  << ": 'p' needs to be followed immediately by "
 			  << "a floating-point number" << std::endl;
 		return 0;
