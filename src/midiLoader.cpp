@@ -23,6 +23,8 @@ void editTable::loadMidi(const std::string & str){
     if (tracks > 1)
         cout << "TRACKS: " << tracks << endl;
     
+    std::set<std::pair<int, int> > iset;
+    
     for (int track=0; track<tracks; track++) {
         //if (tracks > 1) cout << "\nTrack " << track << endl;
         
@@ -38,6 +40,8 @@ void editTable::loadMidi(const std::string & str){
                 int tone = (int)midifile[track][event][1];
                 int v = (int)midifile[track][event][2];
                 addNote(position, tone, delay, v,infoBuf);
+            }else if(midifile[track][event].isTimbre()){
+                iset.insert(std::pair<int, int>(track,midifile[track][event].getP1()));
             }
         }
     }
@@ -47,6 +51,10 @@ void editTable::loadMidi(const std::string & str){
             double tp = midifile.getEvent(0,i).getTempoBPM();
             addTempo(midifile.getEvent(0,i).tick,tp);
         }
+    }
+    
+    for (auto it : iset){
+        std::cout << "Track:" << it.first << "\tInstrument:" << it.second << std::endl;
     }
 }
 
