@@ -41,7 +41,10 @@ void editTable::loadMidi(const std::string & str){
                 int v = (int)midifile[track][event][2];
                 addNote(position, tone, delay, v,infoBuf);
             }else if(midifile[track][event].isTimbre()){
-                iset.insert(std::pair<int, int>(track,midifile[track][event].getP1()));
+                int instrumentId = midifile[track][event].getP1();
+                int position = midifile[track][event].tick;
+                std::cout << "instrument:track=" << track << " id=" << instrumentId << " time=" << position << std::endl;
+                iset.insert(std::pair<int, int>(track,instrumentId));
             }
         }
     }
@@ -54,7 +57,7 @@ void editTable::loadMidi(const std::string & str){
     }
     
     for (auto it : iset){
-        std::cout << "Track:" << it.first << "\tInstrument:" << it.second << std::endl;
+        std::cout << "require instrument:" << it.second << std::endl;
     }
 }
 
