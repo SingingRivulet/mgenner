@@ -155,7 +155,7 @@ void editTable::loadMidi(const std::string & str){
     if (tracks > 1)
         cout << "TRACKS: " << tracks << endl;
     
-    std::set<std::pair<int, int> > iset;
+    std::set<int> iset;
     
     for (int track=0; track<tracks; track++) {
         //if (tracks > 1) cout << "\nTrack " << track << endl;
@@ -180,7 +180,7 @@ void editTable::loadMidi(const std::string & str){
                     instrumentId = 0;
                 else if(instrumentId>128)
                     instrumentId = 128;
-                iset.insert(std::pair<int, int>(track,instrumentId));
+                iset.insert(instrumentId);
             }
         }
     }
@@ -193,7 +193,7 @@ void editTable::loadMidi(const std::string & str){
     }
     
     for (auto it : iset){
-        std::cout << "require instrument:" << instrumentName[it.second] << std::endl;
+        std::cout << "require instrument:" << instrumentName[it] << std::endl;
     }
 }
 
