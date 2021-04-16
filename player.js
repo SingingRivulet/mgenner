@@ -1,6 +1,7 @@
 var instrumentURL = "./soundfont/basic/";
 var instrumentMap = new Int32Array(128);
-var instrumentDownload = {};
+var instrumentDownload = new Int32Array(128);
+instrumentDownload[0] = 1;
 window.onload = function() {
     //console.log("load soundfont");
     if (self != top) return;
@@ -21,20 +22,17 @@ window.onload = function() {
     });
 };
 function downloadSoundFont(id){
-    var m = instrumentDownload[id];
-    if(m){
+    if(instrumentDownload[id]!=1){
         console.log("download:" + id);
-        var insId = m[0];
-        var name  = m[1];
-        instrumentDownload[id] = null;
+        instrumentDownload[id] = 1;
         MIDI.loadPlugin({
             soundfontUrl: instrumentURL,
-            instruments: [name],
+            instruments: [id],
             onprogress: function(state, progress) {
                 
             },
             onsuccess: function() {
-                instrumentMap[id] = insId;
+                instrumentMap[id] = id;
             }
         });
     }
