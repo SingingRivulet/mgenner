@@ -1,10 +1,12 @@
-window.instrumentMap = new Int32Array(128);
+var instrumentURL = "./soundfont/basic/";
+var instrumentMap = new Int32Array(128);
+var instrumentDownload = {};
 window.onload = function() {
     //console.log("load soundfont");
     if (self != top) return;
     MIDI.loadPlugin({
-        soundfontUrl: "./soundfont/basic/",
-        instruments: ["acoustic_grand_piano", "synth_drum"],
+        soundfontUrl: instrumentURL,
+        instruments: ["acoustic_grand_piano"],
         onprogress: function(state, progress) {
             //console.log(state, progress);
             document.getElementById('soundfont-status-num').innerText = parseInt(progress * 100);
@@ -18,6 +20,25 @@ window.onload = function() {
         }
     });
 };
+function downloadSoundFont(id){
+    var m = instrumentDownload[id];
+    if(m){
+        console.log("download:" + id);
+        var insId = m[0];
+        var name  = m[1];
+        instrumentDownload[id] = null;
+        MIDI.loadPlugin({
+            soundfontUrl: instrumentURL,
+            instruments: [name],
+            onprogress: function(state, progress) {
+                
+            },
+            onsuccess: function() {
+                instrumentMap[id] = insId;
+            }
+        });
+    }
+}
 window.mgnr = {
     "noteOn": function(info,channel, tone, v) {
         if (window.playOutput) {
@@ -56,7 +77,9 @@ window.mgnr = {
         }
     },
     "requireInstrument": function(id) {
-        console.log("download:" + id);
+        try{
+            downloadSoundFont(id);
+        }catch(e){}
     },
     "loadName": function(info) {
         console.log("use:" + info);
