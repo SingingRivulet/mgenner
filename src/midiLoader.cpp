@@ -145,6 +145,17 @@ void editTable::instrument2Id_init(){
         instrument2Id[instrumentName[i]] = i;
     }
 }
+void editTable::loadInstrument(int id){
+    if(id<0||id>=128)
+        return;
+    if(instrumentLoaded[id])
+        return;
+    instrumentLoaded[id] = true;
+    std::cout << "require instrument:" << instrumentName[id] << std::endl;
+    EM_ASM({
+        mgnr.requireInstrument($0);
+    },id);
+}
 int editTable::getInstrumentId(const std::string & n){
     auto it = instrument2Id.find(n);
     if(it==instrument2Id.end()){
@@ -205,10 +216,7 @@ void editTable::loadMidi(const std::string & str){
     }
     
     for (auto it : iset){
-        std::cout << "require instrument:" << instrumentName[it] << std::endl;
-        EM_ASM({
-            mgnr.requireInstrument($0);
-        },it);
+        loadInstrument(it);
     }
 }
 

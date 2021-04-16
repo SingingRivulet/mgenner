@@ -15,6 +15,9 @@ editTable::editTable(){
     defaultInfo="default";
     selected.clear();
     instrument2Id_init();
+    for(int i=0;i<128;++i){
+        instrumentLoaded[i] = false;
+    }
 }
 
 editTable::~editTable(){

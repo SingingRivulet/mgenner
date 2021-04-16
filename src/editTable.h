@@ -111,6 +111,10 @@ namespace mgnr{
             void addChord(float position,const std::string & name, float length , int root_base = 0,int v = 70,const std::string & info = "default", const std::string & format="",bool useTPQ = true);
             
             int getInstrumentId(const std::string & n);
+            void loadInstrument(int id);
+            inline void loadInstrument(const std::string & n){
+                loadInstrument(getInstrumentId(n));
+            }
             
         private:
             float noteAreaHeight;
@@ -118,6 +122,7 @@ namespace mgnr{
             float realLookAtY;
             std::unordered_map<std::string,int> instrument2Id;
             void instrument2Id_init();
+            bool instrumentLoaded[128];
             
         public:
             struct{

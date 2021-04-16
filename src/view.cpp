@@ -389,10 +389,10 @@ void view::pollEvent(){
                 if(event.motion.x<192){
                     char *str = (char*)EM_ASM_INT({
                         var jsString = prompt("命名",UTF8ToString($0));
-                        if(jsString[0]=="@" && jsString[1]=="T")
-                            alert("不建议使用此方法设置速度，请直接点击编辑框下方的速度条设置");
                         if(!jsString)
                             return 0;
+                        if(jsString[0]=="@" && jsString[1]=="T")
+                            alert("不建议使用此方法设置速度，请直接点击编辑框下方的速度条设置");
                         var lengthBytes = lengthBytesUTF8(jsString)+1;
                         var stringOnWasmHeap = _malloc(lengthBytes);
                         stringToUTF8(jsString, stringOnWasmHeap, lengthBytes);

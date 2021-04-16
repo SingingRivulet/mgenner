@@ -57,6 +57,7 @@ void synth::onUseInfo(const std::string & info){
         var info=UTF8ToString($0);
         mgnr.loadName(info);
     },info.c_str());
+    loadInstrument(info);
 }
 
 }

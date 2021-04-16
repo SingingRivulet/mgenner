@@ -7,6 +7,7 @@ function downloadSoundFont(id){
         var sta = document.createElement("div");
         var staNum = document.createElement("span");
         sta.appendChild(document.createTextNode("加载音源:"));
+        staNum.innerText="0";
         sta.appendChild(staNum);
         sta.appendChild(document.createTextNode("%"));
         stabox.appendChild(sta);
