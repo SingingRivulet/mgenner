@@ -1,3 +1,4 @@
+window.instrumentMap = new Int32Array(128);
 window.onload = function() {
     //console.log("load soundfont");
     if (self != top) return;
@@ -10,13 +11,15 @@ window.onload = function() {
         },
         onsuccess: function() {
             MIDI.setVolume(0, 127);
-            MIDI.channels[0].instrument = 0;
+            for(var i=0;i<16;++i){
+                MIDI.channels[i].instrument = 0;
+            }
             document.getElementById('soundfont-status').style.display = "none";
         }
     });
 };
 window.mgnr = {
-    "noteOn": function(info, tone, v) {
+    "noteOn": function(info,channel, tone, v) {
         if (window.playOutput) {
             if (window.mgnr.engine == null) {
                 window.mgnr.engine = document.getElementById("synth-engine");
@@ -28,10 +31,10 @@ window.mgnr = {
                 "info": info
             }, '*');
         } else {
-            MIDI.noteOn(0, tone, v, 0);
+            MIDI.noteOn(channel, tone, v, 0);
         }
     },
-    "noteOff": function(info, tone) {
+    "noteOff": function(info,channel, tone) {
         if (window.playOutput) {
             if (window.mgnr.engine == null) {
                 window.mgnr.engine = document.getElementById("synth-engine");
@@ -42,8 +45,18 @@ window.mgnr = {
                 "info": info
             }, '*');
         } else {
-            MIDI.noteOff(0, tone, 0);
+            MIDI.noteOff(channel, tone, 0);
         }
+    },
+    "setChannelInstrument":function(c,i){
+        try{
+            MIDI.channels[c].instrument = window.instrumentMap[i];
+        }catch(e){
+            console.log(e);
+        }
+    },
+    "requireInstrument": function(id) {
+        console.log("download:" + id);
     },
     "loadName": function(info) {
         console.log("use:" + info);

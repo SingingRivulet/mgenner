@@ -40,9 +40,10 @@ namespace mgnr{
     };
     class synth:public player{
         public:
-            void onNoteOn(note * n);
-            void onNoteOff(note * n);
+            void onNoteOn(note * n,int c);
+            void onNoteOff(note * n,int c);
             void onUseInfo(const std::string & info);
+            void onSetChannelIns(int c,int ins);
             
             void synthOutput();//链接外部引擎合成
             
@@ -58,8 +59,8 @@ namespace mgnr{
             ~synth();
             
         private:
-            void callJsNoteOn(const char * info,int tone,int vol);
-            void callJsNoteOff(const char * info,int tone);
+            void callJsNoteOn(const char * info,int channel,int tone,int vol);
+            void callJsNoteOff(const char * info,int channel,int tone);
             
             void splitTracks();//将midimap分解成音轨
             void clearTracks();

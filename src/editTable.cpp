@@ -14,6 +14,7 @@ editTable::editTable(){
     defaultVolume=50;
     defaultInfo="default";
     selected.clear();
+    instrument2Id_init();
 }
 
 editTable::~editTable(){

@@ -11,7 +11,6 @@ using namespace smf;
 
 static const char * instrumentName[] = {
     "Piano",
-    "Piano",
     "BrightPiano",
     "ElectricPiano",
     "HonkyTonkPiano",
@@ -98,7 +97,7 @@ static const char * instrumentName[] = {
     "Lead5-charang",
     "Lead6-voice",
     "Lead7-fifths",
-    "Lead8-bass+lead",
+    "Lead8-bass",
     "Pad1-newage",
     "Pad2-warm",
     "Pad3-polysynth",
@@ -141,6 +140,19 @@ static const char * instrumentName[] = {
     "Gunshot"
 };
 
+void editTable::instrument2Id_init(){
+    for(int i=0;i<128;++i){
+        instrument2Id[instrumentName[i]] = i;
+    }
+}
+int editTable::getInstrumentId(const std::string & n){
+    auto it = instrument2Id.find(n);
+    if(it==instrument2Id.end()){
+        return 0;
+    }else{
+        return it->second;
+    }
+}
 void editTable::loadMidi(const std::string & str){
     MidiFile midifile;
     midifile.read(str);
@@ -174,13 +186,13 @@ void editTable::loadMidi(const std::string & str){
                 int tone = (int)midifile[track][event][1];
                 int v = (int)midifile[track][event][2];
                 addNote(position, tone, delay, v,instrumentName[instrumentId]);
+                iset.insert(instrumentId);
             }else if(midifile[track][event].isTimbre()){
                 instrumentId = midifile[track][event].getP1();
                 if(instrumentId<0)
                     instrumentId = 0;
                 else if(instrumentId>128)
                     instrumentId = 128;
-                iset.insert(instrumentId);
             }
         }
     }
@@ -194,6 +206,9 @@ void editTable::loadMidi(const std::string & str){
     
     for (auto it : iset){
         std::cout << "require instrument:" << instrumentName[it] << std::endl;
+        EM_ASM({
+            mgnr.requireInstrument($0);
+        },it);
     }
 }
 

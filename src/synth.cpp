@@ -5,39 +5,48 @@ synth::~synth(){
     clearTracks();
 }
 
-void synth::callJsNoteOn(const char * info,int tone,int vol){
+void synth::callJsNoteOn(const char * info,int channel,int tone,int vol){
     EM_ASM({
         try{
             var info=UTF8ToString($0);
             var tone=$1;
             var vol =$2;
-            mgnr.noteOn(info, tone, vol);
+            var channel = $3;
+            mgnr.noteOn(info,channel, tone, vol);
         }catch(e){}
-    }, info,tone,vol);
+    }, info,tone,vol,channel);
 }
-void synth::callJsNoteOff(const char * info,int tone){
+void synth::callJsNoteOff(const char * info,int channel,int tone){
     EM_ASM({
         try{
             var info=UTF8ToString($0);
             var tone=$1;
-            mgnr.noteOff(info, tone);
+            var channel = $2;
+            mgnr.noteOff(info,channel, tone);
         }catch(e){}
-    }, info,tone);
+    }, info,tone,channel);
 }
-void synth::onNoteOn(note * n){
+void synth::onNoteOn(note * n,int c){
     if(!n->info.empty()){
         if(n->info[0]=='@')
             return;
     }
-    callJsNoteOn(n->info.c_str(), n->tone, n->volume);
+    //printf("onNoteOn:%f %d\n",n->tone,c);
+    callJsNoteOn(n->info.c_str(),c, n->tone, n->volume);
 }
 
-void synth::onNoteOff(note * n){
+void synth::onNoteOff(note * n,int c){
     if(!n->info.empty()){
         if(n->info[0]=='@')
             return;
     }
-    callJsNoteOff(n->info.c_str(), n->tone);
+    //printf("onNoteOff:%f %d\n",n->tone,c);
+    callJsNoteOff(n->info.c_str(),c, n->tone);
+}
+void synth::onSetChannelIns(int c,int ins){
+    EM_ASM({
+        mgnr.setChannelInstrument($0,$1);
+    },c,ins);
 }
 void synth::onUseInfo(const std::string & info){
     if(info.empty())

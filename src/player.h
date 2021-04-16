@@ -17,8 +17,9 @@ namespace mgnr{
             int getTime();
             bool playingStatus;
             
-            virtual void onNoteOn(note * n)=0;
-            virtual void onNoteOff(note * n)=0;
+            virtual void onNoteOn(note * n,int c)=0;
+            virtual void onNoteOff(note * n,int c)=0;
+            virtual void onSetChannelIns(int c,int ins)=0;
             
         private:
             std::set<note*> playing,toPlay;
@@ -31,6 +32,12 @@ namespace mgnr{
                 return (tempo * TPQ) / 60.0;
             }
             void goNextStep();
+            int playNum[16];
+            int playIns[16];
+            int ins2Channel[128];
+        public:
+            int useInstrument(const std::string & n);
+            int releaseInstrument(const std::string & n);
     };
 }
 #endif
