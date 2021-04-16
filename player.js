@@ -72,6 +72,7 @@ window.mgnr = {
         }
     },
     "requireInstrument": function(id) {
+        if (self != top) return;
         try{
             downloadSoundFont(id);
         }catch(e){}
