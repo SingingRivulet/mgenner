@@ -1,42 +1,38 @@
 var instrumentURL = "./soundfont/basic/";
 var instrumentMap = new Int32Array(128);
 var instrumentDownload = new Int32Array(128);
-instrumentDownload[0] = 1;
-window.onload = function() {
-    //console.log("load soundfont");
-    if (self != top) return;
-    MIDI.loadPlugin({
-        soundfontUrl: instrumentURL,
-        instruments: ["acoustic_grand_piano"],
-        onprogress: function(state, progress) {
-            //console.log(state, progress);
-            document.getElementById('soundfont-status-num').innerText = parseInt(progress * 100);
-        },
-        onsuccess: function() {
-            MIDI.setVolume(0, 127);
-            for(var i=0;i<16;++i){
-                MIDI.channels[i].instrument = 0;
-            }
-            document.getElementById('soundfont-status').style.display = "none";
-        }
-    });
-};
 function downloadSoundFont(id){
     if(instrumentDownload[id]!=1){
-        console.log("download:" + id);
+        var stabox = document.getElementById('soundfont-status');
+        var sta = document.createElement("div");
+        var staNum = document.createElement("span");
+        sta.appendChild(document.createTextNode("加载音源:"));
+        sta.appendChild(staNum);
+        sta.appendChild(document.createTextNode("%"));
+        stabox.appendChild(sta);
+        console.log("download soundfont:" + id);
         instrumentDownload[id] = 1;
         MIDI.loadPlugin({
             soundfontUrl: instrumentURL,
             instruments: [id],
             onprogress: function(state, progress) {
-                
+                staNum.innerText = parseInt(progress * 100);
             },
             onsuccess: function() {
                 instrumentMap[id] = id;
+                setTimeout(function(){
+                    sta.remove();
+                },1000);
             }
         });
     }
 }
+window.onload = function() {
+    //console.log("load soundfont");
+    if (self != top) return;
+    document.getElementById('soundfont-status').innerHTML = "";
+    downloadSoundFont(0);
+};
 window.mgnr = {
     "noteOn": function(info,channel, tone, v) {
         if (window.playOutput) {
