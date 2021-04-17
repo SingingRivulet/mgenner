@@ -50,6 +50,14 @@ void player::playStep(){
     }
 }
 void player::playStop(){
+    std::list<note*> stopList;
+    for(auto it:playing){
+        stopList.push_back(it);
+    }
+    for(auto it:stopList){
+        noteOff(it);
+    }
+    playing.clear();
     playingStatus = false;
 }
 void player::playStart(){

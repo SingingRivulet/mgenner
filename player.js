@@ -78,7 +78,7 @@ window.mgnr = {
         }catch(e){}
     },
     "loadName": function(info) {
-        console.log("use:" + info);
+        //console.log("use:" + info);
     },
     "synth": {
         //mGenNer歌声合成协议
