@@ -234,7 +234,7 @@ void editTable::exportMidi(const std::string & filename){
         bool isNoteOn;
     };
     
-    std::map<int,std::vector<noteMap_t*> > noteMap;
+    std::map<int,std::pair<int,std::vector<noteMap_t*> > > noteMap;
     
     for(auto it:notes){
         if(it->info.empty()){
@@ -266,8 +266,9 @@ void editTable::exportMidi(const std::string & filename){
                     p2->isNoteOn = false;
                     
                     auto & lst = noteMap[track];
-                    lst.push_back(p1);
-                    lst.push_back(p2);
+                    lst.first  = getInstrumentId(it->info);
+                    lst.second.push_back(p1);
+                    lst.second.push_back(p2);
                     
                     //midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
                     //midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
@@ -289,8 +290,8 @@ void editTable::exportMidi(const std::string & filename){
                     p2->isNoteOn = false;
                     
                     auto & lst = noteMap[track];
-                    lst.push_back(p1);
-                    lst.push_back(p2);
+                    lst.second.push_back(p1);
+                    lst.second.push_back(p2);
                     
                     //midifile.addNoteOn(track, it->begin , 0, it->tone , it->volume > 100 ? 100 : it->volume);
                     //midifile.addNoteOff(track, it->begin + it->delay , 0, it->tone);
@@ -305,16 +306,21 @@ void editTable::exportMidi(const std::string & filename){
     }
     for(auto itlst:noteMap){
         int tk = itlst.first;
+        int ch = tk;
+        if(ch>15)
+            ch = 15;
         
-        sort(itlst.second.begin(),itlst.second.end(),[](noteMap_t * a,noteMap_t * b){
+        sort(itlst.second.second.begin(),itlst.second.second.end(),[](noteMap_t * a,noteMap_t * b){
             return a->time < b->time;
         });
         
-        for(auto it:itlst.second){//扫描音轨
+        midifile.addTimbre(tk,0,ch,itlst.second.first);
+        
+        for(auto it:itlst.second.second){//扫描音轨
             if(it->isNoteOn){
-                midifile.addNoteOn(tk, it->time , 0, it->tone , it->volume);
+                midifile.addNoteOn(tk, it->time , ch, it->tone , it->volume);
             }else{
-                midifile.addNoteOff(tk, it->time , 0, it->tone);
+                midifile.addNoteOff(tk, it->time , ch, it->tone);
             }
             delete it;
         }
