@@ -156,7 +156,17 @@ void editTable::loadInstrument(int id){
         mgnr.requireInstrument($0);
     },id);
 }
-int editTable::getInstrumentId(const std::string & n){
+int editTable::getInstrumentId(const std::string & name){
+    char n[128];
+    snprintf(n,128,"%s",name.c_str());
+    for(int i=0;i<128;++i){
+        if(n[i]=='\0'){
+            break;
+        }else if(n[i]=='.'){
+            n[i] = '\0';
+            break;
+        }
+    }
     auto it = instrument2Id.find(n);
     if(it==instrument2Id.end()){
         return 0;
@@ -183,8 +193,7 @@ void editTable::loadMidi(const std::string & str){
     for (int track=0; track<tracks; track++) {
         //if (tracks > 1) cout << "\nTrack " << track << endl;
         
-        //char infoBuf[128];
-        //snprintf(infoBuf,sizeof(infoBuf),"track-%d",track);
+        char infoBuf[128];
         
         int instrumentId = 0;
         
@@ -196,7 +205,8 @@ void editTable::loadMidi(const std::string & str){
                 int delayS = midifile[track][event].getDurationInSeconds();
                 int tone = (int)midifile[track][event][1];
                 int v = (int)midifile[track][event][2];
-                addNote(position, tone, delay, v,instrumentName[instrumentId]);
+                snprintf(infoBuf,sizeof(infoBuf),"%s.%d",instrumentName[instrumentId],track);
+                addNote(position, tone, delay, v,infoBuf);
                 iset.insert(instrumentId);
             }else if(midifile[track][event].isTimbre()){
                 instrumentId = midifile[track][event].getP1();
