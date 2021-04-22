@@ -2,6 +2,7 @@
 midi在线编辑器，使用emscripten开发，留有js API，便于与自己的前端应用嵌合。  
 ![img](shot.png)
 本项目为歌声合成器设计，没有采用音轨的机制，而是采用了允许对每个音符命名的方式。生成Midi文件的时候会自动按照命名生成音轨。  
+此仓库的音源不完整，仅支持钢琴音色，[点击下载音源，替换掉soundfont内的文件即可](https://github.com/gleitz/midi-js-soundfonts)  
 [在线使用](http://midi.sinriv.com/edit)  
 ## js API  
 基本api:  
