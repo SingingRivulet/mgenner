@@ -294,7 +294,7 @@ void view::drawSectionCol(float p,int n){
     rect.h=windowHeight;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 5, 5, 5));
     
-    rect.y = windowHeight-60;
+    rect.y = windowHeight-90;
     rect.h = 30;
     SDL_Color textColor = {64, 128, 128};
     char buf[64];
