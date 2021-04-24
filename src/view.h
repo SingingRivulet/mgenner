@@ -48,6 +48,8 @@ namespace mgnr{
             SDL_Surface * selectByBoxOffMsg;
             SDL_Surface * undoMsg;
             
+            SDL_Surface * scroll;
+            
             SDL_Surface * toneMap[128];
             
             TTF_Font * font;

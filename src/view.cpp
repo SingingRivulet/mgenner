@@ -14,6 +14,7 @@ view::view(){
     font = TTF_OpenFont("sans-serif", 20);
     
     SDL_Color textColor = {255, 128, 128};
+    scroll = NULL;
     clearAllMsg = TTF_RenderText_Solid(font,"清选",textColor);
     removeMsg = TTF_RenderText_Solid(font,"删除",textColor);
     showAllMsg = TTF_RenderText_Solid(font,"显示",textColor);
@@ -304,18 +305,51 @@ void view::drawSectionCol(float p,int n){
 }
 void view::drawScroll(){
     SDL_Rect rect;
+    bool u = updateTimeMax();//更新进度条长度
+    if(u && scroll!=NULL){
+        SDL_FreeSurface(scroll);
+        scroll = NULL;
+    }
+    if(scroll==NULL){//更新进度条
+        scroll = SDL_CreateRGBSurface(screen->flags, windowWidth, 30, 8,
+            screen->format->Rmask, screen->format->Gmask,
+            screen->format->Bmask, screen->format->Amask);
+        rect.x=0;
+        rect.y=0;
+        rect.w=windowWidth;
+        rect.h=30;
+        SDL_FillRect(scroll, &rect, SDL_MapRGB(screen->format, 0 , 0 , 20));
+        int hlen = noteToneMax-noteToneMin;//纵向的距离
+        int nmax = noteToneMax;
+        int nmin = noteToneMin;
+        if(hlen<30){
+            int s = (noteToneMax+noteToneMin)/2;
+            hlen = 30;
+            nmax = s+15;
+            nmin = s-15;
+        }
+        //画音符
+        rect.h=1;
+        for(auto it:notes){
+            if(it->tone > nmin && it->tone < nmax){
+                rect.y = 30 - ((it->tone - nmin)*30)/hlen;
+                rect.w = (it->delay*windowWidth)/noteTimeMax;
+                rect.x = (it->begin*windowWidth)/noteTimeMax;
+                SDL_FillRect(scroll, &rect, SDL_MapRGB(screen->format, 128 , 128 , 128));
+            }
+        }
+    }
     rect.x=0;
     rect.y=windowHeight-30;
     rect.w=windowWidth;
     rect.h=30;
-    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0 , 0 , 20));
+    SDL_BlitSurface(scroll , NULL , screen, &rect);
     
-    updateTimeMax();//更新进度条长度
     int m = noteTimeMax;
     if(m>0){
         rect.x = (lookAtX*windowWidth)/m;
         rect.w = 1;
-        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 128 , 128 , 128));
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 128 , 255 , 128));
     }
 }
 void view::drawTempo(float p,double t){

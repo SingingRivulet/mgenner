@@ -86,8 +86,10 @@ namespace mgnr{
             std::map<std::string,int> chord_map_note;
             
             float noteTimeMax;
+            float noteToneMax;
+            float noteToneMin;
             bool noteUpdated;
-            void updateTimeMax();
+            bool updateTimeMax();
         private:
             std::map<int,note*> noteIDs;
             HBB indexer;

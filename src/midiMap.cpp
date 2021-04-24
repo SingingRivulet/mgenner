@@ -66,17 +66,30 @@ static bool isMajor(int note){
     const static bool l[] = {true,false,false,false,true,false,false,true,false,false,false,false};
     return l[note%12];
 }
-void midiMap::updateTimeMax(){
+bool midiMap::updateTimeMax(){
     if(noteUpdated){
         noteTimeMax = 0;
+        noteToneMin = 255;
+        noteToneMax = 0;
         for(auto & it:notes){
             float tm = it->begin + it->delay;
             if(tm>noteTimeMax){
                 noteTimeMax = tm;
             }
+            float tone = it->tone;
+            if(tone>0 && tone<128){
+                if(tone>noteToneMax){
+                    noteToneMax = tone;
+                }
+                if(tone<noteToneMin){
+                    noteToneMin = tone;
+                }
+            }
         }
+        noteUpdated = false;
+        return true;
     }
-    noteUpdated = false;
+    return false;
 }
 int midiMap::getBaseTone(){
     std::tuple<int,float> major_prob[12];
