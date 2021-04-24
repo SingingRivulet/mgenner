@@ -434,7 +434,7 @@ void view::pollEvent(){
         if (event.type == SDL_MOUSEBUTTONDOWN){//按键
             if(resizeMode)
                 return;
-            if(event.motion.y<40){//小于40是菜单
+            if(event.motion.y<40 && SDL_BUTTON_LEFT==event.button.button){//小于40是菜单
                 if(event.motion.x<64){
                     clearSelected();
                 }else
@@ -617,11 +617,24 @@ void view::pollEvent(){
             }
         }else
         if (event.type == SDL_MOUSEWHEEL){
-            if(event.wheel.y<0){
-                lookAtY-=0.7;
-            }else
-            if(event.wheel.y>0){
-                lookAtY+=0.7;
+            if(event.motion.y>windowHeight-30){
+                if(event.wheel.y<0){
+                    noteLength/=2;
+                }else
+                if(event.wheel.y>0){
+                    noteLength*=2;
+                }
+            }else if(event.motion.y>windowHeight-60){
+            
+            }else if(event.motion.y>40){
+                if(event.wheel.y<0){
+                    lookAtY-=0.7;
+                }else
+                if(event.wheel.y>0){
+                    lookAtY+=0.7;
+                }
+            }else{
+                
             }
         }else
         if (event.type == SDL_KEYUP){
