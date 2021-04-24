@@ -8,6 +8,8 @@ midiMap::midiMap(){
     pool=new npool;
     XShift = 0;
     baseTone = 0;
+    noteTimeMax = 0;
+    noteUpdated = false;
     
     chord_map["maj3"] =  {0, 4, 7, 0};   // 大三和弦 根音-大三度-纯五度
     chord_map["min3"] =  {0, 3, 7, 0};   //小三和弦 根音-小三度-纯五度
@@ -63,6 +65,18 @@ static bool isNotHalfNote(int note,int base){
 static bool isMajor(int note){
     const static bool l[] = {true,false,false,false,true,false,false,true,false,false,false,false};
     return l[note%12];
+}
+void midiMap::updateTimeMax(){
+    if(noteUpdated){
+        noteTimeMax = 0;
+        for(auto & it:notes){
+            float tm = it->begin + it->delay;
+            if(tm>noteTimeMax){
+                noteTimeMax = tm;
+            }
+        }
+    }
+    noteUpdated = false;
 }
 int midiMap::getBaseTone(){
     std::tuple<int,float> major_prob[12];
@@ -138,6 +152,7 @@ note * midiMap::addNote(float position,float tone,float delay,int v,const std::s
         }
     }
     
+    noteUpdated = true;
     return p;
 }
 
@@ -161,6 +176,8 @@ void midiMap::resizeNote(note * p){
         
         auto bx = indexer.add(from,to,p);
         p->indexer = bx;
+        
+        noteUpdated = true;
     }
 }
 void midiMap::removeNote(note * p){
@@ -179,6 +196,8 @@ void midiMap::removeNote(note * p){
         timeIndex.erase(p->beginIndex);
         timeIndex.erase(p->endIndex);
         ((npool*)pool)->del(p);
+        
+        noteUpdated = true;
     }
 }
 
@@ -193,6 +212,7 @@ void midiMap::clear(){
     }
     notes.clear();
     timeIndex.clear();
+    noteUpdated = true;
 }
 
 int midiMap::find(const HBB::vec & from,const HBB::vec & to,void(*callback)(note*,void*),void * arg){

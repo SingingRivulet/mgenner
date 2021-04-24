@@ -29,6 +29,7 @@ void editTable::render(){
     findNote();
     drawDisplay();
     drawTempoLine();
+    drawScroll();
     drawNote_end();
 }
 
@@ -66,6 +67,13 @@ void editTable::automatic(float & x,float & y){
     }
     if(automaticY){
         y=(int)floor(y);
+    }
+}
+void editTable::clickToLookAt(int x,int y){
+    updateTimeMax();//更新进度条长度
+    int m = noteTimeMax;
+    if(m>0){
+        lookAtX = (x*m)/windowWidth;
     }
 }
 void editTable::clickToRemoveTempo(int x,int y){

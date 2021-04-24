@@ -52,6 +52,7 @@ namespace mgnr{
             int  clickToSelect(int x,int y);
             void clickToSetTempo(int x,int y);
             void clickToRemoveTempo(int x,int y);
+            void clickToLookAt(int x,int y);
             int  selAll();
             void clearSelected();
             void removeSelected();
@@ -81,6 +82,7 @@ namespace mgnr{
             virtual void drawSectionCol(float p,int n)=0;
             virtual void drawTempo(float p,double t)=0;
             virtual void drawTempoPadd()=0;
+            virtual void drawScroll()=0;
             
             void toString(std::string & str);
             void loadString(const std::string & str);

@@ -84,6 +84,10 @@ namespace mgnr{
             std::unordered_map<std::string,std::vector<int> > chord_map;
             std::unordered_map<std::string,int> note_number_map;
             std::map<std::string,int> chord_map_note;
+            
+            float noteTimeMax;
+            bool noteUpdated;
+            void updateTimeMax();
         private:
             std::map<int,note*> noteIDs;
             HBB indexer;

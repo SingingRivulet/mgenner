@@ -24,6 +24,7 @@ namespace mgnr{
             void drawSectionCol(float p,int n);
             void drawTempo(float p,double t);
             void drawTempoPadd();
+            void drawScroll();
             
             void pollEvent();
             

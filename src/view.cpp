@@ -6,7 +6,7 @@ view::view(){
     selectByBox  = false;
     selectingByBox  = false;
     windowWidth  = 1024;
-    windowHeight = 500;
+    windowHeight = 530;
     SDL_Init( SDL_INIT_VIDEO );
     screen = SDL_SetVideoMode( windowWidth, windowHeight, 0,SDL_HWSURFACE | SDL_DOUBLEBUF );
     
@@ -271,7 +271,7 @@ void view::drawNote_end(){
     int fps=1.0/((nowTime-lastTime)/1000.0);
     lastTime=nowTime;
     rect.x=windowWidth-80;
-    rect.y=windowHeight-30;
+    rect.y=windowHeight-60;
     snprintf(buf,64,"FPS %d",(int)scalar_kalman(&fpsSmooth,fps));
     msg = TTF_RenderText_Solid(font,buf,textColor);
     SDL_BlitSurface(msg, NULL, screen, &rect);
@@ -302,15 +302,31 @@ void view::drawSectionCol(float p,int n){
     SDL_BlitSurface(msg, NULL, screen, &rect);
     SDL_FreeSurface(msg);
 }
+void view::drawScroll(){
+    SDL_Rect rect;
+    rect.x=0;
+    rect.y=windowHeight-30;
+    rect.w=windowWidth;
+    rect.h=30;
+    SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0 , 0 , 20));
+    
+    updateTimeMax();//更新进度条长度
+    int m = noteTimeMax;
+    if(m>0){
+        rect.x = (lookAtX*windowWidth)/m;
+        rect.w = 1;
+        SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 128 , 128 , 128));
+    }
+}
 void view::drawTempo(float p,double t){
     SDL_Rect rect;
     rect.x=p;
     rect.y=0;
     rect.w=1;
-    rect.h=windowHeight;
+    rect.h=windowHeight-30;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 128, 128, 128));
     
-    rect.y = windowHeight-30;
+    rect.y = windowHeight-60;
     rect.h = 30;
     SDL_Color textColor = {64, 128, 128};
     char buf[64];
@@ -322,7 +338,7 @@ void view::drawTempo(float p,double t){
 void view::drawTempoPadd(){
     SDL_Rect rect;
     rect.x=0;
-    rect.y=windowHeight-30;
+    rect.y=windowHeight-60;
     rect.w=windowWidth;
     rect.h=30;
     SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0 , 0 , 30));
@@ -488,12 +504,19 @@ void view::pollEvent(){
                     printf("undo\n");
                 }
             }else
-            if(event.motion.y>windowHeight-30){
-                //底部条
-                if(SDL_BUTTON_LEFT == event.button.button){
-                    clickToSetTempo(event.motion.x , event.motion.y);
-                }else if(SDL_BUTTON_RIGHT == event.button.button){
-                    clickToRemoveTempo(event.motion.x , event.motion.y);
+            if(event.motion.y>windowHeight-60){
+                if(event.motion.y<windowHeight-30){
+                    //速度条
+                    if(SDL_BUTTON_LEFT == event.button.button){
+                        clickToSetTempo(event.motion.x , event.motion.y);
+                    }else if(SDL_BUTTON_RIGHT == event.button.button){
+                        clickToRemoveTempo(event.motion.x , event.motion.y);
+                    }
+                }else{
+                    //时间条
+                    if(SDL_BUTTON_LEFT == event.button.button){
+                        clickToLookAt(event.motion.x , event.motion.y);
+                    }
                 }
             }else
             if(SDL_BUTTON_LEFT == event.button.button){
