@@ -334,6 +334,8 @@ void view::drawScroll(){
             if(it->tone > nmin && it->tone < nmax){
                 rect.y = 30 - ((it->tone - nmin)*30)/hlen;
                 rect.w = (it->delay*windowWidth)/noteTimeMax;
+                if(rect.w<=0)
+                    rect.w = 1;
                 rect.x = (it->begin*windowWidth)/noteTimeMax;
                 SDL_FillRect(scroll, &rect, SDL_MapRGB(screen->format, 128 , 128 , 128));
             }
