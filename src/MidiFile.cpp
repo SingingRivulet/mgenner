@@ -2673,18 +2673,18 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 		case 0xE0:        // pitch wheel (2 more bytes)
 			byte = readByte(input);
 			if (!status()) { return m_rwstatus; }
-			if (byte > 0x7f) {
-				std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
-				m_rwstatus = false; return m_rwstatus;
-			}
+			//if (byte > 0x7f) {
+			//	std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
+			//	m_rwstatus = false; return m_rwstatus;
+			//}
 			array.push_back(byte);
 			if (!runningQ) {
 				byte = readByte(input);
 				if (!status()) { return m_rwstatus; }
-				if (byte > 0x7f) {
-					std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
-					m_rwstatus = false; return m_rwstatus;
-				}
+				//if (byte > 0x7f) {
+				//	std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
+				//	m_rwstatus = false; return m_rwstatus;
+				//}
 				array.push_back(byte);
 			}
 			break;
@@ -2693,10 +2693,10 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 			if (!runningQ) {
 				byte = readByte(input);
 				if (!status()) { return m_rwstatus; }
-				if (byte > 0x7f) {
-					std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
-					m_rwstatus = false; return m_rwstatus;
-				}
+				//if (byte > 0x7f) {
+				//	std::cout << "MIDI data byte too large: " << (int)byte << std::endl;
+				//	m_rwstatus = false; return m_rwstatus;
+				//}
 				array.push_back(byte);
 			}
 			break;
